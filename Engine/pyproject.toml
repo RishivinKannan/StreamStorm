@@ -1,0 +1,14 @@
+[project]
+name = "streamstorm"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "flask>=3.1.0",
+    "hypercorn>=0.17.3",
+    "psutil>=6.1.0",
+    "pydantic>=2.10.4",
+    "selenium>=4.27.1",
+    "webdriver-manager>=4.0.2",
+]
