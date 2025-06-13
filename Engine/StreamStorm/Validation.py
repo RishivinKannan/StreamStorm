@@ -84,7 +84,7 @@ class StormDataValidation(BaseModel):
 
 class ProfileDataValidation(BaseModel):
     browser: str
-    limit: Optional[int]
+    limit: Optional[int] = None
     
     
     @field_validator("browser")
