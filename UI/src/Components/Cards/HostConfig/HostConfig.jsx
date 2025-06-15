@@ -36,7 +36,7 @@ const HostConfig = () => {
         }
         setHostAddressError(false);
         setHostAddressHelperText("");
-        setSavedHostAddress(hostAddress);
+        setSavedHostAddress(hostAddress.trim());
         
         notifications.show("Host address saved successfully!", {
             severity: "success",
