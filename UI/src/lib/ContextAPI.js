@@ -1,5 +1,5 @@
 import { createContext } from 'react';
 
-export const customMUIProps = createContext();
+export const customMUIPropsContext = createContext();
 
-export const currentBrowser = createContext();
+export const currentBrowserContext = createContext();

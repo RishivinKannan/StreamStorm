@@ -6,15 +6,16 @@ import { Users } from 'lucide-react';
 
 import "./RightPanel.css";
 import StormControls from './StormControls/StormControls';
-import { customMUIProps } from '../../../../../lib/ContextAPI';
+import { currentBrowserContext, customMUIPropsContext } from '../../../../../lib/ContextAPI';
 import { BROWSERS } from '../../../../../lib/Constants';
 
 const RightPanel = (props) => {
 
     const { setManageProfilesOpen } = props;
 
-    const { btnProps, inputProps } = useContext(customMUIProps);
+    const { btnProps, inputProps } = useContext(customMUIPropsContext);
     const { colorScheme } = useColorScheme();
+    const currentBrowser = useContext(currentBrowserContext);
 
     return (
         <div className="right-panel-container">
@@ -22,18 +23,17 @@ const RightPanel = (props) => {
                 select
                 variant="outlined"
                 label="Select Browser"
-                helperText="Choose the browser to use"
                 sx={inputProps}
             >
                 {
-                    BROWSERS.map((browser) => (
-                        <MenuItem
-                            key={browser}
-                            value={browser.toLowerCase()}
-                        >
-                            {browser}
-                        </MenuItem>
-                    ))
+                    BROWSERS.map((browser) => {
+                        let browserText = browser.toLowerCase();
+                        return (
+                            <MenuItem key={browser} value={browserText} disabled={browserText === currentBrowser}>
+                                {browser} {browserText === currentBrowser ? "(Current browser)" : ""}
+                            </MenuItem>
+                        )
+                    })
                 }
             </TextField>
 

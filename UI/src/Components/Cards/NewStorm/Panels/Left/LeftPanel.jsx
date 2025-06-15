@@ -5,13 +5,13 @@ import Switch from '@mui/material/Switch';
 import { Radio, RadioGroup } from "@mui/material";
 
 import "./LeftPanel.css";
-import { customMUIProps } from "../../../../../lib/ContextAPI";
+import { customMUIPropsContext } from "../../../../../lib/ContextAPI";
 
 const LeftPanel = () => {
 
     const [accountSelection, setAccountSelection] = useState('basic');
     const { colorScheme } = useColorScheme();
-    const {inputProps} = useContext(customMUIProps);
+    const {inputProps} = useContext(customMUIPropsContext);
 
     return (
         <div className="left-panel-container">

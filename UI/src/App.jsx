@@ -5,7 +5,7 @@ import { DialogsProvider } from '@toolpad/core/useDialogs';
 import { NotificationsProvider, } from '@toolpad/core/useNotifications';
 
 import "./App.css";
-import { customMUIProps, currentBrowser } from './lib/ContextAPI';
+import { customMUIPropsContext, currentBrowserContext } from './lib/ContextAPI';
 import Header from "./Components/Header/Header";
 import Footer from "./Components/Footer/Footer";
 import Main from "./Components/Main/Main";
@@ -25,7 +25,7 @@ const App = () => {
 
 
     return (
-        <customMUIProps.Provider value={getCustomMUIProps(colorScheme)}>
+        <customMUIPropsContext.Provider value={getCustomMUIProps(colorScheme)}>
             <DialogsProvider>
                 <NotificationsProvider slotProps={{
                     snackbar: {
@@ -33,18 +33,18 @@ const App = () => {
                         autoHideDuration: 3000,
                     },
                 }}>
-                    <currentBrowser.Provider value={browser}>
+                    <currentBrowserContext.Provider value={browser}>
 
                         <div className={`main-container main-container-${colorScheme}`}>
                             <Header />
                             <Main />
                             <Footer />
                         </div>
-                    </currentBrowser.Provider>
+                    </currentBrowserContext.Provider>
 
                 </NotificationsProvider>
             </DialogsProvider>
-        </customMUIProps.Provider>
+        </customMUIPropsContext.Provider>
     )
 }
 

@@ -7,12 +7,12 @@ import { RefreshCw } from 'lucide-react';
 
 import "./Sections.css";
 import { BROWSERS } from '../../../../lib/Constants';
-import { customMUIProps } from '../../../../lib/ContextAPI';
+import { customMUIPropsContext } from '../../../../lib/ContextAPI';
 import ErrorText from '../../../ErrorText';
 
 const CreateProfiles = ({ currentBrowser }) => {
 
-    const { btnProps, inputProps } = useContext(customMUIProps);
+    const { btnProps, inputProps } = useContext(customMUIPropsContext);
     const { colorScheme } = useColorScheme();
     const [hostAddress] = useLocalStorageState("hostAddress");
     const notifications = useNotifications();
