@@ -1,6 +1,8 @@
 from os import environ, system
+from typing import Optional
 from threading import Thread
 from flask import Flask, Response, send_from_directory, request, jsonify
+from flask_cors import CORS
 from psutil import virtual_memory
 
 from StreamStorm.StreamStorm import StreamStorm
@@ -8,17 +10,19 @@ from StreamStorm.Profiles import Profiles
 from StreamStorm.Validation import StormDataValidation, ProfileDataValidation
 
 
-app: Flask = Flask(__name__, static_folder="../ui/dist", static_url_path="/")
-
+app: Flask = Flask(__name__, static_folder="../UI/dist", static_url_path="/")
+CORS(app)
 
 @app.before_request
-def before_request() -> None:
+def before_request() -> Optional[Response]:
     if request.path not in ("/", "/stop", "/get_available_ram"):
         if environ["BUSY"] == "True":
-            return jsonify({"message": "Busy", "reason": environ["BUSY_REASON"]})
-        
-    if request.path in ('/create_profiles', '/delete_profiles', '/fix_profiles'):
-        request.validated_data = ProfileDataValidation(**request.json).model_dump()
+            return jsonify({"success": False, "message": f"Engine is Busy: {environ['BUSY_REASON']}"})
+
+    if request.method == "POST":
+        if request.path in ('/create_profiles', '/delete_profiles', '/fix_profiles', '/delete_all_profiles'):
+            request.validated_data = ProfileDataValidation(**request.json).model_dump()
+
 
 
 @app.route("/")
@@ -38,7 +42,7 @@ def storm() -> Response:
         errors: list = e.errors()
         if "ctx" in errors[0]:
             del errors[0]["ctx"]
-        return jsonify({"message": errors})
+        return jsonify({"success": False, "message": errors})
 
     StreamStorm.each_instances = []
 
@@ -61,10 +65,10 @@ def storm() -> Response:
 
         StreamStormObj.start()
 
-        return jsonify({"message": "Started"})
+        return jsonify({"success": True, "message": "Started"})
     except Exception as e:
         environ["BUSY"] = "False"
-        return jsonify({"message": str(e)})
+        return jsonify({"success": False, "message": str(e)})
 
 
 @app.route("/stop", methods=["POST"])
@@ -87,21 +91,21 @@ def stop() -> Response:
     environ["PAUSE"] = "False"
     environ["BUSY"] = "False"
 
-    return jsonify({"message": "Stopped"})
+    return jsonify({"success": True, "message": "Stopped"})
 
 
 @app.route("/pause", methods=["POST"])
 def pause() -> Response:
     environ["PAUSE"] = "True"
 
-    return jsonify({"message": "Paused"})
+    return jsonify({"success": True, "message": "Paused"})
 
 
 @app.route("/resume", methods=["POST"])
 def resume() -> Response:
     environ["PAUSE"] = "False"
 
-    return jsonify({"message": "Resumed"})
+    return jsonify({"success": True, "message": "Resumed"})
 
 
 @app.route("/create_profiles", methods=["POST"])
@@ -114,9 +118,9 @@ def create_profiles() -> Response:
         profiles: Profiles = Profiles(request.validated_data["browser"])
         profiles.create_profiles(request.validated_data["limit"])
 
-        return jsonify({"message": "Profiles created"})
+        return jsonify({"success": True, "message": "Profiles created"})
     except Exception as e:
-        return jsonify({"message": str(e)})
+        return jsonify({"success": False, "message": str(e)})
     finally:
         environ["BUSY"] = "False"
 
@@ -130,9 +134,9 @@ def delete_profiles() -> Response:
         profiles: Profiles = Profiles(request.validated_data["browser"])
         profiles.delete_all_temp_profiles()
 
-        return jsonify({"message": "Profiles deleted"})
+        return jsonify({"success": True, "message": "Profiles deleted"})
     except Exception as e:
-        return jsonify({"message": str(e)})
+        return jsonify({"success": False, "message": str(e)})
     finally:
         environ["BUSY"] = "False"
 
@@ -146,9 +150,9 @@ def fix_profiles() -> Response:
         profiles: Profiles = Profiles(request.validated_data["browser"])
         profiles.fix_profiles()
 
-        return jsonify({"message": "Profiles fixed"})
+        return jsonify({"success": True, "message": "Profiles fixed"})
     except Exception as e:
-        return jsonify({"message": str(e)})
+        return jsonify({"success": False, "message": str(e)})
     finally:
         environ["BUSY"] = "False"
 
@@ -162,12 +166,25 @@ def get_available_ram() -> Response:
         }
     )
 
-system('cls')
+@app.route("/current_status", methods=["GET"])
+def status() -> Response:
+    return jsonify(
+        {
+            "busy": environ.get("BUSY", "False") == "True",
+            "busy_reason": environ.get("BUSY_REASON", ""),
+            "pause": environ.get("PAUSE", "False") == "True",
+        }
+    )
+
+
 
 __all__: list[str] = ["app"]
 
 
 if __name__ == "__main__":
+    
+    system('cls')
+    
     app.run(
         host="0.0.0.0",
         port=5000,

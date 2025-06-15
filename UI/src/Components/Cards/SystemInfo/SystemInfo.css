@@ -1,0 +1,36 @@
+.system-info-card {
+    /* max-width: 387.34px; */
+    width: 100%;
+}
+
+@media (max-width: 1150px) {
+    .system-info-card {
+        max-width: 100%;
+    }
+}
+
+.system-info-container {
+    padding: 0 1.5rem 0;
+}
+
+.ram-value-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 0.875rem;
+}
+
+.ram-value-dark {
+    color: var(--slight-light-text);
+}
+
+.ram-value-light {
+    color: var(--slight-dark-text);
+}
+
+.ram-note {
+    font-size: 0.75rem;
+    color: var(--slight-light-text);
+    margin-top: 1rem;
+    display: block;
+}

@@ -1,0 +1,17 @@
+.new-storm-card {
+    min-height: 646px;
+    /* max-width: 800.66px; */
+    width: 100%;
+}
+
+
+.new-storm-card-content {
+    display: grid;
+    grid-template-columns: 3fr 0fr 2fr;
+}
+
+@media (max-width: 800px) {
+    .new-storm-card-content {
+        grid-template-columns: 1fr;
+    }
+}

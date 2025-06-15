@@ -1,7 +1,7 @@
 from os import getenv, makedirs, listdir
 from os.path import exists
 from shutil import copytree, rmtree
-from psutil import process_iter
+from psutil import process_iter, NoSuchProcess, AccessDenied
 from threading import Thread
 
 
@@ -16,8 +16,15 @@ class Profiles:
     def close_existing_browser_processes(self) -> None:           
         
         for process in process_iter(attrs=["pid", "name"]):
-            if self.browser in process.info["name"].lower():
-                process.kill()
+            try:
+                if self.browser in process.info["name"].lower():
+                    process.kill()
+            except NoSuchProcess:
+                pass
+            except AccessDenied:
+                raise RuntimeError("Access denied by the system. Start the app with admin privileges.")
+            except Exception as e:
+                raise RuntimeError(f"An unexpected error occurred: {e}")
         
     def __get_default_profile_dir(self) -> str:
         if self.browser == "edge":

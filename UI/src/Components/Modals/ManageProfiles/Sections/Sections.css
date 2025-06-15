@@ -1,0 +1,33 @@
+.section-header {
+    display: flex;
+    align-items: center;
+}
+
+.section-logo {
+    margin-right: 0.5rem;
+}
+
+.section-title {
+    font-size: 1.125rem;
+    font-weight:500;
+    margin: 0;
+}
+
+.section-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.section-content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+@media (max-width: 460px) {
+    .section-content-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+}
+
