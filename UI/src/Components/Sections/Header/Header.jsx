@@ -6,7 +6,7 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import { Tornado } from 'lucide-react';
 import { useLocalStorageState } from '@toolpad/core/useLocalStorageState';
 
-import TornadoDark from "../../assets/tornado.png"
+import TornadoDark from "../../../assets/tornado.png"
 
 
 import './Header.css';

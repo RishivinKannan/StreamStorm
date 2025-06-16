@@ -3,9 +3,9 @@ import { useColorScheme } from '@mui/material/styles';
 import { useLocalStorageState } from '@toolpad/core/useLocalStorageState';
 
 import "./App.css";
-import Header from "./Components/Header/Header";
-import Footer from "./Components/Footer/Footer";
-import Main from "./Components/Main/Main";
+import Header from "./Components/Sections/Header/Header";
+import Footer from "./Components/Sections/Footer/Footer";
+import Main from "./Components/Sections/Main/Main";
 import AppProviders from "./lib/AppProviders";
 
 

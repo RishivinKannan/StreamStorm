@@ -8,7 +8,7 @@ import { RefreshCw } from 'lucide-react';
 import "./Sections.css";
 import { BROWSERS } from '../../../../lib/Constants';
 import { CustomMUIPropsContext } from '../../../../lib/ContextAPI';
-import ErrorText from '../../../ErrorText';
+import ErrorText from '../../../Elements/ErrorText';
 
 const FixProfiles = ({ currentBrowser }) => {
 

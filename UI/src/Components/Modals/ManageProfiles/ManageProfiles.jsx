@@ -8,7 +8,7 @@ import CreateProfiles from './Sections/CreateProfiles';
 import FixProfiles from './Sections/FixProfiles';
 import DeleteAllProfiles from './Sections/DeleteAllProfiles';
 import { CurrentBrowserContext, CustomMUIPropsContext } from '../../../lib/ContextAPI';
-import CloseButton from '../../CloseButton';
+import CloseButton from '../../Elements/CloseButton';
 
 const ManageProfiles = (props) => {
 

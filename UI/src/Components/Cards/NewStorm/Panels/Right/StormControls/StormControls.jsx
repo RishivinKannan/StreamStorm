@@ -8,12 +8,13 @@ import StopCircleIcon from '@mui/icons-material/StopCircle';
 import { useDialogs } from '@toolpad/core/useDialogs';
 
 import "./StormControls.css";
-import { customMUIPropsContext } from "../../../../../../lib/ContextAPI";
+import { CustomMUIPropsContext } from "../../../../../../lib/ContextAPI";
 import AreYouSure from "../../../../../Dialogs/AreYouSure/AreYouSure";
+import Ping from "../../../../../Elements/Ping/Ping";
 
 const StormControls = () => {
 
-    const { btnProps } = useContext(customMUIPropsContext);
+    const { btnProps } = useContext(CustomMUIPropsContext);
     const { colorScheme } = useColorScheme();
     const dialogs = useDialogs();
 
