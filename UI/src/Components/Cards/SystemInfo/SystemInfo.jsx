@@ -7,11 +7,11 @@ import { useLocalStorageState } from '@toolpad/core/useLocalStorageState';
 import { useNotifications } from '@toolpad/core/useNotifications';
 
 import "./SystemInfo.css"
-import { customMUIPropsContext } from '../../../lib/ContextAPI';
+import { CustomMUIPropsContext } from '../../../lib/ContextAPI';
 import { RAM_PER_PROFILE } from '../../../lib/Constants';
 
 const SystemInfo = () => {
-    const {btnProps, cardProps} = useContext(customMUIPropsContext);
+    const {btnProps, cardProps} = useContext(CustomMUIPropsContext);
     const { colorScheme } = useColorScheme();
     const notifications = useNotifications();
 

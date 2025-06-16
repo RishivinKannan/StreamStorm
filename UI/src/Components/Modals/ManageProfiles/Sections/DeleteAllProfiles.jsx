@@ -7,13 +7,13 @@ import { RefreshCw } from 'lucide-react';
 
 import "./Sections.css";
 import { BROWSERS } from '../../../../lib/Constants';
-import { customMUIPropsContext } from '../../../../lib/ContextAPI';
+import { CustomMUIPropsContext } from '../../../../lib/ContextAPI';
 import ErrorText from '../../../ErrorText';
 
 const DeleteAllProfiles = ({ currentBrowser }) => {
 
     const { colorScheme } = useColorScheme();
-    const { btnProps, inputProps } = useContext(customMUIPropsContext);
+    const { btnProps, inputProps } = useContext(CustomMUIPropsContext);
 
     const [hostAddress] = useLocalStorageState("hostAddress");
     const notifications = useNotifications();

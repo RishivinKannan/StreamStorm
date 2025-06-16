@@ -6,16 +6,23 @@ import { Users } from 'lucide-react';
 
 import "./RightPanel.css";
 import StormControls from './StormControls/StormControls';
-import { currentBrowserContext, customMUIPropsContext } from '../../../../../lib/ContextAPI';
+import { CurrentBrowserContext, CustomMUIPropsContext } from '../../../../../lib/ContextAPI';
 import { BROWSERS } from '../../../../../lib/Constants';
 
 const RightPanel = (props) => {
 
     const { setManageProfilesOpen } = props;
 
-    const { btnProps, inputProps } = useContext(customMUIPropsContext);
+    const { btnProps, inputProps } = useContext(CustomMUIPropsContext);
     const { colorScheme } = useColorScheme();
-    const currentBrowser = useContext(currentBrowserContext);
+    const currentBrowser = useContext(CurrentBrowserContext);
+
+    const scroll = () => {
+        const section = document.getElementById("storm-controls");
+        if (section) {
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
 
     return (
         <div className="right-panel-container">
@@ -66,6 +73,8 @@ const RightPanel = (props) => {
             >
                 Start Storm
             </Button>
+
+            <div id="storm-controls" />
 
             <Divider
                 sx={{

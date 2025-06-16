@@ -7,12 +7,12 @@ import { Settings2 } from 'lucide-react';
 import "./NewStorm.css";
 import LeftPanel from "./Panels/Left/LeftPanel";
 import RightPanel from "./Panels/Right/RightPanel";
-import { customMUIProps } from "../../../lib/ContextAPI";
+import { CustomMUIPropsContext } from "../../../lib/ContextAPI";
 import ManageProfilesModal from "../../Modals/ManageProfiles/ManageProfiles";
 
 
 const NewStorm = () => {
-    const {cardProps} = useContext(customMUIProps);
+    const { cardProps } = useContext(CustomMUIPropsContext);
     const { colorScheme } = useColorScheme();
 
     const [manageProfilesOpen, setManageProfilesOpen] = useState(true);

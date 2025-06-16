@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { DialogsProvider } from '@toolpad/core/useDialogs';
 import { NotificationsProvider, } from '@toolpad/core/useNotifications';
 
-import { customMUIPropsContext, currentBrowserContext } from './ContextAPI';
+import { CustomMUIPropsContext, CurrentBrowserContext } from './ContextAPI';
 import { getCustomMUIProps } from "./CustomMUIProps";
 import getBrowser from "./getBrowser";
 
@@ -13,7 +13,7 @@ const AppProviders = ({ children, theme }) => {
     const MUIProps = useMemo(() => getCustomMUIProps(theme), [theme]);
 
     return (
-        <customMUIPropsContext.Provider value={MUIProps}>
+        <CustomMUIPropsContext.Provider value={MUIProps}>
             <DialogsProvider>
                 <NotificationsProvider slotProps={{
                     snackbar: {
@@ -21,13 +21,13 @@ const AppProviders = ({ children, theme }) => {
                         autoHideDuration: 2500,
                     },
                 }}>
-                    <currentBrowserContext.Provider value={browser}>
+                    <CurrentBrowserContext.Provider value={browser}>
                         {children}
-                    </currentBrowserContext.Provider>
+                    </CurrentBrowserContext.Provider>
 
                 </NotificationsProvider>
             </DialogsProvider>
-        </customMUIPropsContext.Provider>
+        </CustomMUIPropsContext.Provider>
     )
 }
 

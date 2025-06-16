@@ -7,13 +7,13 @@ import './ManageProfiles.css';
 import CreateProfiles from './Sections/CreateProfiles';
 import FixProfiles from './Sections/FixProfiles';
 import DeleteAllProfiles from './Sections/DeleteAllProfiles';
-import { currentBrowserContext, customMUIPropsContext } from '../../../lib/ContextAPI';
+import { CurrentBrowserContext, CustomMUIPropsContext } from '../../../lib/ContextAPI';
 import CloseButton from '../../CloseButton';
 
 const ManageProfiles = (props) => {
 
-    const { modalProps } = useContext(customMUIPropsContext);
-    const browser = useContext(currentBrowserContext);
+    const { modalProps } = useContext(CustomMUIPropsContext);
+    const browser = useContext(CurrentBrowserContext);
 
     const { open, setOpen } = props;
     const { colorScheme } = useColorScheme();

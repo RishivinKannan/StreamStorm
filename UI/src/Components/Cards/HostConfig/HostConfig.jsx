@@ -6,12 +6,12 @@ import { Save, RotateCcw } from 'lucide-react';
 
 import "./HostConfig.css";
 import { DEFAULT_HOST_ADDRESS } from "../../../lib/Constants";
-import { customMUIPropsContext } from "../../../lib/ContextAPI";
+import { CustomMUIPropsContext } from "../../../lib/ContextAPI";
 import { useNotifications } from "@toolpad/core/useNotifications";
 
 const HostConfig = () => {
     const { colorScheme } = useColorScheme();
-    const { btnProps, inputProps } = useContext(customMUIPropsContext);
+    const { btnProps, inputProps } = useContext(CustomMUIPropsContext);
     const [savedHostAddress, setSavedHostAddress] = useLocalStorageState("hostAddress", DEFAULT_HOST_ADDRESS);
     const notifications = useNotifications();
 
