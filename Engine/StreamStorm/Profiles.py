@@ -53,16 +53,17 @@ class Profiles:
         raise ValueError("Invalid browser")
         
         
-    def get_available_temp_profiles(self) -> list[str]:
+    def get_available_temp_profiles(self, delete: bool = False) -> list[str]:
         temp_profiles: list[str] = [
             profile for profile in listdir(self.default_profile_dir) if profile.startswith("temp_profile_")
         ]
         
         no_of_profiles: int = len(temp_profiles)
         
-        for i in range(1, no_of_profiles + 1):
-            if f'temp_profile_{i}' not in temp_profiles:
-                raise ValueError(f"temp_profile_{i} is missing. Try rebuilding the environment.")
+        if not delete and no_of_profiles == 0:
+            for i in range(1, no_of_profiles + 1):
+                if f'temp_profile_{i}' not in temp_profiles:
+                    raise ValueError(f"temp_profile_{i} is missing. Try rebuilding the environment.")
         
         return temp_profiles
     
@@ -115,7 +116,7 @@ class Profiles:
             
     def delete_all_temp_profiles(self) -> None:
         threads: list[Thread] = []
-        for profile in self.get_available_temp_profiles():
+        for profile in self.get_available_temp_profiles(delete=True):
             thread: Thread = Thread(target=self.__delete_profile, args=(profile,))
             threads.append(thread)
             thread.start()
