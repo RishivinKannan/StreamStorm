@@ -24,10 +24,10 @@ const SystemInfo = () => {
         setFetchingRAM(true);
         
 
-        fetch(`${hostAddress}/get_available_ram`)
+        fetch(`${hostAddress}/get_ram_info`)
         .then(response => response.json())
         .then(data => {
-            setAvailableRAM(Math.trunc(data.ram * 1000));
+            setAvailableRAM(Math.trunc(data.free * 1000));
             setFetchingRAM(false);
         })
         .catch(error => {

@@ -2,12 +2,14 @@ import { useContext } from 'react';
 import { useColorScheme } from '@mui/material/styles';
 import { MenuItem, TextField, Switch, Button, Divider } from "@mui/material";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import { Users } from 'lucide-react';
+import { RefreshCw, Users } from 'lucide-react';
 
 import "./RightPanel.css";
 import StormControls from './StormControls/StormControls';
-import { CurrentBrowserContext, CustomMUIPropsContext } from '../../../../../lib/ContextAPI';
+import { CurrentBrowserContext, CustomMUIPropsContext, StormDataContext } from '../../../../../lib/ContextAPI';
 import { BROWSERS } from '../../../../../lib/Constants';
+import submitToHost from '../../../../../lib/submitToHost';
+import ErrorText from '../../../../Elements/ErrorText';
 
 const RightPanel = (props) => {
 
@@ -16,12 +18,11 @@ const RightPanel = (props) => {
     const { btnProps, inputProps } = useContext(CustomMUIPropsContext);
     const { colorScheme } = useColorScheme();
     const currentBrowser = useContext(CurrentBrowserContext);
+    const formControls = useContext(StormDataContext);
 
-    const scroll = () => {
-        const section = document.getElementById("storm-controls");
-        if (section) {
-            section.scrollIntoView({ behavior: 'smooth' });
-        }
+    const handleSubmit = () => {
+        formControls.SC.current.startStorm(formControls)
+        // console.log("Starting storm with form controls:", formControls.getStormData());
     }
 
     return (
@@ -31,6 +32,16 @@ const RightPanel = (props) => {
                 variant="outlined"
                 label="Select Browser"
                 sx={inputProps}
+                value={formControls.browser}
+                onChange={(e) => {
+                    formControls.setBrowser(e.target.value);
+                    formControls.setBrowserError(false);
+                    formControls.setBrowserHelperText("");
+                }}
+                error={formControls.browserError}
+                helperText={formControls.browserHelperText}
+                disabled={formControls.stormInProgress || formControls.loading}
+
             >
                 {
                     BROWSERS.map((browser) => {
@@ -48,7 +59,9 @@ const RightPanel = (props) => {
                 <div className={`switch-container ${colorScheme}-bordered-container`}>
                     <span className="switch-label">Load in background</span>
                     <Switch
-                        color="primary"
+                        checked={formControls.loadInBackground}
+                        disabled={formControls.stormInProgress || formControls.loading}
+                        onChange={(e) => formControls.setLoadInBackground(e.target.checked)}
                     />
                 </div>
             </div>
@@ -57,7 +70,7 @@ const RightPanel = (props) => {
                 variant="contained"
                 color="primary"
                 className={`start-storm-button ${colorScheme}-bordered-container`}
-                startIcon={<PlayArrowIcon />}
+                startIcon={formControls.loading ? <RefreshCw size={20} className="spin" /> : <PlayArrowIcon />}
                 sx={{
                     ...btnProps,
                     marginTop: "16px",
@@ -70,9 +83,13 @@ const RightPanel = (props) => {
                     height: "40px",
                     color: "var(--light-text)",
                 }}
+                disabled={formControls.stormInProgress || formControls.loading}
+                onClick={handleSubmit}
             >
-                Start Storm
+                {formControls.loading ? "Starting Storm..." : "Start Storm"}
             </Button>
+            
+            <ErrorText message={formControls.errorText} />
 
             <div id="storm-controls" />
 

@@ -117,12 +117,8 @@ const DeleteAllProfiles = ({ currentBrowser }) => {
                     sx={{
                         ...btnProps,
                         marginTop: "1rem",
-                        backgroundColor: colorScheme === 'light' ? "var(--bright-red-2)" : "var(--dark-red-2)",
+                        backgroundColor: colorScheme === 'light' ? "var(--bright-red-2)" : "var(--input-active-red-dark)",
                         color: "var(--light-text)",
-                        "&:hover": {
-                            backgroundColor: colorScheme === 'light' ? "var(--bright-red-2-hover)" : "var(--dark-red-2-hover)",
-                            color: "var(--light-text)",
-                        },
                     }}
                     onClick={handleDeleteAllProfiles}
                     disabled={loading}

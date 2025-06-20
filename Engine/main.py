@@ -15,7 +15,7 @@ CORS(app)
 
 @app.before_request
 def before_request() -> Optional[Response]:
-    if request.path not in ("/", "/stop", "/get_available_ram"):
+    if request.path not in ("/", "/stop", "/get_available_ram", "/pause", "/resume", "/current_status"):
         if environ["BUSY"] == "True":
             return jsonify({"success": False, "message": f"Engine is Busy: {environ['BUSY_REASON']}"})
 
@@ -157,12 +157,13 @@ def fix_profiles() -> Response:
         environ["BUSY"] = "False"
 
 
-@app.route("/get_available_ram", methods=["GET"])
-def get_available_ram() -> Response:
+@app.route("/get_ram_info", methods=["GET"])
+def get_ram_info() -> Response:
     print(virtual_memory())
     return jsonify(
         {
-            "ram": virtual_memory().free / (1024**3),
+            "free": virtual_memory().available / (1024**3),
+            "total": virtual_memory().total / (1024**3),
         }
     )
 

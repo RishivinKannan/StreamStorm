@@ -12,6 +12,11 @@ export const getCustomMUIProps = (colorScheme) => ({
             color: colorScheme === 'light' ? "var(--light-text)" : "var(--dark-text)",
             boxShadow: "none",
         },
+        '&:disabled': {
+            // backgroundColor: colorScheme === 'light' ? "var(--very-light-red)" : "blue",
+            backgroundColor: colorScheme === 'light' ? "var(--very-light-red)" : "var(--dark-gray)",
+            color: "gray",
+        },
         height: "40px",
         boxShadow: "none",
         fontWeight: "500",
@@ -30,7 +35,10 @@ export const getCustomMUIProps = (colorScheme) => ({
     inputProps: {
         '& .MuiInputBase-root.MuiOutlinedInput-root': {
             backgroundColor: colorScheme === 'light' ? "var(--very-light-red)" : "var(--dark-gray)",
-            borderRadius: "var(--border-radius)",
+            borderRadius: "var(--border-radius)",            
+        },
+        "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: colorScheme === 'light' ? "#e5e7eb" : "#333333",
         }
     },
 

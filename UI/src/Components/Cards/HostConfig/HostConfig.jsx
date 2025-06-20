@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Button, Card, CardActions, CardContent, CardHeader, TextField } from "@mui/material";
 import { useLocalStorageState } from "@toolpad/core/useLocalStorageState";
 import { useColorScheme } from '@mui/material/styles';
@@ -56,6 +56,13 @@ const HostConfig = () => {
         });
     }
 
+    useEffect(() => {
+        if (!savedHostAddress) {
+            setSavedHostAddress(DEFAULT_HOST_ADDRESS);
+            setHostAddress(DEFAULT_HOST_ADDRESS);            
+        }
+
+    }, [savedHostAddress, setSavedHostAddress]);
 
     return (
         <Card
