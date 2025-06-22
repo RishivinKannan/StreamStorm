@@ -20,6 +20,7 @@ const RightPanel = (props) => {
     const formControls = useContext(StormDataContext);
 
     const handleSubmit = () => {
+        formControls.setErrorText("");
         formControls.SC.current.startStorm(formControls)
     }
 
