@@ -133,11 +133,11 @@ class Selenium:
             if for_subscribe:
                 pass
             else:
-                self.driver.quit()            
+                self.driver.close()            
             
         except ElementNotFound:
             
-            self.driver.quit()  
+            self.driver.close()  
     
     def type_and_enter(self, text_field: WebElement, message: str) -> None:
         text_field.send_keys(message)

@@ -73,7 +73,7 @@ def storm() -> Response:
 
 @app.route("/stop", methods=["POST"])
 def stop() -> Response:
-    def close_browser() -> None:
+    def close_browser(instance: StreamStorm) -> None:
         try:
             instance.driver.close()
         except Exception:
@@ -81,7 +81,7 @@ def stop() -> Response:
 
     threads: list[Thread] = []
     for instance in StreamStorm.each_instances:
-        thread: Thread = Thread(target=close_browser)
+        thread: Thread = Thread(target=close_browser, args=(instance,))
         threads.append(thread)
         thread.start()
 
