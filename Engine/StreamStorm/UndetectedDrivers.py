@@ -1,15 +1,12 @@
-from multiprocessing import process
 from time import sleep
 from undetected_chromedriver import Chrome
 from undetected_geckodriver import Firefox
 
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, NoSuchWindowException
-from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from psutil import Process, NoSuchProcess
 
 class UndetectedDrivers:
     def __init__(self, base_profile_dir: str, browser_class: str) -> None:
