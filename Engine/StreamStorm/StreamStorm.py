@@ -1,16 +1,18 @@
 from time import sleep
 from threading import Thread
 from random import choice
-from os import getenv, environ
+from os import environ
 
 
 from selenium.common.exceptions import InvalidSessionIdException
 from http.client import RemoteDisconnected
 from urllib3.exceptions import ProtocolError, ReadTimeoutError
+from concurrent.futures import ThreadPoolExecutor
 
 from .Selenium import Selenium
 from .SeparateAccount import SeparateAccount
 from .Profiles import Profiles
+from . import pause_event
 
 
 class StreamStorm(Selenium, Profiles):
@@ -28,6 +30,7 @@ class StreamStorm(Selenium, Profiles):
         end_account_index: int = 10,
         browser: str = "edge",
         background: bool = True,
+        shared_data: dict = None,
     ) -> None:
         
         Profiles.__init__(self, browser=browser)
@@ -41,12 +44,12 @@ class StreamStorm(Selenium, Profiles):
         self.start_account_index: int = start_account_index
         self.end_account_index: int = end_account_index
         self.browser: str = browser
-        self.background: bool = background    
-                
+        self.background: bool = background
+        self.shared_data: dict = shared_data
 
     def start(self) -> None:
-
-        self.close_existing_browser_processes()
+        if environ["mode"] == "mp":
+            raise NotImplementedError("Multi-processing mode is not implemented yet.")
         
         temp_profiles: list[str] = self.get_available_temp_profiles()
         no_of_temp_profiles: int = len(temp_profiles)
@@ -54,7 +57,7 @@ class StreamStorm(Selenium, Profiles):
         if no_of_temp_profiles < (self.end_account_index - self.start_account_index + 1):
             raise ValueError("Not enough temp profiles available. Create Enough profiles first.")
 
-        def EachAccount(index: int) -> None:
+        def EachAccount(index: int, op_mode: str = "mt") -> None:
             try:
                 new_profile_dir: str = self.get_profile_dir(index, temp_profiles)
                 print(f"Using profile: {new_profile_dir}")
@@ -85,8 +88,15 @@ class StreamStorm(Selenium, Profiles):
                 sleep(index)
 
                 while True:
-                    if getenv("PAUSE") == "True":
-                        continue
+                    if op_mode == "mt":
+                        # if environ["PAUSE"] == "True":
+                        #     continue
+                        pause_event.wait()
+                    
+                    elif op_mode == "mp":
+                        ...
+                        # if self.shared_data["PAUSE"] == "True":
+                        #     continue
 
                     # input()
                     Separate_Account.send_message(choice(self.messages))
@@ -99,27 +109,20 @@ class StreamStorm(Selenium, Profiles):
                 ReadTimeoutError,
                 ConnectionResetError,
                 TimeoutError,
-            ):  # Catch the exception when the driver is closed when '/stop' is invoked
+            ):
                 pass
 
 
-        def start_each_thread() -> None:
-            threads: list[Thread] = []
+        def start_each_worker() -> None:
             
-            for i in range(self.start_account_index, self.end_account_index + 1):
-                print(str(i) * 50)
-
-                thread: Thread = Thread(target=EachAccount, args=(i,))
-                threads.append(thread)
-                thread.start()
-
-                # sleep(1)
-
-            for thread in threads:
-                thread.join()
+            if environ["mode"] == "mt":            
+                with ThreadPoolExecutor() as executor:
+                    executor.map(EachAccount, range(self.start_account_index, self.end_account_index + 1))
                 
-            environ["BUSY"] = "False"
+                environ["BUSY"] = "False"
+                print("All threads completed")
+                
+            elif environ["mode"] == "mp":
+                ...
 
-            print("All threads joined")
-
-        Thread(target=start_each_thread).start()
+        Thread(target=start_each_worker).start()

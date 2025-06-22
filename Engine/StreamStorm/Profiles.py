@@ -1,9 +1,8 @@
-from os import getenv, makedirs, listdir
+from os import environ, makedirs, listdir
 from os.path import exists
 from shutil import copytree, rmtree, Error
-from psutil import process_iter, NoSuchProcess, AccessDenied
-from threading import Thread
 from platformdirs import user_data_dir
+from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 
 from .UndetectedDrivers import UndetectedDrivers
 
@@ -18,22 +17,6 @@ class Profiles:
         self.app_data_dir: str = user_data_dir("StreamStorm", "DarkGlance")
         self.profiles_dir: str = self.__get_profiles_dir()
         self.base_profile_dir: str = self.profiles_dir + r"\BaseProfile"
-
-        self.close_existing_browser_processes()
-        
-    def close_existing_browser_processes(self) -> None:        
-        return   
-        
-        for process in process_iter(attrs=["pid", "name"]):
-            try:
-                if self.browser in process.info["name"].lower():
-                    process.kill()
-            except NoSuchProcess:
-                pass
-            except AccessDenied:
-                raise RuntimeError("Access denied by the system. Start the app with admin privileges.")
-            except Exception as e:
-                raise RuntimeError(f"An unexpected error occurred: {e}")
             
     def __get_browser_class(self, browser) -> str:
         if browser in ("edge", "chrome"):
@@ -95,10 +78,10 @@ class Profiles:
         UD.initiate_base_profile()
         UD.youtube_login()
 
-    def __create_profile(self, profile: str, fix: bool = False) -> None:
-        
-        print(f"{"Creating" if not fix else "Fixing"} {profile}")
-        
+    def __create_profile(self, profile: str) -> None:
+
+        print(f"Creating {profile}")
+
         tempdir: str = self.profiles_dir + f"\\{profile}"
 
         makedirs(tempdir, exist_ok=True)
@@ -114,59 +97,24 @@ class Profiles:
             str_error: str = str(e)
             print("str_error", type(str_error), str_error)
 
-        print(f"{profile} {"created" if not fix else "fixed"}")
-            
+        print(f"{profile} created")
+
     def create_profiles(self, limit: int) -> None:
         self.__delete_profiles_dir()
         self.__create_base_profile()
-
-        threads: list[Thread] = []
-        for i in range(1, limit + 1):
-            profile: str = f"temp_profile_{i}"
-            thread: Thread = Thread(target=self.__create_profile, args=(profile,))
-            threads.append(thread)
-            thread.start()
-            
-        for thread in threads:
-            thread.join()
-            
-            
-    def __delete_profile(self, profile: str) -> None:
         
-        print(f"Deleting {profile}")
+        profiles: list[str] = [f"temp_profile_{i}" for i in range(1, limit + 1)]
         
-        tempdir: str = self.profiles_dir + f"\\{profile}"
-        
-        if exists(tempdir):
-            rmtree(tempdir)
-            
-            print(f"{profile} deleted.")
+        if environ["mode"] == "mt":
+            with ThreadPoolExecutor() as executor:
+                executor.map(self.__create_profile, profiles)
+                
+        elif environ["mode"] == "mp":
+            with ProcessPoolExecutor() as executor:
+                executor.map(self.__create_profile, profiles)
             
     def delete_all_temp_profiles(self) -> None:
-        threads: list[Thread] = []
-        for profile in self.get_available_temp_profiles(for_deletion=True):
-            thread: Thread = Thread(target=self.__delete_profile, args=(profile,))
-            threads.append(thread)
-            thread.start()
-            
-        for thread in threads:
-            thread.join()
-
-    def __fix_profile(self, profile: str) -> None:
         
-        self.__delete_profile(profile)
-        self.__create_profile(profile, fix=True)
-        
-    def fix_profiles(self) -> None:
-        profiles: list[str] = self.get_available_temp_profiles()
-        
-        threads: list[Thread] = []
-        for profile in profiles:
-            thread: Thread = Thread(target=self.__fix_profile, args=(profile,))
-            threads.append(thread)
-            thread.start()
-            
-        for thread in threads:
-            thread.join()
+        self.__delete_profiles_dir()
 
 __all__: list[str] = ["Profiles"]

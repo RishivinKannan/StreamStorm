@@ -1,17 +1,23 @@
 from os import environ, system
 from typing import Optional
-from threading import Thread
 from flask import Flask, Response, send_from_directory, request, jsonify
 from flask_cors import CORS
 from psutil import virtual_memory
+from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+# from multiprocessing import Manager
+# from multiprocessing.managers import SyncManager
 
 from StreamStorm.StreamStorm import StreamStorm
 from StreamStorm.Profiles import Profiles
 from StreamStorm.Validation import StormDataValidation, ProfileDataValidation
+from StreamStorm import pause_event
 
 
 app: Flask = Flask(__name__, static_folder="../UI/dist", static_url_path="/")
 CORS(app)
+
+# manager: SyncManager = Manager()
+# shared_data: dict = manager.dict()
 
 @app.before_request
 def before_request() -> Optional[Response]:
@@ -32,6 +38,7 @@ def home() -> Response:
 
 @app.route("/storm", methods=["POST"])
 def storm() -> Response:
+    pause_event.set()
     environ["PAUSE"] = "False"
 
     data: dict = request.json
@@ -58,6 +65,7 @@ def storm() -> Response:
             data["end_account_index"],
             data["browser"],
             data["background"],
+            # shared_data=shared_data,
         )
 
         environ["BUSY"] = "True"
@@ -78,16 +86,15 @@ def stop() -> Response:
             instance.driver.close()
         except Exception:
             pass
-
-    threads: list[Thread] = []
-    for instance in StreamStorm.each_instances:
-        thread: Thread = Thread(target=close_browser, args=(instance,))
-        threads.append(thread)
-        thread.start()
-
-    for thread in threads:
-        thread.join()
-
+        
+    if environ["mode"] == "mt":
+        with ThreadPoolExecutor() as executor:
+            executor.map(close_browser, StreamStorm.each_instances)
+    elif environ["mode"] == "mp":
+        with ProcessPoolExecutor() as executor:
+            executor.map(close_browser, StreamStorm.each_instances)
+    
+    pause_event.set()
     environ["PAUSE"] = "False"
     environ["BUSY"] = "False"
 
@@ -97,6 +104,7 @@ def stop() -> Response:
 @app.route("/pause", methods=["POST"])
 def pause() -> Response:
     environ["PAUSE"] = "True"
+    pause_event.clear()
 
     return jsonify({"success": True, "message": "Paused"})
 
@@ -104,6 +112,7 @@ def pause() -> Response:
 @app.route("/resume", methods=["POST"])
 def resume() -> Response:
     environ["PAUSE"] = "False"
+    pause_event.set()
 
     return jsonify({"success": True, "message": "Resumed"})
 
@@ -140,23 +149,6 @@ def delete_profiles() -> Response:
     finally:
         environ["BUSY"] = "False"
 
-
-@app.route("/fix_profiles", methods=["POST"])
-def fix_profiles() -> Response:
-    try:
-        environ["BUSY"] = "True"
-        environ["BUSY_REASON"] = "Fixing profiles"
-
-        profiles: Profiles = Profiles(request.validated_data["browser_class"])
-        profiles.fix_profiles()
-
-        return jsonify({"success": True, "message": "Profiles fixed"})
-    except Exception as e:
-        return jsonify({"success": False, "message": str(e)})
-    finally:
-        environ["BUSY"] = "False"
-
-
 @app.route("/get_ram_info", methods=["GET"])
 def get_ram_info() -> Response:
     print(virtual_memory())
@@ -167,29 +159,18 @@ def get_ram_info() -> Response:
         }
     )
 
-@app.route("/current_status", methods=["GET"])
-def status() -> Response:
-    return jsonify(
-        {
-            "busy": environ.get("BUSY", "False") == "True",
-            "busy_reason": environ.get("BUSY_REASON", ""),
-            "pause": environ.get("PAUSE", "False") == "True",
-        }
-    )
-    
-    
-@app.route("/create_environment", methods=["POST"])
-def create_environment() -> Response:
-    ...
-    
-
-
-
 __all__: list[str] = ["app"]
 
 
 if __name__ == "__main__":
+    from sys import argv
     
+    if len(argv) > 1:
+        if argv[1] == "--mt":
+            environ["mode"] = "mt"
+        elif argv[1] == "--mp":
+            environ["mode"] = "mp"
+
     system('cls')
     
     app.run(
