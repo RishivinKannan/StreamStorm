@@ -10,7 +10,7 @@ import { BROWSERS, BROWSER_CLASSES } from '../../../../lib/Constants';
 import { CustomMUIPropsContext } from '../../../../lib/ContextAPI';
 import ErrorText from '../../../Elements/ErrorText';
 
-const CreateProfiles = ({ currentBrowser }) => {
+const CreateProfiles = () => {
 
     const { btnProps, inputProps } = useContext(CustomMUIPropsContext);
     const { colorScheme } = useColorScheme();
@@ -28,12 +28,9 @@ const CreateProfiles = ({ currentBrowser }) => {
     const [errorText, setErrorText] = useState("");
     const [loading, setLoading] = useState(false);
 
-
-
     const handleCreateProfiles = () => {
 
         setErrorText("");
-
 
         if (!browserClass) {
             setBrowserError(true);
@@ -44,7 +41,6 @@ const CreateProfiles = ({ currentBrowser }) => {
             setBrowserHelperText("");
         }
 
-
         if (profiles < 1) {
             setProfilesError(true);
             setProfilesHelperText("Enter a valid number of profiles");
@@ -54,8 +50,6 @@ const CreateProfiles = ({ currentBrowser }) => {
             setProfilesHelperText("");
         }
 
-        // setBrowserDisabled(true);
-        // setProfilesDisabled(true);
         setLoading(true);
 
         const data = {
@@ -93,8 +87,6 @@ const CreateProfiles = ({ currentBrowser }) => {
                 });
             })
             .finally(() => {
-                // setBrowserDisabled(false);
-                // setProfilesDisabled(false);
                 setLoading(false);
             })
     }
@@ -103,7 +95,7 @@ const CreateProfiles = ({ currentBrowser }) => {
         <div className="create-profiles-container">
             <div className="section-header">
                 <UserPlus className="section-logo" size={20} color={"var(--input-active-red-dark)"} />
-                <h3 className={`section-title ${colorScheme}-text`}>Create Profiles</h3>
+                <h3 className={`section-title ${colorScheme}-text`}>Create / Fix Profiles</h3>
             </div>
 
             <div className="section-content-grid">

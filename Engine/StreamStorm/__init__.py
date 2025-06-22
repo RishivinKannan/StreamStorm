@@ -8,7 +8,7 @@ environ["BUSY_REASON"] = ""
 
 environ["mode"] = "mt"
 
-pause_event: Event = Event()
+pause_event_mt: Event = Event()
 
 
 basicConfig(level=CRITICAL, force=True)

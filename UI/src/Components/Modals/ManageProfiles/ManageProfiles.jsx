@@ -5,7 +5,6 @@ import { Users } from 'lucide-react';
 
 import './ManageProfiles.css';
 import CreateProfiles from './Sections/CreateProfiles';
-import FixProfiles from './Sections/FixProfiles';
 import DeleteAllProfiles from './Sections/DeleteAllProfiles';
 import { CustomMUIPropsContext } from '../../../lib/ContextAPI';
 import CloseButton from '../../Elements/CloseButton';
@@ -46,10 +45,6 @@ const ManageProfiles = (props) => {
                 <CreateProfiles />
 
                 <Divider sx={{ margin: '2rem 0' }} />
-
-                {/* <FixProfiles />
-
-                <Divider sx={{ margin: '2rem 0' }} /> */}
 
                 <DeleteAllProfiles />
             </Box>

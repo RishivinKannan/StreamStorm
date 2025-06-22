@@ -10,7 +10,7 @@ from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 from StreamStorm.StreamStorm import StreamStorm
 from StreamStorm.Profiles import Profiles
 from StreamStorm.Validation import StormDataValidation, ProfileDataValidation
-from StreamStorm import pause_event
+from StreamStorm import pause_event_mt
 
 
 app: Flask = Flask(__name__, static_folder="../UI/dist", static_url_path="/")
@@ -38,7 +38,7 @@ def home() -> Response:
 
 @app.route("/storm", methods=["POST"])
 def storm() -> Response:
-    pause_event.set()
+    pause_event_mt.set() # Ensure the pause event is set to allow storming
     environ["PAUSE"] = "False"
 
     data: dict = request.json
@@ -65,7 +65,7 @@ def storm() -> Response:
             data["end_account_index"],
             data["browser"],
             data["background"],
-            # shared_data=shared_data,
+            # shared_data=shared_data, # Uncomment this line if using shared data
         )
 
         environ["BUSY"] = "True"
@@ -74,6 +74,7 @@ def storm() -> Response:
         StreamStormObj.start()
 
         return jsonify({"success": True, "message": "Started"})
+       
     except Exception as e:
         environ["BUSY"] = "False"
         return jsonify({"success": False, "message": str(e)})
@@ -93,8 +94,8 @@ def stop() -> Response:
     elif environ["mode"] == "mp":
         with ProcessPoolExecutor() as executor:
             executor.map(close_browser, StreamStorm.each_instances)
-    
-    pause_event.set()
+
+    pause_event_mt.set() # Ensure the pause event is set to allow storming
     environ["PAUSE"] = "False"
     environ["BUSY"] = "False"
 
@@ -104,7 +105,7 @@ def stop() -> Response:
 @app.route("/pause", methods=["POST"])
 def pause() -> Response:
     environ["PAUSE"] = "True"
-    pause_event.clear()
+    pause_event_mt.clear() # Clear the pause event to pause storming
 
     return jsonify({"success": True, "message": "Paused"})
 
@@ -112,7 +113,7 @@ def pause() -> Response:
 @app.route("/resume", methods=["POST"])
 def resume() -> Response:
     environ["PAUSE"] = "False"
-    pause_event.set()
+    pause_event_mt.set() # Set the pause event to resume storming
 
     return jsonify({"success": True, "message": "Resumed"})
 

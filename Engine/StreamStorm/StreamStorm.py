@@ -12,7 +12,7 @@ from concurrent.futures import ThreadPoolExecutor
 from .Selenium import Selenium
 from .SeparateAccount import SeparateAccount
 from .Profiles import Profiles
-from . import pause_event
+from . import pause_event_mt
 
 
 class StreamStorm(Selenium, Profiles):
@@ -89,9 +89,7 @@ class StreamStorm(Selenium, Profiles):
 
                 while True:
                     if op_mode == "mt":
-                        # if environ["PAUSE"] == "True":
-                        #     continue
-                        pause_event.wait()
+                        pause_event_mt.wait()
                     
                     elif op_mode == "mp":
                         ...

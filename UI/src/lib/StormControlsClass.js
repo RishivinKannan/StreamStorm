@@ -38,7 +38,7 @@ class StormControlsClass {
                     formControls.setStormInProgress(true);
                 } else {
                     formControls.setErrorText(data.message || 'Request failed');
-                    this.notifications.show(data.message || 'Request failed', {
+                    this.notifications.show("Failed to start storm", {
                         severity: 'error',
                     });
                 }

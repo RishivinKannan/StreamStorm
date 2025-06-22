@@ -21,7 +21,6 @@ const RightPanel = (props) => {
 
     const handleSubmit = () => {
         formControls.SC.current.startStorm(formControls)
-        // console.log("Starting storm with form controls:", formControls.getStormData());
     }
 
     return (
@@ -88,7 +87,7 @@ const RightPanel = (props) => {
                 {formControls.loading ? "Starting Storm..." : "Start Storm"}
             </Button>
             
-            <ErrorText message={formControls.errorText} />
+            <ErrorText errorText={formControls.errorText} />
 
             <div id="storm-controls" />
 
