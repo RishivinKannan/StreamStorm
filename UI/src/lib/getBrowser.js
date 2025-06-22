@@ -1,6 +1,8 @@
 // import { BROWSERS } from "./Constants";
 const getBrowser = () => {
+    return
     const userAgent = window.navigator.userAgent;
+    // console.log(userAgent);
     const userAgentData = window.navigator.userAgentData;
     // console.log(userAgent);
 

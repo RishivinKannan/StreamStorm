@@ -6,7 +6,7 @@ import { RefreshCw, Users } from 'lucide-react';
 
 import "./RightPanel.css";
 import StormControls from './StormControls/StormControls';
-import { CurrentBrowserContext, CustomMUIPropsContext, StormDataContext } from '../../../../../lib/ContextAPI';
+import { CustomMUIPropsContext, StormDataContext } from '../../../../../lib/ContextAPI';
 import { BROWSERS } from '../../../../../lib/Constants';
 import submitToHost from '../../../../../lib/submitToHost';
 import ErrorText from '../../../../Elements/ErrorText';
@@ -17,7 +17,6 @@ const RightPanel = (props) => {
 
     const { btnProps, inputProps } = useContext(CustomMUIPropsContext);
     const { colorScheme } = useColorScheme();
-    const currentBrowser = useContext(CurrentBrowserContext);
     const formControls = useContext(StormDataContext);
 
     const handleSubmit = () => {
@@ -47,8 +46,8 @@ const RightPanel = (props) => {
                     BROWSERS.map((browser) => {
                         let browserText = browser.toLowerCase();
                         return (
-                            <MenuItem key={browser} value={browserText} disabled={browserText === currentBrowser}>
-                                {browser} {browserText === currentBrowser ? "(Current browser)" : ""}
+                            <MenuItem key={browser} value={browserText}>
+                                {browser}
                             </MenuItem>
                         )
                     })

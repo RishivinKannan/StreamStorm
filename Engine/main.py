@@ -75,7 +75,7 @@ def storm() -> Response:
 def stop() -> Response:
     def close_browser() -> None:
         try:
-            instance.driver.quit()
+            instance.driver.close()
         except Exception:
             pass
 
@@ -115,7 +115,7 @@ def create_profiles() -> Response:
         environ["BUSY"] = "True"
         environ["BUSY_REASON"] = "Creating profiles"
 
-        profiles: Profiles = Profiles(request.validated_data["browser"])
+        profiles: Profiles = Profiles(request.validated_data["browser_class"])
         profiles.create_profiles(request.validated_data["limit"])
 
         return jsonify({"success": True, "message": "Profiles created"})
@@ -131,7 +131,7 @@ def delete_profiles() -> Response:
         environ["BUSY"] = "True"
         environ["BUSY_REASON"] = "Deleting profiles"
 
-        profiles: Profiles = Profiles(request.validated_data["browser"])
+        profiles: Profiles = Profiles(request.validated_data["browser_class"])
         profiles.delete_all_temp_profiles()
 
         return jsonify({"success": True, "message": "Profiles deleted"})
@@ -147,7 +147,7 @@ def fix_profiles() -> Response:
         environ["BUSY"] = "True"
         environ["BUSY_REASON"] = "Fixing profiles"
 
-        profiles: Profiles = Profiles(request.validated_data["browser"])
+        profiles: Profiles = Profiles(request.validated_data["browser_class"])
         profiles.fix_profiles()
 
         return jsonify({"success": True, "message": "Profiles fixed"})
@@ -176,6 +176,12 @@ def status() -> Response:
             "pause": environ.get("PAUSE", "False") == "True",
         }
     )
+    
+    
+@app.route("/create_environment", methods=["POST"])
+def create_environment() -> Response:
+    ...
+    
 
 
 

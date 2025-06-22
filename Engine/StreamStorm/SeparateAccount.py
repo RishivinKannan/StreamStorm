@@ -2,6 +2,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import ElementNotInteractableException
 from time import sleep
 
 from .Selenium import Selenium
@@ -14,11 +15,10 @@ class SeparateAccount(Selenium):
         messages: list[str] = ["Hello", "Hi"],
         index: int = 0,
         user_data_dir: str = '',
-        driver_path: str = '',
         browser: str = 'edge',
         background: bool = True
     ) -> None:
-        super().__init__(user_data_dir, driver_path, browser, background)
+        super().__init__(user_data_dir, browser, background)
         
         self.url: str = url
         self.chat_url: str = chat_url
@@ -62,9 +62,11 @@ class SeparateAccount(Selenium):
         return chat_field
     
     def send_message(self, message: str) -> None:
-        
-        chat_field: WebElement = self.__get_chat_field()
-        self.type_and_enter(chat_field, message)
+        try:
+            chat_field: WebElement = self.__get_chat_field()
+            self.type_and_enter(chat_field, message)
+        except ElementNotInteractableException as _:
+            self.driver.execute("alert", {"text": "Element not interactable. Please check the chat field."})
         
         
 

@@ -6,7 +6,7 @@ import { useNotifications } from '@toolpad/core/useNotifications';
 import { RefreshCw } from 'lucide-react';
 
 import "./Sections.css";
-import { BROWSERS } from '../../../../lib/Constants';
+import { BROWSERS, BROWSER_CLASSES } from '../../../../lib/Constants';
 import { CustomMUIPropsContext } from '../../../../lib/ContextAPI';
 import ErrorText from '../../../Elements/ErrorText';
 
@@ -17,7 +17,7 @@ const CreateProfiles = ({ currentBrowser }) => {
     const [hostAddress] = useLocalStorageState("hostAddress");
     const notifications = useNotifications();
 
-    const [browser, setBrowser] = useState("");
+    const [browserClass, setBrowserClass] = useState("");
     const [browserError, setBrowserError] = useState(false);
     const [browserHelperText, setBrowserHelperText] = useState("");
 
@@ -35,9 +35,9 @@ const CreateProfiles = ({ currentBrowser }) => {
         setErrorText("");
 
 
-        if (!browser) {
+        if (!browserClass) {
             setBrowserError(true);
-            setBrowserHelperText("Select a browser");
+            setBrowserHelperText("Select a browser class");
             return;
         } else {
             setBrowserError(false);
@@ -59,7 +59,7 @@ const CreateProfiles = ({ currentBrowser }) => {
         setLoading(true);
 
         const data = {
-            browser: browser.toLowerCase(),
+            browser_class: browserClass.toLowerCase(),
             limit: profiles,
         }
 
@@ -73,7 +73,7 @@ const CreateProfiles = ({ currentBrowser }) => {
             .then((response) => response.json())
             .then((data) => {
                 if (data.success) {
-                    setBrowser("");
+                    setBrowserClass("");
                     setProfiles(1);
                     notifications.show("Profiles created successfully!", {
                         severity: "success",
@@ -111,15 +111,15 @@ const CreateProfiles = ({ currentBrowser }) => {
                     fullWidth
                     select
                     disabled={loading}
-                    label="Browser"
+                    label="Browser Class"
                     variant="outlined"
                     sx={{
                         ...inputProps,
                         marginTop: "1rem",
                     }}
-                    value={browser}
+                    value={browserClass}
                     onChange={(e) => {
-                        setBrowser(e.target.value);
+                        setBrowserClass(e.target.value);
                         setBrowserError(false);
                         setBrowserHelperText("");
                         setErrorText("");
@@ -128,11 +128,22 @@ const CreateProfiles = ({ currentBrowser }) => {
                     helperText={browserHelperText}
                 >
                     {
-                        BROWSERS.map((browser) => {
-                            let browserText = browser.toLowerCase();
+                        BROWSER_CLASSES.map((className) => {
+                            let MenuItemText, MenuItemDisabled;
+
+                            if (className === "chromium") {
+                                MenuItemText = "Chromium (Chrome, Edge, etc.)";
+                            } else if (className === "gecko") {
+                                MenuItemText = "Gecko (Firefox)";
+                                MenuItemDisabled = true
+                            } else if (className === "webkit") {
+                                MenuItemText = "WebKit (Safari)";
+                                MenuItemDisabled = true;
+                            }
+
                             return (
-                                <MenuItem key={browser} value={browserText} disabled={browserText === currentBrowser}>
-                                    {browser} {browserText === currentBrowser ? "(Current browser)" : ""}
+                                <MenuItem key={className} value={className} disabled={MenuItemDisabled}>
+                                    {MenuItemText} {MenuItemDisabled ? "(Not supported yet)" : ""}
                                 </MenuItem>
                             )
                         })
@@ -176,7 +187,7 @@ const CreateProfiles = ({ currentBrowser }) => {
                     {
                         loading ? (
                             <>
-                                <RefreshCw size={20} className="spin" /> 
+                                <RefreshCw size={20} className="spin" />
                                 &nbsp;&nbsp;Creating Profiles...
                             </>
                         ) : "Create Profiles"

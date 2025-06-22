@@ -1,0 +1,8 @@
+#####
+# In .venv\Lib\site-packages\undetected_chromedriver\patcher.py
+# First, uv add setuptools
+# Change the line: 
+# from distutils.version import LooseVersion
+# to:
+# from setuptools._distutils.version import LooseVersion
+#####

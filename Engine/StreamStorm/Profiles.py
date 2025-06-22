@@ -1,19 +1,28 @@
 from os import getenv, makedirs, listdir
 from os.path import exists
-from shutil import copytree, rmtree
+from shutil import copytree, rmtree, Error
 from psutil import process_iter, NoSuchProcess, AccessDenied
 from threading import Thread
+from platformdirs import user_data_dir
+
+from .UndetectedDrivers import UndetectedDrivers
 
 
 class Profiles:
-    def __init__(self, browser: str) -> None:
-        self.browser: str = browser
-        self.default_profile_dir: str = self.__get_default_profile_dir()
-        self.default_profile_folder: str = self.__get_default_profile_folder()
+    def __init__(self, browser_class: str = None, browser: str = None) -> None:
         
+        if not browser_class:
+            browser_class: str = self.__get_browser_class(browser)        
+        self.browser_class: str = browser_class
+        
+        self.app_data_dir: str = user_data_dir("StreamStorm", "DarkGlance")
+        self.profiles_dir: str = self.__get_profiles_dir()
+        self.base_profile_dir: str = self.profiles_dir + r"\BaseProfile"
+
         self.close_existing_browser_processes()
         
-    def close_existing_browser_processes(self) -> None:           
+    def close_existing_browser_processes(self) -> None:        
+        return   
         
         for process in process_iter(attrs=["pid", "name"]):
             try:
@@ -25,73 +34,92 @@ class Profiles:
                 raise RuntimeError("Access denied by the system. Start the app with admin privileges.")
             except Exception as e:
                 raise RuntimeError(f"An unexpected error occurred: {e}")
-        
-    def __get_default_profile_dir(self) -> str:
-        if self.browser == "edge":
-            return r"C:\Users\{}\AppData\Local\Microsoft\Edge".format(
-                getenv("USERNAME")
-            )
-        elif self.browser == "chrome":
-            return r"C:\Users\{}\AppData\Local\Google\Chrome".format(
-                getenv("USERNAME")
-            )
-        # elif self.browser == "firefox":
-        #     return r"C:\Users\{}\AppData\Roaming\Mozilla\Firefox".format(
-        #         getenv("USERNAME")
-        #     )
-        
+            
+    def __get_browser_class(self, browser) -> str:
+        if browser in ("edge", "chrome"):
+            return "chromium"
+
+        # elif browser in ("firefox",):
+        #     return "gecko"
+
+        elif browser in ("safari",):
+            raise NotImplementedError("WebKit-based browsers like Safari are not supported yet.")
+            # return "webkit"
+
         raise ValueError("Invalid browser")
+
+    def __get_profiles_dir(self) -> str:
+        if self.browser_class == "chromium":
+            return self.app_data_dir + r"\ChromiumBasedBrowsers"
+
+        # elif self.browser_class == "gecko":
+        #     return self.app_data_dir + r"\GeckoBasedBrowsers"
+
+        # elif self.browser_class == "webkit":
+        #     return self.app_data_dir + r"\WebKitBasedBrowsers"
         
-    def __get_default_profile_folder(self) -> str:
-        if self.browser == "edge":
-            return "User Data"
-        elif self.browser == "chrome":
-            return "User Data"
-        # elif self.browser == "firefox":
-        #     return "Profiles"
         
-        raise ValueError("Invalid browser")
-        
-        
-    def get_available_temp_profiles(self, delete: bool = False) -> list[str]:
+    def get_available_temp_profiles(self, for_deletion: bool = False) -> list[str]:
         temp_profiles: list[str] = [
-            profile for profile in listdir(self.default_profile_dir) if profile.startswith("temp_profile_")
+            profile for profile in listdir(self.profiles_dir) if profile.startswith("temp_profile_")
         ]
         
         no_of_profiles: int = len(temp_profiles)
-        
-        if not delete and no_of_profiles == 0:
+
+        if not for_deletion and no_of_profiles != 0:
             for i in range(1, no_of_profiles + 1):
                 if f'temp_profile_{i}' not in temp_profiles:
                     raise ValueError(f"temp_profile_{i} is missing. Try rebuilding the environment.")
         
         return temp_profiles
-    
-    
-    def get_profile_dir(self, index: int, profiles: list[str]) -> str:        
-        
+
+    def get_profile_dir(self, index: int, profiles: list[str]) -> str:
+
         index = index % len(profiles)
-        
-        tempdir: str = self.default_profile_dir + f"\\{profiles[index]}"
+        tempdir: str = self.profiles_dir + f"\\{profiles[index]}"
 
         return tempdir
     
+    def __delete_profiles_dir(self) -> None:
+        if exists(self.profiles_dir):
+            rmtree(self.profiles_dir, ignore_errors=True)
+            print(f"Profiles directory {self.profiles_dir} deleted.")
+    
+    def __create_base_profile(self) -> None:
+        if exists(self.base_profile_dir):
+            rmtree(self.base_profile_dir)        
+        
+        makedirs(self.base_profile_dir, exist_ok=True)
+
+        UD: UndetectedDrivers = UndetectedDrivers(self.base_profile_dir, self.browser_class)
+        UD.initiate_base_profile()
+        UD.youtube_login()
+
     def __create_profile(self, profile: str, fix: bool = False) -> None:
         
         print(f"{"Creating" if not fix else "Fixing"} {profile}")
         
-        tempdir: str = self.default_profile_dir + f"\\{profile}"
+        tempdir: str = self.profiles_dir + f"\\{profile}"
 
         makedirs(tempdir, exist_ok=True)
-        copytree(
-            self.default_profile_dir + f"\\{self.default_profile_folder}",
-            tempdir,
-            dirs_exist_ok=True,
-        )
-        
+        try:
+            copytree(
+                self.base_profile_dir,
+                tempdir,
+                dirs_exist_ok=True,
+            )
+        except Error as e:
+            print("e", type(e), e)
+            print("e.args", type(e.args), e.args)
+            str_error: str = str(e)
+            print("str_error", type(str_error), str_error)
+
         print(f"{profile} {"created" if not fix else "fixed"}")
             
     def create_profiles(self, limit: int) -> None:
+        self.__delete_profiles_dir()
+        self.__create_base_profile()
+
         threads: list[Thread] = []
         for i in range(1, limit + 1):
             profile: str = f"temp_profile_{i}"
@@ -107,7 +135,7 @@ class Profiles:
         
         print(f"Deleting {profile}")
         
-        tempdir: str = self.default_profile_dir + f"\\{profile}"
+        tempdir: str = self.profiles_dir + f"\\{profile}"
         
         if exists(tempdir):
             rmtree(tempdir)
@@ -116,21 +144,25 @@ class Profiles:
             
     def delete_all_temp_profiles(self) -> None:
         threads: list[Thread] = []
-        for profile in self.get_available_temp_profiles(delete=True):
+        for profile in self.get_available_temp_profiles(for_deletion=True):
             thread: Thread = Thread(target=self.__delete_profile, args=(profile,))
             threads.append(thread)
             thread.start()
             
         for thread in threads:
             thread.join()
-            
-            
+
+    def __fix_profile(self, profile: str) -> None:
+        
+        self.__delete_profile(profile)
+        self.__create_profile(profile, fix=True)
+        
     def fix_profiles(self) -> None:
         profiles: list[str] = self.get_available_temp_profiles()
         
         threads: list[Thread] = []
         for profile in profiles:
-            thread: Thread = Thread(target=self.__create_profile, args=(profile,True))
+            thread: Thread = Thread(target=self.__fix_profile, args=(profile,))
             threads.append(thread)
             thread.start()
             

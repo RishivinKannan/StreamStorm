@@ -83,15 +83,19 @@ class StormDataValidation(BaseModel):
 
 
 class ProfileDataValidation(BaseModel):
-    browser: str
+    browser_class: str
     limit: Optional[int] = None
     
     
-    @field_validator("browser")
+    @field_validator("browser_class")
     def validate_browser(cls, value: str) -> str:
-        if value not in ["edge", "chrome"]:
-            raise ValueError("Invalid browser")
-        
+        if value not in [
+            "chromium", 
+            # "gecko", 
+            # "webkit"
+        ]:
+            raise ValueError("Invalid browser class")
+
         return value
     
     @field_validator("limit")

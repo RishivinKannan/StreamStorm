@@ -30,7 +30,7 @@ class StreamStorm(Selenium, Profiles):
         background: bool = True,
     ) -> None:
         
-        Profiles.__init__(self, browser)
+        Profiles.__init__(self, browser=browser)
         
         self.url: str = url
         self.chat_url: str = chat_url
@@ -47,8 +47,6 @@ class StreamStorm(Selenium, Profiles):
     def start(self) -> None:
 
         self.close_existing_browser_processes()
-
-        driver_path: str = self.install_driver(self.browser)
         
         temp_profiles: list[str] = self.get_available_temp_profiles()
         no_of_temp_profiles: int = len(temp_profiles)
@@ -59,6 +57,7 @@ class StreamStorm(Selenium, Profiles):
         def EachAccount(index: int) -> None:
             try:
                 new_profile_dir: str = self.get_profile_dir(index, temp_profiles)
+                print(f"Using profile: {new_profile_dir}")
 
                 Separate_Account = SeparateAccount(
                     self.url,
@@ -66,7 +65,6 @@ class StreamStorm(Selenium, Profiles):
                     self.messages,
                     index,
                     new_profile_dir,
-                    driver_path,
                     self.browser,
                     self.background,
                 )
