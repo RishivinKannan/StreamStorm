@@ -10,5 +10,7 @@ environ["mode"] = "mt"
 
 pause_event_mt: Event = Event()
 
+# import os
+# print(os.path.dirname(os.path.abspath(__file__)))
 
 basicConfig(level=CRITICAL, force=True)

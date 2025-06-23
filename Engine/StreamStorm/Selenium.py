@@ -1,4 +1,5 @@
 from time import sleep
+from requests import options
 from selenium.webdriver.chrome.service import Service
 
 from webdriver_manager.chrome import ChromeDriverManager
@@ -16,13 +17,13 @@ from selenium.common.exceptions import ElementNotInteractableException
 from selenium.webdriver.chromium.options import ChromiumOptions
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 
-from .Exceptions import ElementNotFound
+from .Exceptions import DriverClosedError, ElementNotFound
 
 class BrowserFactory:
     def __init__(self, browser: str) -> None:
         self.browser: str = browser
 
-    def get_browser(self,  options: ChromiumOptions, service: Service=None) -> ChromiumDriver:
+    def get_browser(self,  options: ChromiumOptions) -> ChromiumDriver:
         if self.browser == 'edge':
             return Edge(options=options)
         elif self.browser == 'chrome':
@@ -64,27 +65,39 @@ class Selenium:
         if browser in ('chrome', 'edge'):
             options.add_argument(r'user-data-dir={}'.format(self.user_data_dir))
             options.add_argument("--autoplay-policy=user-gesture-required")
-            options.add_argument("--blink-settings=imagesEnabled=false")  # Disable image loading
-            options.add_argument("--disable-crash-reporter")  # Disable crash reporting
-            options.add_argument("--disable-background-timer-throttling")  # Optimize timers
-            options.add_argument("--disable-background-networking")  # Reduce background activity
-            options.add_argument("--disable-default-apps")  # Disable default apps
-            options.add_argument("--disable-dev-shm-usage")  # Use /dev/shm efficiently on Linux
-            # options.add_argument("--disable-extensions")  # Disable extensions
+            options.add_argument("--blink-settings=imagesEnabled=false")
+            options.add_argument("--disable-animations")
+            options.add_argument("--disable-crash-reporter")
+            options.add_argument("--disable-background-timer-throttling")
+            options.add_argument("--disable-background-networking")
+            options.add_argument("--disable-best-effort-tasks")
+            options.add_argument("--disable-component-extensions-with-background-pages")
+            options.add_argument("--disable-default-apps")
+            options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--disable-extensions")
             options.add_argument("--disable-first-run-ui")
-            options.add_argument("--disable-features=Translate,BackForwardCache")  # Avoid caching
-            options.add_argument("--disable-gpu")  # Disable GPU acceleration
-            options.add_argument("--disable-javascript")
-            options.add_argument("--disable-lazy-loading")  # Disable local storage
-            options.add_argument("--disable-logging")  # Disable logging
-            options.add_argument("--disable-media-session-api")  # Avoid managing media
-            options.add_argument("--disable-media-source")  # Avoid streaming media sources
-            options.add_argument("--disable-infobars")  # Avoid infobars
+            options.add_argument("--disable-features=Translate,BackForwardCache,Sync,MediaRouter,DialMediaRouteProvider")
+            options.add_argument("--disable-gpu")
+            options.add_argument("--disable-hang-monitor")
+            options.add_argument("--disable-infobars")
+            # options.add_argument("--disable-javascript")
+            options.add_argument("--disable-logging")
+            options.add_argument("--disable-media-session-api")
+            options.add_argument("--disable-media-source")
             options.add_argument("--disable-notifications")
-            options.add_argument("--disable-popup-blocking")  # Simplify rendering
-            options.add_argument("--disable-renderer-backgrounding")  # Optimize rendering
+            options.add_argument("--disable-plugins")
+            # options.add_argument("--disable-popup-blocking")
+            options.add_argument("--disable-renderer-backgrounding")
+            options.add_argument("--disable-software-rasterizer")
+            options.add_argument("--enable-low-end-device-mode")
+            options.add_argument("--enable-unsafe-swiftshader")
+            options.add_argument("--hide-scrollbars")
+            options.add_argument("--metrics-recording-only")
             options.add_argument("--mute-audio")
-            options.add_argument("--no-sandbox")  # Improve startup speed
+            options.add_argument("--no-sandbox")
+            options.add_argument("--password-store=basic")
+            options.add_argument("--use-angle=swiftshader")
+            options.add_argument("--use-gl=angle")
             
         elif browser == 'firefox':
             ...
@@ -98,7 +111,7 @@ class Selenium:
         options: ChromiumOptions = browser.get_options()
         
         if self.background:
-            options.add_argument("--headless")
+            options.add_argument("--headless=new")
             
         options = self.__add_all_options(self.browser, options)
         
@@ -133,11 +146,15 @@ class Selenium:
             if for_subscribe:
                 pass
             else:
-                self.driver.close()            
+                self.driver.close()  
+                raise DriverClosedError       
             
         except ElementNotFound:
             
-            self.driver.close()  
+            self.driver.close() 
+            raise DriverClosedError
+            
+        
     
     def type_and_enter(self, text_field: WebElement, message: str) -> None:
         text_field.send_keys(message)

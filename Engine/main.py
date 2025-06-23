@@ -1,4 +1,5 @@
 from os import environ, system
+from os.path import dirname, abspath, join
 from typing import Optional
 from flask import Flask, Response, send_from_directory, request, jsonify
 from flask_cors import CORS
@@ -165,6 +166,7 @@ __all__: list[str] = ["app"]
 
 if __name__ == "__main__":
     from sys import argv
+    environ["rammap_path"] = join(dirname(abspath(__file__)), "RAMMap.exe")
     
     if len(argv) > 1:
         if argv[1] == "--mt":

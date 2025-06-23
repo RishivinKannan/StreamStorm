@@ -56,12 +56,12 @@ class Profiles:
         
         return temp_profiles
 
-    def get_profile_dir(self, index: int, profiles: list[str]) -> str:
+    def get_profile_dir(self, index: int, profiles: list[str]) -> tuple[int, str]:
 
         index = index % len(profiles)
         tempdir: str = self.profiles_dir + f"\\{profiles[index]}"
 
-        return tempdir
+        return index, tempdir
     
     def __delete_profiles_dir(self) -> None:
         if exists(self.profiles_dir):

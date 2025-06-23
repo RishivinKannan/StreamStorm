@@ -5,6 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import ElementNotInteractableException
 from time import sleep
 
+from .Exceptions import DriverClosedError
 from .Selenium import Selenium
 
 class SeparateAccount(Selenium):
@@ -24,21 +25,25 @@ class SeparateAccount(Selenium):
         self.chat_url: str = chat_url
         self.messages: list[str] = messages
         self.index: int = index
-           
-        
-    def login(self) -> None:
-        
+
+
+    def login(self, obj) -> None:
+
         self.open_browser()
         self.go_to_page("https://www.youtube.com")
         
-        self.find_and_click_element(By.XPATH, '//*[@id="avatar-btn"]') # Click on avatar button
-        self.find_and_click_element(By.XPATH, "//*[text()='Switch account']") # Click on switch account button
-        
-        sleep(3)
-        
-        self.__click_account(self.index)
+        try:
+            self.find_and_click_element(By.XPATH, '//*[@id="avatar-btn"]') # Click on avatar button
+            self.find_and_click_element(By.XPATH, "//*[text()='Switch account']") # Click on switch account button
+            
+            sleep(3)
+            
+            self.__click_account(self.index)
+        except DriverClosedError as _:
+            obj.ready_instances -= 1
+            print("####################### One of the accounts is closed.##########################")
 
-    
+
     def __click_account(self, index: int) -> None:
         
         self.find_and_click_element(
@@ -51,7 +56,8 @@ class SeparateAccount(Selenium):
         self.find_and_click_element(
             By.XPATH,
             "//div[@id='subscribe-button']/*//button[.//span[text()='Subscribe']]",
-            False
+            False,
+            True
         )
         
             

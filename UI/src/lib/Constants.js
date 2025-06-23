@@ -10,5 +10,5 @@ export const BROWSER_CLASSES = [
 ]
 
 export const DEFAULT_HOST_ADDRESS = "http://localhost:5000";
-export const RAM_PER_PROFILE = 500;
+export const RAM_PER_PROFILE = 400;
 
