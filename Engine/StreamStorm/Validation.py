@@ -38,6 +38,8 @@ class StormDataValidation(BaseModel):
         if not value:
             raise ValueError("Messages cannot be empty")
         
+        value = [ msg.strip('"[],') for msg in value ]
+        
         return value
 
     @field_validator("subscribe_and_wait_time")
@@ -102,5 +104,18 @@ class ProfileDataValidation(BaseModel):
     def validate_limit(cls, value: Optional[int]) -> Optional[int]:
         if value is not None and value < 0:
             raise ValueError("Limit cannot be negative")
+        
+        return value
+    
+    
+class ChangeMessagesDataValidation(BaseModel):
+    messages: list[str]
+    
+    @field_validator("messages")
+    def validate_messages(cls, value: list[str]) -> list[str]:
+        if not value:
+            raise ValueError("Messages cannot be empty")
+        
+        value = [ msg.strip('"[],') for msg in value ]
         
         return value

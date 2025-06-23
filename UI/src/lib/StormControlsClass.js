@@ -3,11 +3,13 @@ import ValidateStormData from "./ValidateStormData";
 class StormControlsClass {
     constructor(hostAddress) {
         this.hostAddress = hostAddress;
+        this.notifications = null;
         this.setPausing = null;
         this.setStopping = null;
         this.setResuming = null;
         this.setControlsDisabled = null;
-        this.notifications = null;
+        this.setDontWaitLoading = null;
+        this.setChangeMessagesLoading = null;
     }
 
     startStorm(formControls) {
@@ -149,6 +151,74 @@ class StormControlsClass {
                 this.setResuming(false);
                 this.setControlsDisabled(false);
             });
+    }
+
+    dontWait() {
+        this.setDontWaitLoading(true);
+        this.setControlsDisabled(true);
+
+        fetch(`${this.hostAddress}/start_storm_dont_wait`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({}),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.notifications.show('Each account will start storming without waiting for others!', {
+                        severity: 'success',
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error setting dont-wait:', error);
+                this.notifications.show('An error occurred while setting dont-wait', {
+                    severity: 'error',
+                });
+            })
+            .finally(() => {
+                this.setDontWaitLoading(false);
+                this.setControlsDisabled(false);
+            });
+    }
+
+    async changeMessages(messages) {
+        
+        this.setChangeMessagesLoading(true);
+        this.setControlsDisabled(true);
+
+        fetch(`${this.hostAddress}/change_messages`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ messages }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.notifications.show('Messages changed successfully!', {
+                        severity: 'success',
+                    });
+                } else {
+                    this.notifications.show(data.message || 'Failed to change messages', {
+                        severity: 'error',
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error changing messages:', error);
+                this.notifications.show('An error occurred while changing messages', {
+                    severity: 'error',
+                });
+            })
+            .finally(() => {
+                this.setChangeMessagesLoading(false);
+                this.setControlsDisabled(false);
+            });
+
     }
 }
 

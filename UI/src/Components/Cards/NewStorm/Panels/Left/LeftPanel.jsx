@@ -21,10 +21,11 @@ const LeftPanel = () => {
             return message !== '';
         });
 
+        allMessages = allMessages.map((message) => message.trim())
+
         formControls.setMessages(allMessages);
         formControls.setMessagesError(false);
         formControls.setMessagesHelperText("");
-
     }
 
     const handleURLChange = (e) => {

@@ -1,17 +1,16 @@
 import { useContext, useState, useEffect, useRef } from "react";
 import { Button } from "@mui/material";
 import { useColorScheme } from '@mui/material/styles';
-import { RefreshCw, Zap } from 'lucide-react';
-import PauseIcon from '@mui/icons-material/Pause';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { Ban, Pause, Play, RefreshCw, SquarePen, Zap } from 'lucide-react';
 import StopCircleIcon from '@mui/icons-material/StopCircle';
 import { useDialogs } from '@toolpad/core/useDialogs';
 
 import "./StormControls.css";
 import { CustomMUIPropsContext, StormDataContext, } from "../../../../../../lib/ContextAPI";
-import AreYouSure from "../../../../../Dialogs/AreYouSure/AreYouSure";
+import AreYouSure from "../../../../../Dialogs/AreYouSure";
 import Ping from "../../../../../Elements/Ping/Ping";
 import StormControlsClass from "../../../../../../lib/StormControlsClass";
+import ChangeMessages from "../../../../../Dialogs/ChangeMessages";
 
 const StormControls = () => {
 
@@ -23,6 +22,8 @@ const StormControls = () => {
     const [pausing, setPausing] = useState(false);
     const [stopping, setStopping] = useState(false);
     const [resuming, setResuming] = useState(false);
+    const [dontWaitLoading, setDontWaitLoading] = useState(false);
+    const [changeMessagesLoading, setChangeMessagesLoading] = useState(false);
     const [controlsDisabled, setControlsDisabled] = useState(false);
 
     useEffect(() => {
@@ -31,6 +32,8 @@ const StormControls = () => {
         formControls.SC.current.setStopping = setStopping;
         formControls.SC.current.setResuming = setResuming;
         formControls.SC.current.setControlsDisabled = setControlsDisabled;
+        formControls.SC.current.setDontWaitLoading = setDontWaitLoading;
+        formControls.SC.current.setChangeMessagesLoading = setChangeMessagesLoading;
         formControls.SC.current.notifications = formControls.notifications;
     }, [formControls.hostAddress]);
 
@@ -49,13 +52,24 @@ const StormControls = () => {
     }
 
     const handlePause = async () => {
-        formControls.SC.current.pauseStorm(formControls.setStormInProgress);
+        formControls.SC.current.pauseStorm();
     };
 
     const handleResume = async () => {
-        formControls.SC.current.resumeStorm(formControls.setStormInProgress);
+        formControls.SC.current.resumeStorm();
     };
 
+    const handleChangeMessages = async () => {
+        const messages = await dialogs.open(ChangeMessages, {
+            formControls: formControls,
+        });
+        if (!messages) return;
+        formControls.SC.current.changeMessages(messages);
+    }
+
+    const handleDontWait = async () => {
+        formControls.SC.current.dontWait();
+    };
 
     return (
         <div className="storm-controls-container">
@@ -75,30 +89,62 @@ const StormControls = () => {
 
 
             <div className="storm-controls-btns-container">
-                <Button
-                    variant="contained"
-                    startIcon={pausing ? <RefreshCw size={20} className="spin" /> : <PauseIcon />}
-                    sx={btnProps}
-                    onClick={handlePause}
-                    disabled={controlsDisabled || !formControls.stormInProgress}
-                >
-                    {
-                        pausing ? "Pausing Storm..." : "Pause"
-                    }
-                </Button>
+                <div className="row">
+                    <Button
+                        variant="contained"
+                        startIcon={pausing ? <RefreshCw size={20} className="spin" /> : <Pause size={20} />}
+                        sx={btnProps}
+                        onClick={handlePause}
+                        disabled={controlsDisabled || !formControls.stormInProgress}
+                    >
+                        {
+                            pausing ? "Pausing..." : "Pause"
+                        }
+                    </Button>
 
-                <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={resuming ? <RefreshCw size={20} className="spin" /> : <PlayArrowIcon />}
-                    sx={btnProps}
-                    onClick={handleResume}
-                    disabled={controlsDisabled || !formControls.stormInProgress}
-                >
-                    {
-                        resuming ? "Resuming Storm..." : "Resume"
-                    }
-                </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={resuming ? <RefreshCw size={20} className="spin" /> : <Play size={20} />}
+                        sx={btnProps}
+                        onClick={handleResume}
+                        disabled={controlsDisabled || !formControls.stormInProgress}
+                    >
+                        {
+                            resuming ? "Resuming..." : "Resume"
+                        }
+                    </Button>
+                </div>
+                <div className="row">
+                    <Button
+                        variant="contained"
+                        startIcon={changeMessagesLoading ? <RefreshCw size={20} className="spin" /> : <SquarePen size={20} />}
+                        sx={{
+                            ...btnProps,
+                            height: "60px",
+                        }}
+                        onClick={handleChangeMessages}
+                        disabled={controlsDisabled || !formControls.stormInProgress}
+                    >
+                        {
+                            changeMessagesLoading ? "Processing..." : "Change Messages"
+                        }
+                    </Button>
+                    <Button
+                        variant="contained"
+                        startIcon={dontWaitLoading ? <RefreshCw size={20} className="spin" /> : <Ban size={20} />}
+                        sx={{
+                            ...btnProps,
+                            height: "60px",
+                        }}
+                        onClick={handleDontWait}
+                        disabled={controlsDisabled || !formControls.stormInProgress}
+                    >
+                        {
+                            dontWaitLoading ? "Processing..." : "Don't Wait"
+                        }
+                    </Button>
+                </div>
 
                 <Button
                     variant="contained"
@@ -109,7 +155,7 @@ const StormControls = () => {
                         backgroundColor: colorScheme === 'light' ? "var(--bright-red-2)" : "var(--input-active-red-dark)",
                         color: "var(--light-text)",
                     }}
-                    disabled={controlsDisabled || !formControls.stormInProgress}
+                    disabled={controlsDisabled}
                 >
                     {
                         stopping ? "Stopping Storm..." : "Stop"

@@ -11,7 +11,7 @@ from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 
 from StreamStorm.StreamStorm import StreamStorm
 from StreamStorm.Profiles import Profiles
-from StreamStorm.Validation import StormDataValidation, ProfileDataValidation
+from StreamStorm.Validation import StormDataValidation, ProfileDataValidation, ChangeMessagesDataValidation
 from StreamStorm import pause_event_mt
 
 
@@ -23,13 +23,18 @@ CORS(app)
 
 @app.before_request
 def before_request() -> Optional[Response]:
-    if request.path not in ("/", "/stop", "/get_available_ram", "/pause", "/resume", "/current_status"):
+    if request.path not in ("/", "/stop", "/get_available_ram", "/pause", "/resume", "/current_status", '/change_messages'):
         if environ["BUSY"] == "True":
             return jsonify({"success": False, "message": f"Engine is Busy: {environ['BUSY_REASON']}"})
 
     if request.method == "POST":
         if request.path in ('/create_profiles', '/delete_profiles', '/fix_profiles', '/delete_all_profiles'):
             request.validated_data = ProfileDataValidation(**request.json).model_dump()
+            
+        if request.path in ('/change_messages',):
+            print("Validating change messages data")
+            request.validated_data = ChangeMessagesDataValidation(**request.json).model_dump()
+            print("Change messages data validated successfully", request.validated_data)
 
 
 
@@ -53,7 +58,7 @@ def storm() -> Response:
             del errors[0]["ctx"]
         return jsonify({"success": False, "message": errors})
 
-    StreamStorm.each_instances = []
+    StreamStorm.each_account_instances = []
 
     try:
         StreamStormObj: StreamStorm = StreamStorm(
@@ -94,10 +99,10 @@ def stop() -> Response:
         
     if environ["mode"] == "mt":
         with ThreadPoolExecutor() as executor:
-            executor.map(close_browser, StreamStorm.each_instances)
+            executor.map(close_browser, StreamStorm.each_account_instances)
     elif environ["mode"] == "mp":
         with ProcessPoolExecutor() as executor:
-            executor.map(close_browser, StreamStorm.each_instances)
+            executor.map(close_browser, StreamStorm.each_account_instances)
 
     pause_event_mt.set() # Ensure the pause event is set to allow storming
     environ["PAUSE"] = "False"
@@ -121,6 +126,19 @@ def resume() -> Response:
 
     return jsonify({"success": True, "message": "Resumed"})
 
+
+@app.route("/change_messages", methods=["POST"])
+def change_messages() -> Response:
+    
+    StreamStorm.ss_instance.messages = request.validated_data["messages"]
+    
+    return jsonify({"success": True, "message": "Messages changed successfully"})
+
+@app.route("/start_storm_dont_wait", methods=["POST"])
+def start_storm_dont_wait() -> Response:
+    StreamStorm.ss_instance.ready_event.set()  # Set the event to signal that don't wait for the remaining instances to be ready, and start storming immediately.
+    
+    return jsonify({"success": True, "message": "Storm started without waiting for all instances to be ready"})
 
 @app.route("/create_profiles", methods=["POST"])
 def create_profiles() -> Response:

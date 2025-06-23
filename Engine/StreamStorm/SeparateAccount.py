@@ -11,9 +11,6 @@ from .Selenium import Selenium
 class SeparateAccount(Selenium):
     def __init__(
         self,
-        url: str,
-        chat_url: str,
-        messages: list[str] = ["Hello", "Hi"],
         index: int = 0,
         user_data_dir: str = '',
         browser: str = 'edge',
@@ -21,9 +18,6 @@ class SeparateAccount(Selenium):
     ) -> None:
         super().__init__(user_data_dir, browser, background)
         
-        self.url: str = url
-        self.chat_url: str = chat_url
-        self.messages: list[str] = messages
         self.index: int = index
 
 

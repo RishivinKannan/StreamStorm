@@ -133,6 +133,7 @@ const DeleteAllProfiles = () => {
                     }}
                     onClick={handleDeleteAllProfiles}
                     disabled={loading}
+                    startIcon={<Trash2 size={20} />}
 
                 >
                     {

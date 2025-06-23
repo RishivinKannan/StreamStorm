@@ -170,6 +170,7 @@ const CreateProfiles = () => {
                     color="primary"
                     className={`create-profiles-button`}
                     disabled={loading}
+                    startIcon={<UserPlus size={20} />}
                     sx={{
                         ...btnProps,
                         marginTop: "1rem",

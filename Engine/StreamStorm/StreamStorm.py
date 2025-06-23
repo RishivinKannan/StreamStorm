@@ -2,6 +2,7 @@ from time import sleep
 from threading import Thread
 from random import choice
 from os import environ
+from typing import Self
 from selenium.common.exceptions import InvalidSessionIdException
 from http.client import RemoteDisconnected
 from urllib3.exceptions import ProtocolError, ReadTimeoutError
@@ -16,7 +17,8 @@ from . import pause_event_mt
 
 
 class StreamStorm(Selenium, Profiles):
-    each_instances: list[SeparateAccount] = []
+    each_account_instances: list[SeparateAccount] = []
+    ss_instance: Self = None
 
     def __init__(
         self,
@@ -50,6 +52,8 @@ class StreamStorm(Selenium, Profiles):
         self.total_instances: int = end_account_index - start_account_index + 1
         self.ready_to_storm_instances: int = 0
         
+        StreamStorm.ss_instance = self
+        
         clear_ram()
 
     def start(self) -> None:
@@ -74,16 +78,13 @@ class StreamStorm(Selenium, Profiles):
                 print(f"Using profile: {new_profile_dir}")
 
                 Separate_Account = SeparateAccount(
-                    self.url,
-                    self.chat_url,
-                    self.messages,
                     index,
                     new_profile_dir,
                     self.browser,
                     self.background,
                 )
                 
-                StreamStorm.each_instances.append(Separate_Account)
+                StreamStorm.each_account_instances.append(Separate_Account)
                 Separate_Account.login(self)
 
                 if self.subscribe[0]:
