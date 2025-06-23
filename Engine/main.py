@@ -1,5 +1,6 @@
 from os import environ, system
 from os.path import dirname, abspath, join
+from traceback import print_exc
 from typing import Optional
 from flask import Flask, Response, send_from_directory, request, jsonify
 from flask_cors import CORS
@@ -77,7 +78,8 @@ def storm() -> Response:
         return jsonify({"success": True, "message": "Started"})
        
     except Exception as e:
-        environ["BUSY"] = "False"
+        print_exc()
+        environ["BUSY"] = "False"        
         return jsonify({"success": False, "message": str(e)})
 
 
@@ -85,7 +87,8 @@ def storm() -> Response:
 def stop() -> Response:
     def close_browser(instance: StreamStorm) -> None:
         try:
-            instance.driver.close()
+            if instance.driver:
+                instance.driver.close()
         except Exception:
             pass
         
@@ -131,6 +134,7 @@ def create_profiles() -> Response:
 
         return jsonify({"success": True, "message": "Profiles created"})
     except Exception as e:
+        print_exc()
         return jsonify({"success": False, "message": str(e)})
     finally:
         environ["BUSY"] = "False"
@@ -147,6 +151,7 @@ def delete_profiles() -> Response:
 
         return jsonify({"success": True, "message": "Profiles deleted"})
     except Exception as e:
+        print_exc()
         return jsonify({"success": False, "message": str(e)})
     finally:
         environ["BUSY"] = "False"

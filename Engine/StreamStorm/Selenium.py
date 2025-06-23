@@ -1,5 +1,4 @@
 from time import sleep
-from requests import options
 from selenium.webdriver.chrome.service import Service
 
 from webdriver_manager.chrome import ChromeDriverManager
@@ -14,8 +13,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import ElementNotInteractableException
-from selenium.webdriver.chromium.options import ChromiumOptions
-from selenium.webdriver.chromium.webdriver import ChromiumDriver
+from selenium.webdriver.chromium.options import ArgOptions
+from selenium.webdriver.remote.webdriver import WebDriver
 
 from .Exceptions import DriverClosedError, ElementNotFound
 
@@ -23,7 +22,7 @@ class BrowserFactory:
     def __init__(self, browser: str) -> None:
         self.browser: str = browser
 
-    def get_browser(self,  options: ChromiumOptions) -> ChromiumDriver:
+    def get_browser(self,  options: ArgOptions) -> WebDriver:
         if self.browser == 'edge':
             return Edge(options=options)
         elif self.browser == 'chrome':
@@ -33,7 +32,7 @@ class BrowserFactory:
         else:
             raise ValueError("Invalid browser")
         
-    def get_options(self) -> ChromiumOptions:
+    def get_options(self) -> ArgOptions:
         if self.browser == 'edge':
             return EdgeOptions()
         elif self.browser == 'chrome':
@@ -42,6 +41,7 @@ class BrowserFactory:
         #     return FirefoxOptions()
         else:
             raise ValueError("Invalid browser")
+        
 
 class Selenium:
     def __init__(self, user_data_dir: str, browser: str, background: bool) -> None:
@@ -60,7 +60,7 @@ class Selenium:
         else:
             raise ValueError("Invalid browser")
         
-    def __add_all_options(self, browser: str, options: ChromiumOptions) -> ChromiumOptions:
+    def __add_all_options(self, browser: str, options: ArgOptions) -> ArgOptions:
         
         if browser in ('chrome', 'edge'):
             options.add_argument(r'user-data-dir={}'.format(self.user_data_dir))
@@ -80,13 +80,11 @@ class Selenium:
             options.add_argument("--disable-gpu")
             options.add_argument("--disable-hang-monitor")
             options.add_argument("--disable-infobars")
-            # options.add_argument("--disable-javascript")
             options.add_argument("--disable-logging")
             options.add_argument("--disable-media-session-api")
             options.add_argument("--disable-media-source")
             options.add_argument("--disable-notifications")
             options.add_argument("--disable-plugins")
-            # options.add_argument("--disable-popup-blocking")
             options.add_argument("--disable-renderer-backgrounding")
             options.add_argument("--disable-software-rasterizer")
             options.add_argument("--enable-low-end-device-mode")
@@ -107,16 +105,16 @@ class Selenium:
     def open_browser(self) -> None:
         
         browser: BrowserFactory = BrowserFactory(self.browser)
-        
-        options: ChromiumOptions = browser.get_options()
-        
+
+        options: ArgOptions = browser.get_options()
+
         if self.background:
             options.add_argument("--headless=new")
             
         options = self.__add_all_options(self.browser, options)
-        
-        self.driver: ChromiumDriver = browser.get_browser(options=options)
-        
+
+        self.driver: WebDriver = browser.get_browser(options=options)
+
         self.driver.set_window_size(1200, 800)
         
     def go_to_page(self, url: str) -> None:

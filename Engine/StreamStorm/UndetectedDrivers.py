@@ -1,9 +1,10 @@
 from time import sleep
 from undetected_chromedriver import Chrome
-from undetected_geckodriver import Firefox
+# from undetected_geckodriver import Firefox
 
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, NoSuchWindowException
+# from selenium.webdriver import FirefoxOptions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -18,9 +19,9 @@ class UndetectedDrivers:
         if self.browser_class == "chromium":
             self.driver = Chrome(user_data_dir=self.base_profile_dir)
         elif self.browser_class == "gecko":
-            self.driver = Firefox(user_data_dir=self.base_profile_dir)
+            raise NotImplementedError("Gecko-based browser is not implemented yet.")
         elif self.browser_class == "webkit":
-            ...
+            raise NotImplementedError("WebKit-based browser is not implemented yet.")
         else:
             raise ValueError("Unsupported browser class for undetected drivers")
         print(self.driver.browser_pid)

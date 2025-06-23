@@ -22,8 +22,9 @@ class Profiles:
         if browser in ("edge", "chrome"):
             return "chromium"
 
-        # elif browser in ("firefox",):
-        #     return "gecko"
+        elif browser in ("firefox",):
+            raise NotImplementedError("Gecko-based browsers like Firefox are not supported yet.")
+            return "gecko"
 
         elif browser in ("safari",):
             raise NotImplementedError("WebKit-based browsers like Safari are not supported yet.")
