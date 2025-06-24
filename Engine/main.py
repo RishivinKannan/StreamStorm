@@ -1,5 +1,4 @@
-from os import environ, system
-from os.path import dirname, abspath, join
+from os import environ
 from traceback import print_exc
 from typing import Optional
 from flask import Flask, Response, send_from_directory, request, jsonify
@@ -22,19 +21,16 @@ CORS(app)
 # shared_data: dict = manager.dict()
 
 @app.before_request
-def before_request() -> Optional[Response]:
-    if request.path not in ("/", "/stop", "/get_available_ram", "/pause", "/resume", "/current_status", '/change_messages'):
-        if environ["BUSY"] == "True":
-            return jsonify({"success": False, "message": f"Engine is Busy: {environ['BUSY_REASON']}"})
+def before_request() -> Optional[Response]:    
 
     if request.method == "POST":
-        if request.path in ('/create_profiles', '/delete_profiles', '/fix_profiles', '/delete_all_profiles'):
+        if request.path in ("/storm", "/create_profiles", "/delete_all_profiles", ):
+            if environ["BUSY"] == "True":
+                return jsonify({"success": False, "message": f"Engine is Busy: {environ['BUSY_REASON']}"})
+            
+        if request.path in ('/create_profiles', '/delete_all_profiles'):
             request.validated_data = ProfileDataValidation(**request.json).model_dump()
             
-        if request.path in ('/change_messages',):
-            print("Validating change messages data")
-            request.validated_data = ChangeMessagesDataValidation(**request.json).model_dump()
-            print("Change messages data validated successfully", request.validated_data)
 
 
 
@@ -46,7 +42,6 @@ def home() -> Response:
 @app.route("/storm", methods=["POST"])
 def storm() -> Response:
     pause_event_mt.set() # Ensure the pause event is set to allow storming
-    environ["PAUSE"] = "False"
 
     data: dict = request.json
 
@@ -74,6 +69,8 @@ def storm() -> Response:
             data["background"],
             # shared_data=shared_data, # Uncomment this line if using shared data
         )
+        
+        StreamStormObj.ready_event.clear()  # Clear the ready event to ensure it will be only set when all instances are ready
 
         environ["BUSY"] = "True"
         environ["BUSY_REASON"] = "Storming in progress"
@@ -104,8 +101,7 @@ def stop() -> Response:
         with ProcessPoolExecutor() as executor:
             executor.map(close_browser, StreamStorm.each_account_instances)
 
-    pause_event_mt.set() # Ensure the pause event is set to allow storming
-    environ["PAUSE"] = "False"
+    pause_event_mt.set() # Ensure the pause event is set to allow next storms
     environ["BUSY"] = "False"
 
     return jsonify({"success": True, "message": "Stopped"})
@@ -113,7 +109,6 @@ def stop() -> Response:
 
 @app.route("/pause", methods=["POST"])
 def pause() -> Response:
-    environ["PAUSE"] = "True"
     pause_event_mt.clear() # Clear the pause event to pause storming
 
     return jsonify({"success": True, "message": "Paused"})
@@ -121,7 +116,6 @@ def pause() -> Response:
 
 @app.route("/resume", methods=["POST"])
 def resume() -> Response:
-    environ["PAUSE"] = "False"
     pause_event_mt.set() # Set the pause event to resume storming
 
     return jsonify({"success": True, "message": "Resumed"})
@@ -130,8 +124,9 @@ def resume() -> Response:
 @app.route("/change_messages", methods=["POST"])
 def change_messages() -> Response:
     
-    StreamStorm.ss_instance.messages = request.validated_data["messages"]
-    
+    data: dict[str, list[str]] = ChangeMessagesDataValidation(**request.json).model_dump()
+    StreamStorm.ss_instance.messages = data["messages"]
+
     return jsonify({"success": True, "message": "Messages changed successfully"})
 
 @app.route("/start_storm_dont_wait", methods=["POST"])
@@ -139,6 +134,18 @@ def start_storm_dont_wait() -> Response:
     StreamStorm.ss_instance.ready_event.set()  # Set the event to signal that don't wait for the remaining instances to be ready, and start storming immediately.
     
     return jsonify({"success": True, "message": "Storm started without waiting for all instances to be ready"})
+
+@app.route("/change_slow_mode", methods=["POST"])
+def change_slow_mode() -> Response:
+    data: dict[str, int] = ChangeSlowModeDataValidation(**request.json).model_dump()
+    
+    if not StreamStorm.ss_instance.ready_event.is_set():
+        return jsonify({"success": False, "message": "Cannot change slow mode before the storm starts"})
+    
+    StreamStorm.ss_instance.slow_mode = data["slow_mode"]
+    
+    return jsonify({"success": True, "message": "Slow mode changed successfully"})
+    
 
 @app.route("/create_profiles", methods=["POST"])
 def create_profiles() -> Response:
@@ -159,7 +166,7 @@ def create_profiles() -> Response:
 
 
 @app.route("/delete_all_profiles", methods=["POST"])
-def delete_profiles() -> Response:
+def delete_all_profiles() -> Response:
     try:
         environ["BUSY"] = "True"
         environ["BUSY_REASON"] = "Deleting profiles"
