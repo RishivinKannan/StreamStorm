@@ -119,3 +119,16 @@ class ChangeMessagesDataValidation(BaseModel):
         value = [ msg.strip('"[],') for msg in value ]
         
         return value
+    
+class ChangeSlowModeDataValidation(BaseModel):
+    slow_mode: int
+    
+    @field_validator("slow_mode")
+    def validate_slow_mode(cls, value: int) -> int:
+        if not isinstance(value, int):
+            raise ValueError("Slow mode must be an integer")
+        
+        if value < 1:
+            raise ValueError("Slow mode must be at least 1")
+
+        return value
