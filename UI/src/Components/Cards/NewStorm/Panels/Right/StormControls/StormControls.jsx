@@ -1,8 +1,7 @@
 import { useContext, useState, useEffect, useRef } from "react";
-import { Button } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 import { useColorScheme } from '@mui/material/styles';
-import { Ban, Pause, Play, RefreshCw, SquarePen, Zap } from 'lucide-react';
-import StopCircleIcon from '@mui/icons-material/StopCircle';
+import { Ban, Pause, Play, RefreshCw, SquarePen, StopCircle, Zap } from 'lucide-react';
 import { useDialogs } from '@toolpad/core/useDialogs';
 
 import "./StormControls.css";
@@ -11,6 +10,7 @@ import AreYouSure from "../../../../../Dialogs/AreYouSure";
 import Ping from "../../../../../Elements/Ping/Ping";
 import StormControlsClass from "../../../../../../lib/StormControlsClass";
 import ChangeMessages from "../../../../../Dialogs/ChangeMessages";
+import ChangeSlowMode from "../../../../../Dialogs/ChangeSlowMode";
 
 const StormControls = () => {
 
@@ -24,6 +24,7 @@ const StormControls = () => {
     const [resuming, setResuming] = useState(false);
     const [dontWaitLoading, setDontWaitLoading] = useState(false);
     const [changeMessagesLoading, setChangeMessagesLoading] = useState(false);
+    const [changeSlowModeLoading, setChangeSlowModeLoading] = useState(false);
     const [controlsDisabled, setControlsDisabled] = useState(false);
 
     useEffect(() => {
@@ -34,6 +35,7 @@ const StormControls = () => {
         formControls.SC.current.setControlsDisabled = setControlsDisabled;
         formControls.SC.current.setDontWaitLoading = setDontWaitLoading;
         formControls.SC.current.setChangeMessagesLoading = setChangeMessagesLoading;
+        formControls.SC.current.setChangeSlowModeLoading = setChangeSlowModeLoading;
         formControls.SC.current.notifications = formControls.notifications;
     }, [formControls.hostAddress]);
 
@@ -68,8 +70,25 @@ const StormControls = () => {
     }
 
     const handleDontWait = async () => {
-        formControls.SC.current.dontWait();
+
+        const confirmed = await dialogs.open(AreYouSure, {
+            text: <span>Are you sure you want to <strong style={{ color: "var(--input-active-red-dark)" }}>NOT WAIT</strong> for all the accounts to be ready?</span>
+        });
+
+        if (confirmed) {
+            formControls.SC.current.dontWait();
+        }
     };
+
+    const handleChangeSlowMode = async () => {
+        const slowModeValue = await dialogs.open(ChangeSlowMode, {
+            formControls: formControls
+        });
+
+        if (!slowModeValue) return;
+
+        formControls.SC.current.changeSlowMode(slowModeValue);
+    }
 
     return (
         <div className="storm-controls-container">
@@ -92,7 +111,7 @@ const StormControls = () => {
                 <div className="row">
                     <Button
                         variant="contained"
-                        startIcon={pausing ? <RefreshCw size={20} className="spin" /> : <Pause size={20} />}
+                        startIcon={pausing ? <RefreshCw size={18} className="spin" /> : <Pause size={18} />}
                         sx={btnProps}
                         onClick={handlePause}
                         disabled={controlsDisabled || !formControls.stormInProgress}
@@ -105,7 +124,7 @@ const StormControls = () => {
                     <Button
                         variant="contained"
                         color="primary"
-                        startIcon={resuming ? <RefreshCw size={20} className="spin" /> : <Play size={20} />}
+                        startIcon={resuming ? <RefreshCw size={18} className="spin" /> : <Play size={18} />}
                         sx={btnProps}
                         onClick={handleResume}
                         disabled={controlsDisabled || !formControls.stormInProgress}
@@ -116,26 +135,49 @@ const StormControls = () => {
                     </Button>
                 </div>
                 <div className="row">
+
                     <Button
                         variant="contained"
-                        startIcon={changeMessagesLoading ? <RefreshCw size={20} className="spin" /> : <SquarePen size={20} />}
+                        startIcon={changeMessagesLoading ? <RefreshCw size={18} className="spin" /> : <SquarePen size={18} />}
                         sx={{
                             ...btnProps,
-                            height: "60px",
+                            height: "40px",
                         }}
                         onClick={handleChangeMessages}
                         disabled={controlsDisabled || !formControls.stormInProgress}
                     >
                         {
-                            changeMessagesLoading ? "Processing..." : "Change Messages"
+                            changeMessagesLoading ? "Processing..." : "Messages"
                         }
                     </Button>
+
+                    <Tooltip title="Change Slow Mode" placement="right">
+                        <Button
+                            variant="contained"
+                            startIcon={changeSlowModeLoading ? <RefreshCw size={18} className="spin" /> : <SquarePen size={18} />}
+                            sx={{
+                                ...btnProps,
+                                height: "40px",
+                            }}
+                            onClick={handleChangeSlowMode}
+                            disabled={controlsDisabled || !formControls.stormInProgress}
+                        >
+                            {
+                                changeSlowModeLoading ? "Processing..." : "Slow Mode"
+                            }
+                        </Button>
+                    </Tooltip>
+
+                </div>
+
+                <Tooltip title="Change existing Messages" placement="right">
+
                     <Button
                         variant="contained"
-                        startIcon={dontWaitLoading ? <RefreshCw size={20} className="spin" /> : <Ban size={20} />}
+                        startIcon={dontWaitLoading ? <RefreshCw size={18} className="spin" /> : <Ban size={18} />}
                         sx={{
                             ...btnProps,
-                            height: "60px",
+                            height: "40px",
                         }}
                         onClick={handleDontWait}
                         disabled={controlsDisabled || !formControls.stormInProgress}
@@ -144,23 +186,25 @@ const StormControls = () => {
                             dontWaitLoading ? "Processing..." : "Don't Wait"
                         }
                     </Button>
-                </div>
+                </Tooltip>
 
-                <Button
-                    variant="contained"
-                    startIcon={stopping ? <RefreshCw size={20} className="spin" /> : <StopCircleIcon />}
-                    onClick={onStopHandler}
-                    sx={{
-                        ...btnProps,
-                        backgroundColor: colorScheme === 'light' ? "var(--bright-red-2)" : "var(--input-active-red-dark)",
-                        color: "var(--light-text)",
-                    }}
-                    disabled={controlsDisabled}
-                >
-                    {
-                        stopping ? "Stopping Storm..." : "Stop"
-                    }
-                </Button>
+                <Tooltip title="Stop the Storm" placement="right">
+                    <Button
+                        variant="contained"
+                        startIcon={stopping ? <RefreshCw size={18} className="spin" /> : <StopCircle size={18} />}
+                        onClick={onStopHandler}
+                        sx={{
+                            ...btnProps,
+                            backgroundColor: colorScheme === 'light' ? "var(--bright-red-2)" : "var(--input-active-red-dark)",
+                            color: "var(--light-text)",
+                        }}
+                        disabled={controlsDisabled}
+                    >
+                        {
+                            stopping ? "Stopping Storm..." : "Stop"
+                        }
+                    </Button>
+                </Tooltip>
             </div>
         </div>
     );

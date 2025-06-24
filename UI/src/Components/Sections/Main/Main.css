@@ -1,7 +1,7 @@
 .main {
     display: grid;
     grid-template-columns: 2fr 1fr;
-    min-height: calc(86.4vh - 4rem);
+    min-height: calc(86.2vh - 4rem);
     max-height: fit-content;
     gap: 1.5rem;
     margin-left: auto;

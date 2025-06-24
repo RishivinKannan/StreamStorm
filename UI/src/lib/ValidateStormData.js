@@ -38,34 +38,59 @@ const ValidateStormData = (formControls) => {
         formControls.setMessagesHelperText("At least one message is required.");
     }
 
-    if (formControls.slowMode < 5) {
+    if (isNaN(formControls.slowMode)) {
         isValid = false;
         formControls.setSlowModeError(true);
-        formControls.setSlowModeHelperText("Slow mode must be at least 5 seconds.");
+        formControls.setSlowModeHelperText("Enter a value for slow mode.");
     }
 
-    if (formControls.subscribeAndWait && formControls.subscribeWaitTime < 0) {
+    if (formControls.slowMode < 1) {
         isValid = false;
-        formControls.setSubscribeWaitTimeError(true);
-        formControls.setSubscribeWaitTimeHelperText("Subscribe wait time cannot be negative.");
+        formControls.setSlowModeError(true);
+        formControls.setSlowModeHelperText("Slow mode must be at least 1 seconds.");
+    }
+
+    if (formControls.subscribeAndWait) {
+        if (isNaN(formControls.subscribeWaitTime)) {
+            isValid = false;
+            formControls.setSubscribeWaitTimeError(true);
+            formControls.setSubscribeWaitTimeHelperText("Enter a valid number for subscribe wait time.");
+        } else if (formControls.subscribeWaitTime < 1) {
+            isValid = false;
+            formControls.setSubscribeWaitTimeError(true);
+            formControls.setSubscribeWaitTimeHelperText("Enter a valid number for subscribe wait time.");
+        }
     }
 
     if (formControls.accountSelection === 'basic') {
-        if (formControls.noOfAccounts < 1) {
+        if (isNaN(formControls.noOfAccounts)) {
+            isValid = false;
+            formControls.setNoOfAccountsError(true);
+            formControls.setNoOfAccountsHelperText("Enter a valid number of accounts.");
+        } else if (formControls.noOfAccounts < 1) {
             isValid = false;
             formControls.setNoOfAccountsError(true);
             formControls.setNoOfAccountsHelperText("Number of accounts must be at least 1.");
         }
     } else if (formControls.accountSelection === 'advanced') {
-        if (formControls.startAccountIndex < 1) {
+        if (isNaN(formControls.startAccountIndex)) {
+            isValid = false;
+            formControls.setStartAccountIndexError(true);
+            formControls.setStartAccountIndexHelperText("Enter a valid start account index.");
+        } else if (formControls.startAccountIndex < 1) {
             isValid = false;
             formControls.setStartAccountIndexError(true);
             formControls.setStartAccountIndexHelperText("Start account index must be at least 1.");
         }
-        if (formControls.endAccountIndex < formControls.startAccountIndex) {
+        
+        if (isNaN(formControls.endAccountIndex)) {
             isValid = false;
             formControls.setEndAccountIndexError(true);
-            formControls.setEndAccountIndexHelperText("Cannot be less than start account index.");
+            formControls.setEndAccountIndexHelperText("Enter a valid end account index.");
+        } else if (formControls.endAccountIndex < formControls.startAccountIndex) {
+            isValid = false;
+            formControls.setEndAccountIndexError(true);
+            formControls.setEndAccountIndexHelperText("End account index cannot be less than start account index.");
         }
     }
 

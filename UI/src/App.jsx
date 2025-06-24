@@ -12,7 +12,7 @@ import AppProviders from "./lib/AppProviders";
 const App = () => {
 
     const { colorScheme, setColorScheme } = useColorScheme();
-    const [defaultColorScheme] = useLocalStorageState('theme', 'light');
+    const [defaultColorScheme] = useLocalStorageState('theme', 'dark');
 
     useEffect(() => {
         setColorScheme(defaultColorScheme);

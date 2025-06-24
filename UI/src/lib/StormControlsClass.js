@@ -10,6 +10,7 @@ class StormControlsClass {
         this.setControlsDisabled = null;
         this.setDontWaitLoading = null;
         this.setChangeMessagesLoading = null;
+        this.setChangeSlowModeLoading = null;
     }
 
     startStorm(formControls) {
@@ -170,6 +171,10 @@ class StormControlsClass {
                     this.notifications.show('Each account will start storming without waiting for others!', {
                         severity: 'success',
                     });
+                } else {
+                    this.notifications.show(data.message || 'Failed to set dont-wait', {
+                        severity: 'error',
+                    });
                 }
             })
             .catch(error => {
@@ -184,7 +189,7 @@ class StormControlsClass {
             });
     }
 
-    async changeMessages(messages) {
+    changeMessages(messages) {
         
         this.setChangeMessagesLoading(true);
         this.setControlsDisabled(true);
@@ -216,6 +221,41 @@ class StormControlsClass {
             })
             .finally(() => {
                 this.setChangeMessagesLoading(false);
+                this.setControlsDisabled(false);
+            });
+    }
+
+    changeSlowMode(slowModeValue) {
+        this.setChangeSlowModeLoading(true);
+        this.setControlsDisabled(true);
+
+        fetch(`${this.hostAddress}/change_slow_mode`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ slow_mode: slowModeValue }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.notifications.show('Slow mode changed successfully!', {
+                        severity: 'success',
+                    });
+                } else {
+                    this.notifications.show(data.message || 'Failed to change slow mode', {
+                        severity: 'error',
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error changing slow mode:', error);
+                this.notifications.show('An error occurred while changing slow mode', {
+                    severity: 'error',
+                });
+            })
+            .finally(() => {
+                this.setChangeSlowModeLoading(false);
                 this.setControlsDisabled(false);
             });
 

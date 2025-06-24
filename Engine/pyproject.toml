@@ -16,4 +16,11 @@ dependencies = [
     "undetected-chromedriver>=3.5.5",
     "undetected-geckodriver>=1.0.7",
     "setuptools>=80.9.0",
+    "pywebview>=5.4",
+    "waitress>=3.0.2",
+]
+
+[dependency-groups]
+dev = [
+    "auto-py-to-exe>=2.46.0",
 ]

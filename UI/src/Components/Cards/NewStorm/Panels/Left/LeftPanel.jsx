@@ -17,7 +17,7 @@ const LeftPanel = () => {
         const value = e.target.value;
         formControls.setMessagesString(value);
 
-        const allMessages = value.split('\n').filter((message) => {
+        let allMessages = value.split('\n').filter((message) => {
             return message !== '';
         });
 
@@ -99,26 +99,6 @@ const LeftPanel = () => {
             </div>
 
             <div className="times-input-container">
-                {
-                    formControls.subscribeAndWait ? (
-                        <TextField
-                            type="number"
-                            variant="outlined"
-                            label="Subscribe & Wait Time (s)"
-                            sx={inputProps}
-                            onChange={(e) => {
-                                formControls.setSubscribeWaitTime(parseInt(e.target.value));
-                                formControls.setSubscribeWaitTimeError(false);
-                                formControls.setSubscribeWaitTimeHelperText("");
-                            }}
-                            error={formControls.subscribeWaitTimeError}
-                            helperText={formControls.subscribeWaitTimeHelperText}
-                            disabled={formControls.stormInProgress || formControls.loading}
-                        />
-                    ) : null
-
-                }
-
                 <TextField
                     type="number"
                     variant="outlined"
@@ -134,6 +114,28 @@ const LeftPanel = () => {
                     defaultValue={5}
                     disabled={formControls.stormInProgress || formControls.loading}
                 />
+
+                {
+                    formControls.subscribeAndWait ? (
+                        <TextField
+                            type="number"
+                            variant="outlined"
+                            label="Subscribe & Wait Time (s)"
+                            defaultValue={65}
+                            sx={inputProps}
+                            onChange={(e) => {
+                                formControls.setSubscribeWaitTime(parseInt(e.target.value));
+                                formControls.setSubscribeWaitTimeError(false);
+                                formControls.setSubscribeWaitTimeHelperText("");
+                            }}
+                            error={formControls.subscribeWaitTimeError}
+                            helperText={formControls.subscribeWaitTimeHelperText}
+                            disabled={formControls.stormInProgress || formControls.loading}
+                        />
+                    ) : null
+
+                }  
+
             </div>
 
             <div className="account-index-inputs-container">
@@ -170,11 +172,12 @@ const LeftPanel = () => {
                         <div className="account-selection-basic-container">
                             <TextField
                                 type="number"
-                                defaultValue={1}
+                                // defaultValue={1}
                                 variant="outlined"
                                 label="No.of Accounts"
                                 className="account-index-input"
                                 sx={inputProps}
+                                value={formControls.noOfAccounts}
                                 onChange={(e) => {
                                     formControls.setNoOfAccounts(parseInt(e.target.value));
                                     formControls.setNoOfAccountsError(false);

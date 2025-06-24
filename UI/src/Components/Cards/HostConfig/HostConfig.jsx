@@ -12,7 +12,7 @@ import { useNotifications } from "@toolpad/core/useNotifications";
 const HostConfig = () => {
     const { colorScheme } = useColorScheme();
     const { btnProps, inputProps } = useContext(CustomMUIPropsContext);
-    const [savedHostAddress, setSavedHostAddress] = useLocalStorageState("hostAddress", DEFAULT_HOST_ADDRESS);
+    const [savedHostAddress, setSavedHostAddress] = useLocalStorageState("hostAddress");
     const notifications = useNotifications();
 
     const [hostAddress, setHostAddress] = useState(savedHostAddress);

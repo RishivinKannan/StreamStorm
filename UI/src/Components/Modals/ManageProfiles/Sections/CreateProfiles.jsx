@@ -154,7 +154,7 @@ const CreateProfiles = () => {
                     }}
                     value={profiles}
                     onChange={(e) => {
-                        setProfiles(Math.trunc(e.target.value));
+                        setProfiles(parseInt(e.target.value));
                         setProfilesError(false);
                         setProfilesHelperText("");
                         setErrorText("");

@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, useColorScheme } from "@mui/material";
 
-import { CustomMUIPropsContext, StormDataContext } from "../../lib/ContextAPI";
+import { CustomMUIPropsContext } from "../../lib/ContextAPI";
 
 const ChangeMessages = ({ payload, open, onClose }) => {
     const { btnProps, inputProps } = useContext(CustomMUIPropsContext);
@@ -22,7 +22,7 @@ const ChangeMessages = ({ payload, open, onClose }) => {
         const value = e.target.value;
         setMessagesString(value);
 
-        const allMessages = value.split('\n').filter((message) => {
+        let allMessages = value.split('\n').filter((message) => {
             return message !== '';
         });
 
