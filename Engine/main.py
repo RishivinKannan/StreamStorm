@@ -5,16 +5,18 @@ from flask import Flask, Response, send_from_directory, request, jsonify
 from flask_cors import CORS
 from psutil import virtual_memory
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+from threading import Thread
+from waitress import serve
 # from multiprocessing import Manager
 # from multiprocessing.managers import SyncManager
 
 from StreamStorm.StreamStorm import StreamStorm
 from StreamStorm.Profiles import Profiles
-from StreamStorm.Validation import StormDataValidation, ProfileDataValidation, ChangeMessagesDataValidation
+from StreamStorm.Validation import StormDataValidation, ProfileDataValidation, ChangeMessagesDataValidation, ChangeSlowModeDataValidation
 from StreamStorm import pause_event_mt
 
 
-app: Flask = Flask(__name__, static_folder="../UI/dist", static_url_path="/")
+app: Flask = Flask(__name__, static_folder="../data/ui", static_url_path="/")
 CORS(app)
 
 # manager: SyncManager = Manager()
@@ -191,11 +193,21 @@ def get_ram_info() -> Response:
         }
     )
 
-__all__: list[str] = ["app"]
+def run_flask_app() -> None:
+    """
+    Run the Flask application.
+    This function is used to run the Flask app in a separate thread.
+    """
+    serve(app, host="0.0.0.0", port=5000)
 
 
 if __name__ == "__main__":
     from sys import argv
+    from os import kill, getpid
+    from signal import SIGTERM
+    from os.path import dirname, abspath, join
+    from webview import create_window, start    
+    
     environ["rammap_path"] = join(dirname(abspath(__file__)), "RAMMap.exe")
     
     if len(argv) > 1:
@@ -204,10 +216,20 @@ if __name__ == "__main__":
         elif argv[1] == "--mp":
             environ["mode"] = "mp"
 
-    system('cls')
+    # system('cls')
     
-    app.run(
-        host="0.0.0.0",
-        port=5000,
-        debug=False,
-    )
+    Thread(target=run_flask_app, daemon=True).start()
+    
+    try: 
+        create_window(
+            title="StreamStorm",
+            url="http://localhost:5000",
+            width=1300,
+            height=900,
+            confirm_close=True
+        )
+        
+        start()
+    finally:
+        # Ensure the Flask app is stopped when the webview is closed
+        kill(getpid(), SIGTERM)
