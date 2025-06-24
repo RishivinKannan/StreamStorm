@@ -95,7 +95,7 @@ class StreamStorm(Selenium, Profiles):
                 Separate_Account.go_to_page(self.chat_url)
                 
                 self.ready_to_storm_instances += 1
-                print(f"@@@@@@@@@@@@@@@@@@@@@@@@@ Instance {index} is ready @@@@@@@@@@@@@@@@@@@@@@@@@")
+                print(f"@@@@@@@@@@@@@@@@@@@@@@@@@ Account {index} is ready @@@@@@@@@@@@@@@@@@@@@@@@@")
 
                 if self.subscribe[1]:
                     sleep(self.subscribe_and_wait_time)
