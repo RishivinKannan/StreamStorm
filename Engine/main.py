@@ -1,12 +1,13 @@
 from os import environ
 from traceback import print_exc
 from typing import Optional
-from flask import Flask, Response, send_from_directory, request, jsonify
+from flask import Flask, Response, request, jsonify
 from flask_cors import CORS
 from psutil import virtual_memory
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 from threading import Thread
 from waitress import serve
+
 # from multiprocessing import Manager
 # from multiprocessing.managers import SyncManager
 
@@ -16,7 +17,7 @@ from StreamStorm.Validation import StormDataValidation, ProfileDataValidation, C
 from StreamStorm import pause_event_mt
 
 
-app: Flask = Flask(__name__, static_folder="../data/ui", static_url_path="/")
+app: Flask = Flask(__name__)
 CORS(app)
 
 # manager: SyncManager = Manager()
@@ -32,13 +33,6 @@ def before_request() -> Optional[Response]:
             
         if request.path in ('/create_profiles', '/delete_all_profiles'):
             request.validated_data = ProfileDataValidation(**request.json).model_dump()
-            
-
-
-
-@app.route("/")
-def home() -> Response:
-    return send_from_directory(app.static_folder, "index.html")
 
 
 @app.route("/storm", methods=["POST"])
@@ -202,11 +196,14 @@ def run_flask_app() -> None:
 
 
 if __name__ == "__main__":
+    from dgupdater import check_update
+    check_update()
     from sys import argv
     from os import kill, getpid
     from signal import SIGTERM
     from os.path import dirname, abspath, join
     from webview import create_window, start    
+    
     
     environ["rammap_path"] = join(dirname(abspath(__file__)), "RAMMap.exe")
     
@@ -215,15 +212,13 @@ if __name__ == "__main__":
             environ["mode"] = "mt"
         elif argv[1] == "--mp":
             environ["mode"] = "mp"
-
-    # system('cls')
     
     Thread(target=run_flask_app, daemon=True).start()
     
     try: 
         create_window(
             title="StreamStorm",
-            url="http://localhost:5000",
+            url="https://streamstorm-ui.netlify.app/",
             width=1300,
             height=900,
             confirm_close=True
