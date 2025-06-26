@@ -133,16 +133,11 @@ const DeleteAllProfiles = () => {
                     }}
                     onClick={handleDeleteAllProfiles}
                     disabled={loading}
-                    startIcon={<Trash2 size={20} />}
+                    startIcon={loading ? <RefreshCw size={20} className="spin" /> : <Trash2 size={20} />}
 
                 >
                     {
-                        loading ? (
-                            <>
-                                <RefreshCw size={20} className="spin" />
-                                &nbsp;&nbsp;Deleting Profiles...
-                            </>
-                        ) : "Delete Profiles"
+                        loading ? "Deleting Profiles..." : "Delete Profiles"
                     }
                 </Button>
 

@@ -3,6 +3,7 @@ from threading import Thread
 from random import choice
 from os import environ
 from typing import Self
+from json import load
 from selenium.common.exceptions import InvalidSessionIdException
 from http.client import RemoteDisconnected
 from urllib3.exceptions import ProtocolError, ReadTimeoutError
@@ -55,6 +56,14 @@ class StreamStorm(Selenium, Profiles):
         StreamStorm.ss_instance = self
         
         clear_ram()
+        
+    def check_channels_available(self) -> None:
+        with open(self.profiles_dir + r"\config.json", "r", encoding="utf-8") as file:
+            data: dict = load(file)
+        no_of_channels: int = data.get("no_of_channels", 0)
+        
+        if no_of_channels < (self.end_account_index - self.start_account_index + 1):
+            raise ValueError("Not enough channels available in your YouTube account. Create Enough channels first. Then create Profiles again.")
 
     def start(self) -> None:
         if environ["mode"] == "mp":
@@ -62,6 +71,8 @@ class StreamStorm(Selenium, Profiles):
 
         self.ready_event.clear()  # Wait for the ready event to be set before starting the storming
         self.ready_instances = 0
+        
+        self.check_channels_available()
         
         temp_profiles: list[str] = self.get_available_temp_profiles()
         no_of_temp_profiles: int = len(temp_profiles)

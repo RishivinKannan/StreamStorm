@@ -119,21 +119,21 @@ class Selenium:
         
     def go_to_page(self, url: str) -> None:
         self.driver.get(url)
-        
-    def __find_element(self, by: str, value: str) -> WebElement:
+
+    def __find_element(self, by: str, value: str, wait_time: int = 15) -> WebElement:
         try:
-            element: WebElement = WebDriverWait(self.driver, 15).until(EC.element_to_be_clickable((by, value)))
+            element: WebElement = WebDriverWait(self.driver, wait_time).until(EC.element_to_be_clickable((by, value)))
         except TimeoutException as _:
             # print(e)
             raise ElementNotFound
         
         return element
-    
-    
-    def find_and_click_element(self, by: str, value: str, scroll: bool = True, for_subscribe: bool = False) -> None:
-        
+
+
+    def find_and_click_element(self, by: str, value: str, scroll: bool = True, for_subscribe: bool = False, for_profiles_init: bool = False) -> None:
+
         try:
-            element: WebElement = self.__find_element(by, value)
+            element: WebElement = self.__find_element(by, value, wait_time=5 if for_profiles_init else 15)
             
             if scroll:
                 self.driver.execute_script("arguments[0].scrollIntoView();", element)
@@ -141,7 +141,7 @@ class Selenium:
             element.click()
             
         except (ElementNotInteractableException, ElementNotFound):
-            if for_subscribe:
+            if for_subscribe or for_profiles_init:
                 pass
             else:
                 self.driver.close()  
