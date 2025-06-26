@@ -13,9 +13,9 @@ class StormControlsClass {
         this.setChangeSlowModeLoading = null;
     }
 
-    startStorm(formControls) {
+    startStorm(formControls, systemInfoControls) {
 
-        const dataValid = ValidateStormData(formControls);
+        const dataValid = ValidateStormData(formControls, systemInfoControls);
 
         if (!dataValid) {
             return;

@@ -1,6 +1,7 @@
+import SystemInfo from "../Components/Cards/SystemInfo/SystemInfo";
 
 
-const ValidateStormData = (formControls) => {
+const ValidateStormData = (formControls, systemInfoControls) => {
     let isValid = true;
 
     if (!formControls.videoURL) {
@@ -71,6 +72,9 @@ const ValidateStormData = (formControls) => {
             isValid = false;
             formControls.setNoOfAccountsError(true);
             formControls.setNoOfAccountsHelperText("Number of accounts must be at least 1.");
+        } else if (formControls.noOfAccounts > (systemInfoControls.availableRAM / systemInfoControls.RAM_PER_PROFILE)) {
+            isValid = false;
+            formControls.setErrorText(`You can run a maximum of ${Math.floor(systemInfoControls.availableRAM / systemInfoControls.RAM_PER_PROFILE)} accounts with your available RAM.`);
         }
     } else if (formControls.accountSelection === 'advanced') {
         if (isNaN(formControls.startAccountIndex)) {
@@ -92,12 +96,23 @@ const ValidateStormData = (formControls) => {
             formControls.setEndAccountIndexError(true);
             formControls.setEndAccountIndexHelperText("End account index cannot be less than start account index.");
         }
+
+        const totalAccounts = formControls.endAccountIndex - formControls.startAccountIndex + 1;
+        if (totalAccounts > (systemInfoControls.availableRAM / systemInfoControls.RAM_PER_PROFILE)) {
+            isValid = false;
+            formControls.setErrorText(`You can run a maximum of ${Math.floor(systemInfoControls.availableRAM / systemInfoControls.RAM_PER_PROFILE)} accounts with your available RAM.`);
+        }
     }
 
     if (!formControls.browser) {
         isValid = false;
         formControls.setBrowserError(true);
         formControls.setBrowserHelperText("Select a browser.");
+    }
+
+    if (systemInfoControls.availableRAM === null) {
+        isValid = false;
+        formControls.setErrorText("Not enough RAM to run even one account. If this is a mistake, Refresh RAM and try again.");
     }
 
     return isValid;

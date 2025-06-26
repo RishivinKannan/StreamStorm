@@ -198,6 +198,7 @@ const LeftPanel = () => {
                                 label="Start Account Index"
                                 className="account-index-input"
                                 sx={inputProps}
+                                value={formControls.startAccountIndex}
                                 onChange={(e) => {
                                     formControls.setStartAccountIndex(parseInt(e.target.value));
                                     formControls.setStartAccountIndexError(false);
@@ -214,6 +215,7 @@ const LeftPanel = () => {
                                 label="End Account Index"
                                 className="account-index-input"
                                 sx={inputProps}
+                                value={formControls.endAccountIndex}
                                 onChange={(e) => {
                                     formControls.setEndAccountIndex(parseInt(e.target.value));
                                     formControls.setEndAccountIndexError(false);

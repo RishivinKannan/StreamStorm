@@ -6,22 +6,22 @@ import { RefreshCw, Users } from 'lucide-react';
 
 import "./RightPanel.css";
 import StormControls from './StormControls/StormControls';
-import { CustomMUIPropsContext, StormDataContext } from '../../../../../lib/ContextAPI';
+import { CustomMUIPropsContext, StormDataContext, SystemInfoContext } from '../../../../../lib/ContextAPI';
 import { BROWSERS } from '../../../../../lib/Constants';
-import submitToHost from '../../../../../lib/submitToHost';
 import ErrorText from '../../../../Elements/ErrorText';
 
 const RightPanel = (props) => {
 
     const { setManageProfilesOpen } = props;
-
-    const { btnProps, inputProps } = useContext(CustomMUIPropsContext);
     const { colorScheme } = useColorScheme();
+    const { btnProps, inputProps } = useContext(CustomMUIPropsContext);
     const formControls = useContext(StormDataContext);
+    const systemInfoControls = useContext(SystemInfoContext);
+
 
     const handleSubmit = () => {
         formControls.setErrorText("");
-        formControls.SC.current.startStorm(formControls)
+        formControls.SC.current.startStorm(formControls, systemInfoControls)
     }
 
     return (

@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useColorScheme } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import { CardHeader, CardContent, Button } from "@mui/material";
@@ -7,41 +7,28 @@ import { useLocalStorageState } from '@toolpad/core/useLocalStorageState';
 import { useNotifications } from '@toolpad/core/useNotifications';
 
 import "./SystemInfo.css"
-import { CustomMUIPropsContext } from '../../../lib/ContextAPI';
+import { CustomMUIPropsContext, SystemInfoContext } from '../../../lib/ContextAPI';
 import { RAM_PER_PROFILE } from '../../../lib/Constants';
 
 const SystemInfo = () => {
     const {btnProps, cardProps} = useContext(CustomMUIPropsContext);
+    const systemInfoControls = useContext(SystemInfoContext);
     const { colorScheme } = useColorScheme();
     const notifications = useNotifications();
 
     const [fetchingRAM, setFetchingRAM] = useState(false);
-    const [availableRAM, setAvailableRAM] = useState();
     const [hostAddress] = useLocalStorageState('hostAddress');
 
-    
     const refreshRAM = async () => {
         setFetchingRAM(true);
-        
-
-        fetch(`${hostAddress}/get_ram_info`)
-        .then(response => response.json())
-        .then(data => {
-            setAvailableRAM(Math.trunc(data.free * 1000));
-            setFetchingRAM(false);
-        })
-        .catch(error => {
-            console.error("Error fetching RAM data:", error);
-            setFetchingRAM(false);
-            setAvailableRAM(null);
-
-            notifications.show("Failed to fetch RAM data", {
-                severity: 'error',
-            });
-        });
-        
+        await systemInfoControls.fetchRAM(hostAddress, notifications, systemInfoControls);
+        setFetchingRAM(false);
     }
-
+    
+    useEffect(() => {
+        systemInfoControls.fetchRAM(hostAddress, notifications, systemInfoControls);
+    }, [hostAddress]);
+    
     return (
         <Card
             className={`system-info-card ${colorScheme}-bordered-container`}
@@ -72,7 +59,7 @@ const SystemInfo = () => {
                     <div className="system-info-item">
                         <div className="ram-value-container">
                             <span className="ram-label">Available RAM:</span>
-                            <span className={`ram-value-${colorScheme}`}>{availableRAM ? `${availableRAM} MB` : "N/A"}</span>
+                            <span className={`ram-value-${colorScheme}`}>{systemInfoControls.availableRAM ? `${systemInfoControls.availableRAM} MB` : "N/A"}</span>
                         </div>
                         <Button
                             startIcon={<RefreshCw size={15} className={fetchingRAM ? "spin" : ""} />}
@@ -90,8 +77,8 @@ const SystemInfo = () => {
                         </span>
                         <span className='ram-note'>
                             {
-                                availableRAM ? (
-                                    `Since you have ${availableRAM} MB of RAM available, you can run approximately ${Math.floor(availableRAM / RAM_PER_PROFILE)} accounts.`
+                                systemInfoControls.availableRAM ? (
+                                    `Since you have ${systemInfoControls.availableRAM} MB of RAM available, you can run approximately ${Math.floor(systemInfoControls.availableRAM / RAM_PER_PROFILE)} accounts.`
                                 ) : (
                                     "RAM information is currently unavailable."
                                 )

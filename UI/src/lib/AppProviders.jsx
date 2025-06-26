@@ -1,30 +1,35 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { DialogsProvider } from '@toolpad/core/useDialogs';
 import { NotificationsProvider, } from '@toolpad/core/useNotifications';
 
-import { CustomMUIPropsContext } from './ContextAPI';
+import { CustomMUIPropsContext, SystemInfoContext } from './ContextAPI';
 import { getCustomMUIProps } from "./CustomMUIProps";
-import getBrowser from "./getBrowser";
+import fetchRAM from "./FetchRAM"
+import { RAM_PER_PROFILE } from "./Constants";
 
 
 const AppProviders = ({ children, theme }) => {
 
-    const browser = useMemo(getBrowser, []);
     const MUIProps = useMemo(() => getCustomMUIProps(theme), [theme]);
+
+    const [availableRAM, setAvailableRAM] = useState(null);
+    const systemInfoControls = { availableRAM, setAvailableRAM, fetchRAM, RAM_PER_PROFILE };
 
     return (
         <CustomMUIPropsContext.Provider value={MUIProps}>
-            <DialogsProvider>
-                <NotificationsProvider slotProps={{
-                    snackbar: {
-                        anchorOrigin: { vertical: 'bottom', horizontal: 'left' },
-                        autoHideDuration: 2500,
-                    },
-                }}>
+            <SystemInfoContext.Provider value={systemInfoControls}>
+                <DialogsProvider>
+                    <NotificationsProvider slotProps={{
+                        snackbar: {
+                            anchorOrigin: { vertical: 'bottom', horizontal: 'left' },
+                            autoHideDuration: 2500,
+                        },
+                    }}>
                         {children}
 
-                </NotificationsProvider>
-            </DialogsProvider>
+                    </NotificationsProvider>
+                </DialogsProvider>
+            </SystemInfoContext.Provider>
         </CustomMUIPropsContext.Provider>
     )
 }
