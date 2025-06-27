@@ -104,6 +104,7 @@ const LeftPanel = () => {
                     variant="outlined"
                     label="Slow Mode (s)"
                     sx={inputProps}
+                    value={formControls.slowMode}
                     onChange={(e) => {
                         formControls.setSlowMode(parseInt(e.target.value));
                         formControls.setSlowModeError(false);
@@ -123,6 +124,7 @@ const LeftPanel = () => {
                             label="Subscribe & Wait Time (s)"
                             defaultValue={65}
                             sx={inputProps}
+                            value={formControls.subscribeWaitTime}
                             onChange={(e) => {
                                 formControls.setSubscribeWaitTime(parseInt(e.target.value));
                                 formControls.setSubscribeWaitTimeError(false);
@@ -159,11 +161,11 @@ const LeftPanel = () => {
                         </div>
                         <div className="account-index-radio-container">
                             <Radio
-                                value="advanced"
-                                checked={formControls.accountSelection === "advanced"}
+                                value="intermediate"
+                                checked={formControls.accountSelection === "intermediate"}
                                 disabled={formControls.stormInProgress || formControls.loading}
                             />
-                            <span className="account-index-input-label">Advanced</span>
+                            <span className="account-index-input-label">Intermediate</span>
                         </div>
                     </RadioGroup>
                 </div>
@@ -190,7 +192,7 @@ const LeftPanel = () => {
                             />
                         </div>
                     ) : (
-                        <div className="account-selection-advanced-container">
+                        <div className="account-selection-intermediate-container">
                             <TextField
                                 type="number"
                                 defaultValue={1}
@@ -229,7 +231,7 @@ const LeftPanel = () => {
                     )
                 }
                 {
-                    formControls.accountSelection === "advanced" ? (
+                    formControls.accountSelection === "intermediate" ? (
                         <span className='account-selection-note'>
                             Note: Index starts from 1, and the end index is inclusive.
                         </span>

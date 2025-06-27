@@ -50,17 +50,17 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 0.5rem;
+    /* gap: 0.5rem; */
 }
 
-.account-selection-advanced-container {
+.account-selection-intermediate-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
 }
 
 @media (max-width: 460px) {
-    .account-selection-advanced-container {
+    .account-selection-intermediate-container {
         grid-template-columns: 1fr;
     }
 }

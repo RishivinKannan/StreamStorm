@@ -76,7 +76,7 @@ const ValidateStormData = (formControls, systemInfoControls) => {
             isValid = false;
             formControls.setErrorText(`You can run a maximum of ${Math.floor(systemInfoControls.availableRAM / systemInfoControls.RAM_PER_PROFILE)} accounts with your available RAM.`);
         }
-    } else if (formControls.accountSelection === 'advanced') {
+    } else if (formControls.accountSelection === 'intermediate') {
         if (isNaN(formControls.startAccountIndex)) {
             isValid = false;
             formControls.setStartAccountIndexError(true);
