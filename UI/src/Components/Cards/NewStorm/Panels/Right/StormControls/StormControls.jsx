@@ -1,16 +1,17 @@
 import { useContext, useState, useEffect, useRef } from "react";
 import { Button, Tooltip } from "@mui/material";
 import { useColorScheme } from '@mui/material/styles';
-import { Ban, Pause, Play, RefreshCw, SquarePen, StopCircle, Zap } from 'lucide-react';
+import { Ban, Pause, Play, Plus, RefreshCw, SquarePen, StopCircle, Zap } from 'lucide-react';
 import { useDialogs } from '@toolpad/core/useDialogs';
 
 import "./StormControls.css";
 import { CustomMUIPropsContext, StormDataContext, } from "../../../../../../lib/ContextAPI";
-import AreYouSure from "../../../../../Dialogs/AreYouSure";
 import Ping from "../../../../../Elements/Ping/Ping";
 import StormControlsClass from "../../../../../../lib/StormControlsClass";
+import AreYouSure from "../../../../../Dialogs/AreYouSure";
 import ChangeMessages from "../../../../../Dialogs/ChangeMessages";
 import ChangeSlowMode from "../../../../../Dialogs/ChangeSlowMode";
+import AddChannels from "../../../../../Dialogs/AddChannels";
 
 const StormControls = () => {
 
@@ -25,6 +26,7 @@ const StormControls = () => {
     const [dontWaitLoading, setDontWaitLoading] = useState(false);
     const [changeMessagesLoading, setChangeMessagesLoading] = useState(false);
     const [changeSlowModeLoading, setChangeSlowModeLoading] = useState(false);
+    const [moreChannelsLoading, setMoreChannelsLoading] = useState(false);
     const [controlsDisabled, setControlsDisabled] = useState(false);
 
     useEffect(() => {
@@ -36,6 +38,7 @@ const StormControls = () => {
         formControls.SC.current.setDontWaitLoading = setDontWaitLoading;
         formControls.SC.current.setChangeMessagesLoading = setChangeMessagesLoading;
         formControls.SC.current.setChangeSlowModeLoading = setChangeSlowModeLoading;
+        formControls.SC.current.setMoreChannelsLoading = setMoreChannelsLoading;
         formControls.SC.current.notifications = formControls.notifications;
     }, [formControls.hostAddress]);
 
@@ -65,8 +68,14 @@ const StormControls = () => {
         const messages = await dialogs.open(ChangeMessages, {
             formControls: formControls,
         });
+
         if (!messages) return;
-        formControls.SC.current.changeMessages(messages);
+
+        const success = formControls.SC.current.changeMessages(messages);
+        if (success) {
+            formControls.setMessages(messages);
+            formControls.setMessagesString(messages.join('\n'));
+        }
     }
 
     const handleDontWait = async () => {
@@ -87,7 +96,19 @@ const StormControls = () => {
 
         if (!slowModeValue) return;
 
-        formControls.SC.current.changeSlowMode(slowModeValue);
+        formControls.SC.current.changeSlowMode(slowModeValue, formControls.setSlowMode);
+    }
+
+    const handleAddMoreChannels = async () => {
+
+        const channels = await dialogs.open(AddChannels, {
+            mode: "add",
+            formControls: formControls,
+        });
+
+        if (!channels || channels.length === 0) return;
+
+        formControls.SC.current.startMoreChannels(channels);
     }
 
     return (
@@ -170,24 +191,42 @@ const StormControls = () => {
 
                 </div>
 
-                <Tooltip title="Change existing Messages" placement="right">
+                <div className="row">
 
-                    <Button
-                        variant="contained"
-                        startIcon={dontWaitLoading ? <RefreshCw size={18} className="spin" /> : <Ban size={18} />}
-                        sx={{
-                            ...btnProps,
-                            height: "40px",
-                        }}
-                        onClick={handleDontWait}
-                        disabled={controlsDisabled || !formControls.stormInProgress}
-                    >
-                        {
-                            dontWaitLoading ? "Processing..." : "Don't Wait"
-                        }
-                    </Button>
-                </Tooltip>
+                    <Tooltip title="Change existing Messages" placement="right">
 
+                        <Button
+                            variant="contained"
+                            startIcon={dontWaitLoading ? <RefreshCw size={18} className="spin" /> : <Ban size={18} />}
+                            sx={{
+                                ...btnProps,
+                                height: "40px",
+                            }}
+                            onClick={handleDontWait}
+                            disabled={controlsDisabled || !formControls.stormInProgress}
+                        >
+                            {
+                                dontWaitLoading ? "Processing..." : "Don't Wait"
+                            }
+                        </Button>
+                    </Tooltip>
+
+                    <Tooltip title="Start storming on more channels" placement="right">
+                        <Button
+                            variant="contained"
+                            startIcon={moreChannelsLoading ? <RefreshCw size={18} className="spin" /> : <Plus size={18} />}
+                            sx={{
+                                ...btnProps,
+                                height: "40px",
+                            }}
+                            onClick={handleAddMoreChannels}
+                            disabled={controlsDisabled || !formControls.stormInProgress}
+                        >
+                            Channels
+                        </Button>
+                    </Tooltip>
+
+                </div>
                 <Tooltip title="Stop the Storm" placement="right">
                     <Button
                         variant="contained"

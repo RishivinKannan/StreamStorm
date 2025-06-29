@@ -38,7 +38,7 @@ const LeftPanel = () => {
         }
         formControls.setVideoURL(value);
         formControls.setVideoURLError(false);
-        formControls.setVideoURLHelperText("Enter the URL of the video to be used in the storm.");
+        formControls.setVideoURLHelperText("");
     }
 
 

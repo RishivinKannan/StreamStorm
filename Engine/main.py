@@ -1,9 +1,13 @@
-from os import environ
+from os import environ, makedirs
+from os.path import join, exists
+from json import dump, load
 from traceback import print_exc
 from typing import Optional
+from urllib import response
 from flask import Flask, Response, request, jsonify
 from flask_cors import CORS
 from psutil import virtual_memory
+from platformdirs import user_data_dir
 from concurrent.futures import ThreadPoolExecutor
 from threading import Thread
 from waitress import serve
@@ -13,7 +17,16 @@ from waitress import serve
 
 from StreamStorm.StreamStorm import StreamStorm
 from StreamStorm.Profiles import Profiles
-from StreamStorm.Validation import Validate, StormDataValidation, ProfileDataValidation, ChangeMessagesDataValidation, ChangeSlowModeDataValidation, StartMoreAccountsDataValidation
+from StreamStorm.Validation import (
+    Validate,
+    StormDataValidation,
+    ProfileDataValidation,
+    ChangeMessagesDataValidation,
+    ChangeSlowModeDataValidation,
+    StartMoreChannelsDataValidation,
+    GetChannelsDataValidation,
+)
+
 
 app: Flask = Flask(__name__)
 CORS(app)
@@ -27,33 +40,62 @@ storm_controls_endpoints: list[str] = [
     "/change_messages",
     "/start_storm_dont_wait",
     "/change_slow_mode",
-    "/start_more_accounts",
+    "/start_more_channels",
+    "/get_channels_data",
 ]
 
-@app.before_request
-def before_request() -> Optional[Response]:    
 
+@app.before_request
+def before_request() -> Optional[Response]:
     if request.method == "POST":
-        if request.path in ("/storm", "/create_profiles", "/delete_all_profiles", ):
+        if request.path in (
+            "/storm",
+            "/create_profiles",
+            "/delete_all_profiles",
+        ):
             if environ["BUSY"] == "True":
-                return jsonify({"success": False, "message": f"Engine is Busy: {environ['BUSY_REASON']}"})            
-            
+                return jsonify(
+                    {
+                        "success": False,
+                        "message": f"Engine is Busy: {environ['BUSY_REASON']}",
+                    }
+                )
+
         if request.path in storm_controls_endpoints:
             if StreamStorm.ss_instance is None:
-                return jsonify({"success": False, "message": "No storm is running. Start a storm first."})
-            
+                return jsonify(
+                    {
+                        "success": False,
+                        "message": "No storm is running. Start a storm first.",
+                    }
+                )
+
+    if request.method == "GET":
+        if request.path in storm_controls_endpoints:
+            if StreamStorm.ss_instance is None:
+                return jsonify(
+                    {
+                        "success": False,
+                        "message": "No storm is running. Start a storm first.",
+                    }
+                )
+
 
 @app.route("/storm", methods=["POST"])
 def storm() -> Response:
-    
     if StreamStorm.ss_instance is not None:
-        return jsonify({"success": False, "message": "A storm is already running. Stop the current storm before starting a new one."})
+        return jsonify(
+            {
+                "success": False,
+                "message": "A storm is already running. Stop the current storm before starting a new one.",
+            }
+        )
 
     StreamStorm.each_account_instances = []
 
     try:
         validated_data: dict = Validate(request.json, StormDataValidation)
-        
+
         StreamStormObj: StreamStorm = StreamStorm(
             validated_data["video_url"],
             validated_data["chat_url"],
@@ -68,19 +110,19 @@ def storm() -> Response:
             validated_data["background"],
             # shared_data=shared_data, # Uncomment this line if using shared data
         )
-        
+
         StreamStormObj.ready_event.clear()  # Clear the ready event to ensure it will be only set when all instances are ready
         StreamStormObj.pause_event.set()  # Set the pause event to allow storming to start immediately
-        
+
         environ["BUSY"] = "True"
         environ["BUSY_REASON"] = "Storming in progress"
 
         StreamStormObj.start()
 
         return jsonify({"success": True, "message": "Started"})
-       
+
     except Exception as e:
-        environ["BUSY"] = "False"        
+        environ["BUSY"] = "False"
         return jsonify({"success": False, "message": str(e)})
 
 
@@ -92,17 +134,19 @@ def stop() -> Response:
                 instance.driver.close()
         except Exception:
             pass
-        
+
     with ThreadPoolExecutor() as executor:
         executor.map(close_browser, StreamStorm.each_account_instances)
-    
-    StreamStorm.ss_instance = None  # Clear the StreamStorm instance to allow new storms to start
-    
+
+    StreamStorm.ss_instance = (
+        None  # Clear the StreamStorm instance to allow new storms to start
+    )
+
     try:
         StreamStorm.ss_instance.pause_event.set()  # Ensure the pause event is set to allow next storms
     except Exception as _:
         pass
-    
+
     environ["BUSY"] = "False"
 
     return jsonify({"success": True, "message": "Stopped"})
@@ -117,21 +161,20 @@ def pause() -> Response:
 
 @app.route("/resume", methods=["POST"])
 def resume() -> Response:
-    StreamStorm.ss_instance.pause_event.set()    # Set the pause event to resume storming
+    StreamStorm.ss_instance.pause_event.set()  # Set the pause event to resume storming
 
     return jsonify({"success": True, "message": "Resumed"})
 
 
 @app.route("/change_messages", methods=["POST"])
 def change_messages() -> Response:
-    
     try:
         validated_data: dict = Validate(request.json, ChangeMessagesDataValidation)
 
         StreamStorm.ss_instance.messages = validated_data["messages"]
 
         return jsonify({"success": True, "message": "Messages changed successfully"})
-    
+
     except Exception as e:
         return jsonify({"success": False, "message": str(e)})
 
@@ -139,30 +182,158 @@ def change_messages() -> Response:
 @app.route("/start_storm_dont_wait", methods=["POST"])
 def start_storm_dont_wait() -> Response:
     StreamStorm.ss_instance.ready_event.set()  # Set the event to signal that don't wait for the remaining instances to be ready, and start storming immediately.
-    
-    return jsonify({"success": True, "message": "Storm started without waiting for all instances to be ready"})
+
+    return jsonify(
+        {
+            "success": True,
+            "message": "Storm started without waiting for all instances to be ready",
+        }
+    )
 
 
 @app.route("/change_slow_mode", methods=["POST"])
 def change_slow_mode() -> Response:
-    try: 
+    try:
         validated_data: dict = Validate(request.json, ChangeSlowModeDataValidation)
+
+        if not StreamStorm.ss_instance.ready_event.is_set():
+            return jsonify(
+                {
+                    "success": False,
+                    "message": "Cannot change slow mode before the storm starts",
+                }
+            )
+
+        StreamStorm.ss_instance.slow_mode = validated_data["slow_mode"]
+
+        return jsonify({"success": True, "message": "Slow mode changed successfully"})
+
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)})
+
+
+@app.route("/start_more_channels", methods=["POST"])
+def start_more_channels() -> Response:
     
     if not StreamStorm.ss_instance.ready_event.is_set():
-        return jsonify({"success": False, "message": "Cannot change slow mode before the storm starts"})
+        return jsonify(
+            {
+                "success": False,
+                "message": "Cannot start more channels before the storm starts",
+            }
+        )
+
+    try:
+        validated_data: dict = Validate(request.json, StartMoreChannelsDataValidation)
+        StreamStorm.ss_instance.start_more_channels(validated_data["channels"])
+
+        return jsonify(
+            {"success": True, "message": "Started more channels successfully"}
+        )
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)})
+
+
+# @app.route("/get_config", methods=["GET"])
+# def get_config() -> Response:
+
+#     app_data_dir: str = user_data_dir("StreamStorm", "DarkGlance")
+
+#     config_file_path: str = join(app_data_dir, "config.json")
+
+#     if not exists(config_file_path):
+#         return jsonify({"success": False, "message": "Configuration file not found"})
+
+#     try:
+#         with open(config_file_path, "r") as file:
+#             data: dict = load(file)
+
+#         return jsonify({"success": True, "data": data})
+
+#     except Exception as e:
+#         return jsonify({"success": False, "message": str(e)})
+
+
+# @app.route("/save_config", methods=["POST"])
+# def save_config() -> Response:
+#     app_data_dir: str = user_data_dir("StreamStorm", "DarkGlance")
+
+
+#     try:
+#         data: dict = request.json
+
+#         # Ensure the app data directory exists
+#         if not exists(app_data_dir):
+#             makedirs(app_data_dir)
+
+#         config_file_path: str = join(app_data_dir, "config.json")
+
+#         existing_data: dict = {}
+
+#         if exists(config_file_path):
+#             with open(config_file_path, "r") as file:
+#                 existing_data = load(file)
+
+#         existing_data.update(data)
+
+#         with open(config_file_path, "w") as file:
+#             dump(existing_data, file, indent=4)
+
+#         return jsonify({"success": True, "message": "Configuration saved successfully"})
+
+#     except Exception as e:
+#         return jsonify({"success": False, "message": str(e)})
+
+
+@app.route("/get_channels_data", methods=["POST"])
+def get_channels_data() -> Response:
+    # channels: dict[str, dict[str, str]] = StreamStorm.ss_instance.all_channels
     
-    StreamStorm.ss_instance.slow_mode = data["slow_mode"]
     
-    return jsonify({"success": True, "message": "Slow mode changed successfully"})
+    try:
+        validated_data: dict = Validate(request.json, GetChannelsDataValidation)
+        
+        mode: str = validated_data["mode"]
+        browser_dir: str = validated_data["browser"]
+        
+        app_data_dir: str = user_data_dir("StreamStorm", "DarkGlance")
+        config_json_path: str = join(app_data_dir, browser_dir, "config.json")
+
+        if not exists(config_json_path):
+            return jsonify(
+                {"success": False, "message": "Configuration file not found, create profiles first"}
+            )
+
+        with open(config_json_path, "r") as file:
+            data: dict = load(file)
+        
+        response_data: dict = {}
+        
+        if mode == "new":
+            response_data["channels"] = data["channels"]
+            response_data["activeChannels"] = []
+
+        elif mode == "add":
+            active_channels: list[str] = StreamStorm.ss_instance.get_active_channels()
+            
+            response_data["channels"] = data["channels"]
+            response_data["activeChannels"] = active_channels
+            
+        response_data.update({"success": True})
+
+        return jsonify(response_data)
     
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)})
+
+
 
 @app.route("/create_profiles", methods=["POST"])
 def create_profiles() -> Response:
-
     try:
         environ["BUSY"] = "True"
         environ["BUSY_REASON"] = "Creating profiles"
-        
+
         validated_data: dict = Validate(request.json, ProfileDataValidation)
 
         profiles: Profiles = Profiles(validated_data["browser_class"])
@@ -180,7 +351,7 @@ def delete_all_profiles() -> Response:
     try:
         environ["BUSY"] = "True"
         environ["BUSY_REASON"] = "Deleting profiles"
-        
+
         validated_data: dict = Validate(request.json, ProfileDataValidation)
 
         profiles: Profiles = Profiles(validated_data["browser_class"])
@@ -188,7 +359,6 @@ def delete_all_profiles() -> Response:
 
         return jsonify({"success": True, "message": "Profiles deleted"})
     except Exception as e:
-        print_exc()
         return jsonify({"success": False, "message": str(e)})
     finally:
         environ["BUSY"] = "False"
@@ -196,7 +366,6 @@ def delete_all_profiles() -> Response:
 
 @app.route("/get_ram_info", methods=["GET"])
 def get_ram_info() -> Response:
-    print(virtual_memory())
     return jsonify(
         {
             "free": virtual_memory().available / (1024**3),
@@ -211,8 +380,8 @@ def serve_flask_app() -> None:
     This function is used to run the Flask app in a separate thread.
     """
     serve(app, host="0.0.0.0", port=5000)
-    
-    
+
+
 def run_flask_app() -> None:
     """
     Run the Flask application.
@@ -223,32 +392,34 @@ def run_flask_app() -> None:
 
 if __name__ == "__main__":
     from dgupdater import check_update
+
     check_update()
     from sys import argv
     from os import kill, getpid
     from signal import SIGTERM
     from os.path import dirname, abspath, join
-    from webview import create_window, start    
-    
+    from webview import create_window, start
+
     environ["rammap_path"] = join(dirname(abspath(__file__)), "RAMMap.exe")
-    
+
     if len(argv) > 1:
         if argv[1] == "--mt":
             environ["mode"] = "mt"
         elif argv[1] == "--mp":
             environ["mode"] = "mp"
-    
-    Thread(target=run_flask_app, daemon=True).start()
-    
-    try: 
+
+    Thread(target=serve_flask_app, daemon=True).start()
+    # run_flask_app()
+
+    try:
         create_window(
             title="StreamStorm",
             url="https://streamstorm-ui.netlify.app/",
             width=1300,
             height=900,
-            confirm_close=True
+            confirm_close=True,
         )
-        
+
         start()
     finally:
         # Ensure the Flask app is stopped when the webview is closed

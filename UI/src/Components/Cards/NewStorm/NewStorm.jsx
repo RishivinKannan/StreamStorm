@@ -24,11 +24,11 @@ const NewStorm = () => {
     const SC = useRef(null);
 
     const [loading, setLoading] = useState(false);
-    const [stormInProgress, setStormInProgress] = useState(false);
+    const [stormInProgress, setStormInProgress] = useState(true);
 
     const [videoURL, setVideoURL] = useState("");
     const [videoURLError, setVideoURLError] = useState(false);
-    const [videoURLHelperText, setVideoURLHelperText] = useState("Enter the URL of the video to be used in the storm.");
+    const [videoURLHelperText, setVideoURLHelperText] = useState("");
 
     const [chatURL, setChatURL] = useState("");
 
@@ -70,6 +70,25 @@ const NewStorm = () => {
     const [errorText, setErrorText] = useState("");
 
 
+
+    const getAccounts = () => {
+        const getRange = (start, end) => {
+            const range = [];
+            
+            for (let i = start; i <= end; i++) {
+                range.push(i);
+            }
+
+            return range;
+        }
+
+        if (accountSelection === 'basic') {
+            return getRange(1, noOfAccounts);
+        } else if (accountSelection === 'intermediate') {
+            return getRange(startAccountIndex, endAccountIndex);
+        }
+    }
+
     const formControls = {
         loading, setLoading, stormInProgress, setStormInProgress, notifications,
         videoURL, setVideoURL, videoURLError, setVideoURLError, videoURLHelperText, setVideoURLHelperText, chatURL, setChatURL,
@@ -87,17 +106,18 @@ const NewStorm = () => {
 
         getStormData: () => {
             return {
-                video_url: formControls.videoURL,
-                chat_url: "https://www.youtube.com/live_chat?v=" + formControls.videoURL.split('v=')[1],
-                messages: formControls.messages,
-                subscribe: formControls.subscribe,
-                subscribe_and_wait: formControls.subscribeAndWait,
-                subscribe_and_wait_time: formControls.subscribeWaitTime,
-                slow_mode: formControls.slowMode,
-                start_account_index: formControls.accountSelection === 'basic' ? 1 : formControls.startAccountIndex,
-                end_account_index: formControls.accountSelection === 'basic' ? formControls.noOfAccounts : formControls.endAccountIndex,
-                browser: formControls.browser,
-                background: formControls.loadInBackground
+                video_url: videoURL,
+                chat_url: "https://www.youtube.com/live_chat?v=" + videoURL.split('v=')[1],
+                messages: messages,
+                subscribe: subscribe,
+                subscribe_and_wait: subscribeAndWait,
+                subscribe_and_wait_time: subscribeWaitTime,
+                slow_mode: slowMode,
+                // start_account_index: accountSelection === 'basic' ? 1 : startAccountIndex,
+                // end_account_index: accountSelection === 'basic' ? noOfAccounts : endAccountIndex,
+                browser: browser,
+                background: loadInBackground,
+                accounts: getAccounts(),
             };
         }
     };

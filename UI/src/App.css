@@ -23,9 +23,12 @@
     --input-active-red-light-hover: #b41d1de6;
 
     --font-family: 'Inter', sans-serif;
-    --border-radius: 0.5rem;
-    
+    --border-radius: 0.5rem;    
 
+}
+
+::-webkit-scrollbar {
+    display: none
 }
 
 body {

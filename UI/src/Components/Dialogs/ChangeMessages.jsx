@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from "react";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, useColorScheme } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, useColorScheme } from "@mui/material";
 
 import { CustomMUIPropsContext } from "../../lib/ContextAPI";
 
@@ -46,7 +46,6 @@ const ChangeMessages = ({ payload, open, onClose }) => {
             return;
         }
 
-        formControls.setMessages(messages);
         onClose(messages);
     }
 
@@ -63,8 +62,11 @@ const ChangeMessages = ({ payload, open, onClose }) => {
                 },
             }}
         >
-            <DialogTitle>
-                Change Messages
+            <DialogTitle sx={{ display: "flex", flexDirection: "column" }}>
+                Change Messages list
+                <span style={{ fontSize: "0.875rem", color: "var(--slight-light-text)" }}>
+                    Change the existing messages list in ongoing storm.
+                </span>
             </DialogTitle>
             <DialogContent>
                 <TextField
@@ -77,7 +79,8 @@ const ChangeMessages = ({ payload, open, onClose }) => {
                     onChange={messagesChangeHandler}
                     error={messagesError}
                     helperText={messagesHelperText}
-                    sx={ inputProps }
+                    margin="normal"
+                    sx={inputProps}
                 />
 
             </DialogContent>

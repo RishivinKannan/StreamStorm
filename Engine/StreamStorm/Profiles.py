@@ -11,14 +11,15 @@ class Profiles:
     def __init__(self, browser_class: str = None, browser: str = None) -> None:
         
         if not browser_class:
-            browser_class: str = self.__get_browser_class(browser)        
+            browser_class: str = self._get_browser_class(browser)        
         self.browser_class: str = browser_class
         
         self.app_data_dir: str = user_data_dir("StreamStorm", "DarkGlance")
         self.profiles_dir: str = self.__get_profiles_dir()
         self.base_profile_dir: str = self.profiles_dir + r"\BaseProfile"
-            
-    def __get_browser_class(self, browser) -> str:
+
+    @classmethod
+    def _get_browser_class(cls, browser) -> str:
         if browser in ("edge", "chrome"):
             return "chromium"
 
@@ -57,12 +58,12 @@ class Profiles:
         
         return temp_profiles
 
-    def get_profile_dir(self, index: int, profiles: list[str]) -> tuple[int, str]:
+    def get_profile_dir(self, index: int, profiles: list[str]) -> str:
 
         index = index % len(profiles)
         tempdir: str = self.profiles_dir + f"\\{profiles[index]}"
 
-        return index, tempdir
+        return tempdir
     
     def __delete_profiles_dir(self) -> None:
         if exists(self.profiles_dir):

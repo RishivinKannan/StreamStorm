@@ -21,11 +21,14 @@ class SeparateAccount(Selenium):
         self.index: int = index
 
 
-    def login(self, obj) -> None:
+    def login(self) -> bool:
+        
+        
 
         self.open_browser()
-        self.go_to_page("https://www.youtube.com")
-        
+
+        self.go_to_page("https://www.youtube.com/account") # We are going to account page because it loads faster than the main page
+
         try:
             self.find_and_click_element(By.XPATH, '//*[@id="avatar-btn"]') # Click on avatar button
             self.find_and_click_element(By.XPATH, "//*[text()='Switch account']") # Click on switch account button
@@ -33,9 +36,11 @@ class SeparateAccount(Selenium):
             sleep(3)
             
             self.__click_account(self.index)
-        except DriverClosedError as _:
-            obj.ready_instances -= 1
-            print("####################### One of the accounts is closed.##########################")
+            
+            return True
+        except DriverClosedError as _:           
+            
+            return False
 
 
     def __click_account(self, index: int) -> None:

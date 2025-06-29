@@ -23,10 +23,11 @@ class UndetectedDrivers(Selenium):
         
         super().__init__(base_profile_dir, "chrome", background=False)
 
-    def initiate_config_json(self, no_of_channels: int = 0) -> None:
+    def initiate_config_json(self, no_of_channels: int = 0, channels: dict = None) -> None:
 
         data: dict = {
             "no_of_channels": no_of_channels,
+            "channels": channels
         }
         
         try:
@@ -61,13 +62,32 @@ class UndetectedDrivers(Selenium):
         WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, "//*[@id='submenu']//*[@id='container']//*[@id='contents']//*[@id='contents']/ytd-account-item-renderer")))
 
         channels_list: list[WebElement] = self.driver.find_elements(By.XPATH, "//*[@id='submenu']//*[@id='container']//*[@id='contents']//*[@id='contents']/ytd-account-item-renderer")
+        
+        channels = {}
 
+        for index in range(len(channels_list)):
+            try:
+                self.driver.execute_script("arguments[0].scrollIntoView();", channels_list[index])
+                
+                channel_name_element: WebElement = channels_list[index].find_element(By.ID, "channel-title")
+                channel_name: str = channel_name_element.text
+                
+                channel_logo_element: WebElement = channels_list[index].find_element(By.ID, "img")
+                channel_logo_url: str = channel_logo_element.get_attribute("src")
+                
+                channels[index + 1] = {
+                    "name": channel_name,
+                    "logo": channel_logo_url
+                }
+                
+            except NoSuchElementException:
+                continue
         total_channels: int = len(channels_list)
 
         if total_channels == 0:
             raise RuntimeError("No YouTube channels found. Please add at least one channel to your YouTube account.")
         
-        self.initiate_config_json(total_channels)
+        self.initiate_config_json(total_channels, channels)
 
     def youtube_login(self) -> None:
         self.driver.get(self.youtube_login_url)

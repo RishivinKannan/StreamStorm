@@ -72,7 +72,7 @@ const SystemInfo = () => {
                             Refresh RAM
                         </Button>
                         <span className='ram-note'>
-                            To operate one account you need approximately {RAM_PER_PROFILE}MB of RAM.
+                            To operate one account you need approximately {RAM_PER_PROFILE}MB of Free RAM.
                             
                         </span>
                         <span className='ram-note'>

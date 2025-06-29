@@ -11,6 +11,7 @@ class StormControlsClass {
         this.setDontWaitLoading = null;
         this.setChangeMessagesLoading = null;
         this.setChangeSlowModeLoading = null;
+        this.setMoreChannelsLoading = null;
     }
 
     startStorm(formControls, systemInfoControls) {
@@ -190,6 +191,8 @@ class StormControlsClass {
     }
 
     changeMessages(messages) {
+
+        let success = false;
         
         this.setChangeMessagesLoading(true);
         this.setControlsDisabled(true);
@@ -207,6 +210,7 @@ class StormControlsClass {
                     this.notifications.show('Messages changed successfully!', {
                         severity: 'success',
                     });
+                    success = true;
                 } else {
                     this.notifications.show(data.message || 'Failed to change messages', {
                         severity: 'error',
@@ -223,9 +227,11 @@ class StormControlsClass {
                 this.setChangeMessagesLoading(false);
                 this.setControlsDisabled(false);
             });
+
+        return success;
     }
 
-    changeSlowMode(slowModeValue) {
+    changeSlowMode(slowModeValue, setSlowMode) {
         this.setChangeSlowModeLoading(true);
         this.setControlsDisabled(true);
 
@@ -242,6 +248,7 @@ class StormControlsClass {
                     this.notifications.show('Slow mode changed successfully!', {
                         severity: 'success',
                     });
+                    setSlowMode(slowModeValue);
                 } else {
                     this.notifications.show(data.message || 'Failed to change slow mode', {
                         severity: 'error',
@@ -260,6 +267,42 @@ class StormControlsClass {
             });
 
     }
+
+    startMoreChannels(channels) {
+        this.setMoreChannelsLoading(true);
+        this.setControlsDisabled(true);
+
+        fetch(`${this.hostAddress}/start_more_channels`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ channels }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.notifications.show('More channels started successfully!', {
+                        severity: 'success',
+                    });
+                } else {
+                    this.notifications.show(data.message || 'Failed to start more channels', {
+                        severity: 'error',
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error starting more channels:', error);
+                this.notifications.show('An error occurred while starting more channels', {
+                    severity: 'error',
+                });
+            })
+            .finally(() => {
+                this.setMoreChannelsLoading(false);
+                this.setControlsDisabled(false);
+            });
+    }
+
 }
 
 export default StormControlsClass;

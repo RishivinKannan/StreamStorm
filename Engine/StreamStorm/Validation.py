@@ -1,6 +1,21 @@
 from typing import Self, Optional
 from pydantic import BaseModel, field_validator, model_validator
 
+from .Profiles import Profiles
+
+
+def Validate(data: dict, validator: BaseModel) -> BaseModel:
+    try:
+        validated_data = validator(**data)
+        return validated_data.model_dump()
+    
+    except Exception as e:
+        print(e)
+        errors: list = e.errors()
+        print(errors)
+        if "ctx" in errors[0]:
+            del errors[0]["ctx"]
+        raise ValueError(f"Error in {errors[0]['loc'][0]} : {errors[0]['msg']}")
 
 class StormDataValidation(BaseModel):
     video_url: str
@@ -10,8 +25,9 @@ class StormDataValidation(BaseModel):
     subscribe_and_wait: bool
     subscribe_and_wait_time: int
     slow_mode: int
-    start_account_index: int
-    end_account_index: int
+    # start_account_index: int
+    # end_account_index: int
+    accounts: list[int]
     browser: str
     background: bool
 
@@ -56,15 +72,6 @@ class StormDataValidation(BaseModel):
         
         return value
 
-    @field_validator("start_account_index", "end_account_index")
-    def validate_account_index(cls, value) -> int:
-        
-        if value < 0:
-            raise ValueError("Account index cannot be negative")
-        
-        return value   
-    
-
     @field_validator("browser")
     def validate_browser(cls, value: str) -> str:
         if value not in ["edge", "chrome"]:
@@ -72,21 +79,24 @@ class StormDataValidation(BaseModel):
         
         return value
     
+    @model_validator(mode = 'before')
+    def before_validator(self) -> Self:
+        return self
+    
     
     @model_validator(mode = 'after')
-    def validate_urls(self) -> Self:
+    def validate_data(self) -> Self:
         if self.video_url.replace("watch", "live_chat") != self.chat_url:
-            raise ValueError("One of the urls is invalid")
+            raise ValueError("Invalid video URL")
         
-        if self.start_account_index > self.end_account_index:
-            raise ValueError("Start account index cannot be greater than end account index")
+        self.accounts = list(set(self.accounts)) # Remove duplicates
         
         return self
 
 
 class ProfileDataValidation(BaseModel):
     browser_class: str
-    limit: Optional[int] = None
+    limit: Optional[int] = 1
     
     
     @field_validator("browser_class")
@@ -132,3 +142,58 @@ class ChangeSlowModeDataValidation(BaseModel):
             raise ValueError("Slow mode must be at least 1")
 
         return value
+
+class StartMoreChannelsDataValidation(BaseModel):
+    channels: list[int]
+
+    @field_validator("channels")
+    def validate_channels(cls, value: list[int]) -> list[int]:
+        if not value:
+            raise ValueError("Channels cannot be empty")
+
+        return value
+    
+    @model_validator(mode='after')
+    def validate_data(self) -> Self:
+
+        self.channels = list(set(self.channels)) # Remove duplicates
+        return self
+    
+    
+class GetChannelsDataValidation(BaseModel):
+    mode: str
+    browser: str
+
+    @field_validator("mode")
+    def validate_mode(cls, value: str) -> str:
+        if value not in ["new", "add"]:
+            raise ValueError("Invalid mode")
+        
+        return value
+
+    @field_validator("browser")
+    def validate_browser(cls, value: str) -> str:
+        if value not in [
+            "chrome", 
+            "edge",
+            # "firefox",
+            # "safari"
+        ]:
+            raise ValueError("Invalid browser")
+
+        return value
+    
+    @model_validator(mode='after')
+    def validate_data(self) -> Self:
+        self.browser = self.browser.lower()
+        
+        browser_class: str = Profiles._get_browser_class(self.browser)
+        
+        if browser_class =="chromium":
+            self.browser = "ChromiumBasedBrowsers"
+        elif browser_class == "gecko":
+            self.browser = "GeckoBasedBrowsers"
+        elif browser_class == "webkit":
+            self.browser = "WebKitBasedBrowsers"
+
+        return self
