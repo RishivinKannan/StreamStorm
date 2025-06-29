@@ -24,7 +24,7 @@ const NewStorm = () => {
     const SC = useRef(null);
 
     const [loading, setLoading] = useState(false);
-    const [stormInProgress, setStormInProgress] = useState(true);
+    const [stormInProgress, setStormInProgress] = useState(false);
 
     const [videoURL, setVideoURL] = useState("");
     const [videoURLError, setVideoURLError] = useState(false);
