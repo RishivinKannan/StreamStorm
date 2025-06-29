@@ -1,9 +1,7 @@
-from os import environ, makedirs
+from os import environ
 from os.path import join, exists
-from json import dump, load
-from traceback import print_exc
+from json import load
 from typing import Optional
-from urllib import response
 from flask import Flask, Response, request, jsonify
 from flask_cors import CORS
 from psutil import virtual_memory
@@ -232,57 +230,6 @@ def start_more_channels() -> Response:
         )
     except Exception as e:
         return jsonify({"success": False, "message": str(e)})
-
-
-# @app.route("/get_config", methods=["GET"])
-# def get_config() -> Response:
-
-#     app_data_dir: str = user_data_dir("StreamStorm", "DarkGlance")
-
-#     config_file_path: str = join(app_data_dir, "config.json")
-
-#     if not exists(config_file_path):
-#         return jsonify({"success": False, "message": "Configuration file not found"})
-
-#     try:
-#         with open(config_file_path, "r") as file:
-#             data: dict = load(file)
-
-#         return jsonify({"success": True, "data": data})
-
-#     except Exception as e:
-#         return jsonify({"success": False, "message": str(e)})
-
-
-# @app.route("/save_config", methods=["POST"])
-# def save_config() -> Response:
-#     app_data_dir: str = user_data_dir("StreamStorm", "DarkGlance")
-
-
-#     try:
-#         data: dict = request.json
-
-#         # Ensure the app data directory exists
-#         if not exists(app_data_dir):
-#             makedirs(app_data_dir)
-
-#         config_file_path: str = join(app_data_dir, "config.json")
-
-#         existing_data: dict = {}
-
-#         if exists(config_file_path):
-#             with open(config_file_path, "r") as file:
-#                 existing_data = load(file)
-
-#         existing_data.update(data)
-
-#         with open(config_file_path, "w") as file:
-#             dump(existing_data, file, indent=4)
-
-#         return jsonify({"success": True, "message": "Configuration saved successfully"})
-
-#     except Exception as e:
-#         return jsonify({"success": False, "message": str(e)})
 
 
 @app.route("/get_channels_data", methods=["POST"])
