@@ -348,19 +348,12 @@ if __name__ == "__main__":
     from dgupdater import check_update
 
     check_update()
-    from sys import argv
     from os import kill, getpid
     from signal import SIGTERM
     from os.path import dirname, abspath, join
     from webview import create_window, start
 
     environ["rammap_path"] = join(dirname(abspath(__file__)), "RAMMap.exe")
-
-    if len(argv) > 1:
-        if argv[1] == "--mt":
-            environ["mode"] = "mt"
-        elif argv[1] == "--mp":
-            environ["mode"] = "mp"
 
     Thread(target=serve_flask_app, daemon=True).start()
     # run_flask_app()

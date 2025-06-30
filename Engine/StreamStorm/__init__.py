@@ -6,6 +6,5 @@ environ["PAUSE"] = "False"
 environ["BUSY"] = "False"
 environ["BUSY_REASON"] = ""
 
-environ["mode"] = "mt"
 
 # basicConfig(level=CRITICAL, force=True)

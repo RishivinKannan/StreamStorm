@@ -107,13 +107,9 @@ class Profiles:
         
         profiles: list[str] = [f"temp_profile_{i}" for i in range(1, limit + 1)]
         
-        if environ["mode"] == "mt":
-            with ThreadPoolExecutor() as executor:
-                executor.map(self.__create_profile, profiles)
+        with ThreadPoolExecutor() as executor:
+            executor.map(self.__create_profile, profiles)
                 
-        elif environ["mode"] == "mp":
-            with ProcessPoolExecutor() as executor:
-                executor.map(self.__create_profile, profiles)
             
     def delete_all_temp_profiles(self) -> None:
         

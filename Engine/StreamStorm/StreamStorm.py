@@ -91,7 +91,7 @@ class StreamStorm(Selenium, Profiles):
                 
         return active_channels
         
-    def EachAccount(self, index: int, profile_dir: str, wait_time: float = 0, op_mode: str = "mt") -> None:
+    def EachAccount(self, index: int, profile_dir: str, wait_time: float = 0) -> None:
         
         print(f"Using profile: {profile_dir}")
         profile_dir_name: str=  profile_dir.split("\\")[-1]
@@ -142,14 +142,8 @@ class StreamStorm(Selenium, Profiles):
             sleep(wait_time)  # Wait for the initial delay before starting to storm
 
             while True:
-                if op_mode == "mt":
-                    self.pause_event.wait()
-                
-                elif op_mode == "mp":
-                    ...
-                    # if self.shared_data["PAUSE"] == "True":
-                    #     continue
-
+                self.pause_event.wait()
+        
                 # input()
                 Separate_Account.send_message(choice(self.messages))
                 sleep(self.slow_mode)
@@ -169,8 +163,6 @@ class StreamStorm(Selenium, Profiles):
         return index * (slow_mode / no_of_profiles)
 
     def start(self) -> None:
-        if environ["mode"] == "mp":
-            raise NotImplementedError("Multi-processing mode is not implemented yet.")
 
         
         
@@ -200,25 +192,22 @@ class StreamStorm(Selenium, Profiles):
             def wait_for_all_worker_to_be_ready() -> None:
                 while self.ready_to_storm_instances < self.total_instances:
                     sleep(1)
-                self.ready_event.set()  # Set the event to signal that all instances are ready
-            
-            if environ["mode"] == "mt":      
+                self.ready_event.set()  # Set the event to signal that all instances are ready           
                  
-                Thread(target=wait_for_all_worker_to_be_ready).start()     
-                with ThreadPoolExecutor() as executor:
-                    for index in range(len(self.accounts)):
-                        profile_dir: str = self.profiles_dir + f"\\{temp_profiles[index]}"
-                        wait_time: int = self.get_start_storm_wait_time(index, no_of_temp_profiles, self.slow_mode)
+                 
+            Thread(target=wait_for_all_worker_to_be_ready).start()     
+            
+            with ThreadPoolExecutor() as executor:
+                for index in range(len(self.accounts)):
+                    profile_dir: str = self.profiles_dir + f"\\{temp_profiles[index]}"
+                    wait_time: int = self.get_start_storm_wait_time(index, no_of_temp_profiles, self.slow_mode)
 
-                        executor.submit(self.EachAccount, self.accounts[index], profile_dir, wait_time)
-                        sleep(0.2)  # Small delay to avoid instant spike of the cpu load
-                
-                environ["BUSY"] = "False"
-                print("All threads completed")
-                
-            elif environ["mode"] == "mp":
-                ...
-
+                    executor.submit(self.EachAccount, self.accounts[index], profile_dir, wait_time)
+                    sleep(0.2)  # Small delay to avoid instant spike of the cpu load
+            
+            environ["BUSY"] = "False"
+            print("All threads completed")
+    
         Thread(target=start_each_worker).start()
     
     def start_more_channels(self, channels: list[int]) -> None:
