@@ -2,16 +2,20 @@ import { useState, useContext } from "react";
 import { useColorScheme } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Switch from '@mui/material/Switch';
-import { Radio, RadioGroup } from "@mui/material";
+import { Button, Radio, RadioGroup } from "@mui/material";
+import { useDialogs } from "@toolpad/core/useDialogs";
 
 import "./LeftPanel.css";
 import { CustomMUIPropsContext, StormDataContext } from "../../../../../lib/ContextAPI";
+import AddChannels from "../../../../Dialogs/AddChannels";
+import ErrorText from "../../../../Elements/ErrorText";
 
 const LeftPanel = () => {
 
     const { colorScheme } = useColorScheme();
-    const { inputProps } = useContext(CustomMUIPropsContext);
+    const { inputProps, btnProps } = useContext(CustomMUIPropsContext);
     const formControls = useContext(StormDataContext);
+    const dialogs = useDialogs();
 
     const messagesChangeHandler = (e) => {
         const value = e.target.value;
@@ -40,6 +44,29 @@ const LeftPanel = () => {
         formControls.setVideoURLError(false);
         formControls.setVideoURLHelperText("");
     }
+
+    const handleAdvancedAccountSelection = async () => {
+
+        if (formControls.browser === "") {
+            formControls.setBrowserError(true);
+            formControls.setBrowserHelperText("Select a browser first.");
+            return;
+        }
+        const selectedChannels = await dialogs.open(AddChannels, {
+            mode: "new",
+            formControls,
+            defaultSelectedChannels: formControls.advancedSelectedChannels.map((channel) => channel.toString()),
+        });
+
+        if (!selectedChannels || selectedChannels.length === 0) {
+            return;
+        }
+
+        formControls.setAdvancedSelectedChannels(selectedChannels);
+
+    }
+
+
 
 
 
@@ -136,7 +163,7 @@ const LeftPanel = () => {
                         />
                     ) : null
 
-                }  
+                }
 
             </div>
 
@@ -167,6 +194,14 @@ const LeftPanel = () => {
                             />
                             <span className="account-index-input-label">Intermediate</span>
                         </div>
+                        <div className="account-index-radio-container">
+                            <Radio
+                                value="advanced"
+                                checked={formControls.accountSelection === "advanced"}
+                                disabled={formControls.stormInProgress || formControls.loading}
+                            />
+                            <span className="account-index-input-label">Advanced</span>
+                        </div>
                     </RadioGroup>
                 </div>
                 {
@@ -192,41 +227,81 @@ const LeftPanel = () => {
                             />
                         </div>
                     ) : (
-                        <div className="account-selection-intermediate-container">
-                            <TextField
-                                type="number"
-                                defaultValue={1}
-                                variant="outlined"
-                                label="Start Account Index"
-                                className="account-index-input"
-                                sx={inputProps}
-                                value={formControls.startAccountIndex}
-                                onChange={(e) => {
-                                    formControls.setStartAccountIndex(parseInt(e.target.value));
-                                    formControls.setStartAccountIndexError(false);
-                                    formControls.setStartAccountIndexHelperText("");
-                                }}
-                                error={formControls.startAccountIndexError}
-                                helperText={formControls.startAccountIndexHelperText}
-                                disabled={formControls.stormInProgress || formControls.loading}
-                            />
-                            <TextField
-                                type="number"
-                                // defaultValue={5}
-                                variant="outlined"
-                                label="End Account Index"
-                                className="account-index-input"
-                                sx={inputProps}
-                                value={formControls.endAccountIndex}
-                                onChange={(e) => {
-                                    formControls.setEndAccountIndex(parseInt(e.target.value));
-                                    formControls.setEndAccountIndexError(false);
-                                    formControls.setEndAccountIndexHelperText("");
-                                }}
-                                error={formControls.endAccountIndexError}
-                                helperText={formControls.endAccountIndexHelperText}
-                                disabled={formControls.stormInProgress || formControls.loading}
-                            />
+                        <div>
+                            {
+                                formControls.accountSelection === "intermediate" ? (
+                                    <div className="account-selection-intermediate-container">
+                                        <TextField
+                                            type="number"
+                                            defaultValue={1}
+                                            variant="outlined"
+                                            label="Start Account Index"
+                                            className="account-index-input"
+                                            sx={inputProps}
+                                            value={formControls.startAccountIndex}
+                                            onChange={(e) => {
+                                                formControls.setStartAccountIndex(parseInt(e.target.value));
+                                                formControls.setStartAccountIndexError(false);
+                                                formControls.setStartAccountIndexHelperText("");
+                                            }}
+                                            error={formControls.startAccountIndexError}
+                                            helperText={formControls.startAccountIndexHelperText}
+                                            disabled={formControls.stormInProgress || formControls.loading}
+                                        />
+                                        <TextField
+                                            type="number"
+                                            // defaultValue={5}
+                                            variant="outlined"
+                                            label="End Account Index"
+                                            className="account-index-input"
+                                            sx={inputProps}
+                                            value={formControls.endAccountIndex}
+                                            onChange={(e) => {
+                                                formControls.setEndAccountIndex(parseInt(e.target.value));
+                                                formControls.setEndAccountIndexError(false);
+                                                formControls.setEndAccountIndexHelperText("");
+                                            }}
+                                            error={formControls.endAccountIndexError}
+                                            helperText={formControls.endAccountIndexHelperText}
+                                            disabled={formControls.stormInProgress || formControls.loading}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="account-selection-advanced-container">
+                                        <div className="row">
+                                            <Button
+                                                variant="contained"
+                                                className="account-index-input"
+                                                onClick={handleAdvancedAccountSelection}
+                                                disabled={formControls.stormInProgress || formControls.loading}
+                                                sx={{
+                                                    ...btnProps,
+                                                    width: "100px",
+                                                    margin: "0",
+                                                }}
+                                            >
+                                                Select
+                                            </Button>
+                                            <TextField
+                                                fullWidth
+                                                variant="outlined"
+                                                size="small"
+                                                placeholder="Click 'Select' to choose"
+
+                                                value={formControls.advancedSelectedChannels.join(', ')}
+                                                sx={{
+                                                    ...inputProps,
+                                                }}
+                                            // onChange={(e) => {}}
+                                            />
+                                        </div>
+
+                                        <ErrorText errorText={formControls.advancedAccountsErrorText} />
+
+
+                                    </div>
+                                )
+                            }
                         </div>
                     )
                 }

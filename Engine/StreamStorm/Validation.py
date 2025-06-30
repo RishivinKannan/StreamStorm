@@ -79,6 +79,19 @@ class StormDataValidation(BaseModel):
         
         return value
     
+    @field_validator("accounts")
+    def validate_accounts(cls, value: list[int]) -> list[int]:
+        if not value:
+            raise ValueError("Accounts cannot be empty")
+        
+        if not all(isinstance(account, int) for account in value):
+            raise ValueError("All accounts must be integers")
+        
+        if any(account < 0 for account in value):
+            raise ValueError("Account IDs cannot be negative")
+        
+        return value
+    
     @model_validator(mode = 'before')
     def before_validator(self) -> Self:
         return self

@@ -62,6 +62,9 @@ const NewStorm = () => {
     const [endAccountIndexError, setEndAccountIndexError] = useState(false);
     const [endAccountIndexHelperText, setEndAccountIndexHelperText] = useState("");
 
+    const [advancedSelectedChannels, setAdvancedSelectedChannels] = useState([]);
+    const [advancedAccountsErrorText, setAdvancedAccountsErrorText] = useState("");
+
     const [browser, setBrowser] = useState('');
     const [browserError, setBrowserError] = useState(false);
     const [browserHelperText, setBrowserHelperText] = useState("");
@@ -86,6 +89,8 @@ const NewStorm = () => {
             return getRange(1, noOfAccounts);
         } else if (accountSelection === 'intermediate') {
             return getRange(startAccountIndex, endAccountIndex);
+        } else if (accountSelection === 'advanced') {
+            return advancedSelectedChannels;
         }
     }
 
@@ -100,6 +105,7 @@ const NewStorm = () => {
         noOfAccounts, setNoOfAccounts, noOfAccountsError, setNoOfAccountsError, noOfAccountsHelperText, setNoOfAccountsHelperText,
         startAccountIndex, setStartAccountIndex, startAccountIndexError, setStartAccountIndexError, startAccountIndexHelperText, setStartAccountIndexHelperText,
         endAccountIndex, setEndAccountIndex, endAccountIndexError, setEndAccountIndexError, endAccountIndexHelperText, setEndAccountIndexHelperText,
+        advancedSelectedChannels, setAdvancedSelectedChannels, advancedAccountsErrorText, setAdvancedAccountsErrorText,
         browser, setBrowser, browserError, setBrowserError, browserHelperText, setBrowserHelperText,
         loadInBackground, setLoadInBackground, errorText, setErrorText,
         hostAddress, SC,

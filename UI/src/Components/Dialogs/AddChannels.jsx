@@ -8,8 +8,7 @@ import { useNotifications } from "@toolpad/core/useNotifications";
 import ErrorText from "../Elements/ErrorText";
 
 const AddChannels = ({ payload, open, onClose }) => {
-    const { mode, formControls } = payload;
-    console.log(formControls);
+    const { mode, formControls, defaultSelectedChannels } = payload;
     const { btnProps } = useContext(CustomMUIPropsContext);
     const systemInfoControls = useContext(SystemInfoContext);
 
@@ -20,7 +19,7 @@ const AddChannels = ({ payload, open, onClose }) => {
     const [channelsData, setChannelsData] = useState([]);
     const [channelsDataLoading, setChannelsDataLoading] = useState(false);
     const [activeChannels, setActiveChannels] = useState([]);
-    const [selectedChannels, setSelectedChannels] = useState([]);
+    const [selectedChannels, setSelectedChannels] = useState(defaultSelectedChannels || []);
     const [maxSelectableChannels, setMaxSelectableChannels] = useState(0);
     const [errorText, setErrorText] = useState("");
 
@@ -31,7 +30,7 @@ const AddChannels = ({ payload, open, onClose }) => {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({mode, browser: formControls.browser}),
+            body: JSON.stringify({ mode, browser: formControls.browser }),
         })
             .then((response) => response.json())
             .then((data) => {
@@ -74,15 +73,7 @@ const AddChannels = ({ payload, open, onClose }) => {
         onClose(selectedChannels.map((channel) => parseInt(channel)));
     };
 
-    const sort = (list) => {
-        list = list.map((item) => parseInt(item));
-
-        list.sort();
-        
-        return list.map((item) => item.toString());
-    }
-
-
+    
     useEffect(() => {
         if (open) {
             getChannelData();
@@ -181,10 +172,8 @@ const AddChannels = ({ payload, open, onClose }) => {
                                 {
                                     selectedChannels.sort((a, b) => a - b).map((channel) => (
                                         <span key={channel}>
-                                            {/* {key !== 0 && ", "}
-                                            {channelsData[channel].name} */}
 
-                                            {`${channel}.${channelsData[channel].name}`}
+                                            {`${channel}.${channelsData[channel]?.name}`}
                                         </span>
                                     ))
                                 }
@@ -192,12 +181,10 @@ const AddChannels = ({ payload, open, onClose }) => {
                             </div>
 
                             <DialogContentText sx={{ fontSize: "0.7rem" }}>
-                                Total Selected Channels: {selectedChannels.length}
+                                Total Channels Selected: {selectedChannels.length}
                             </DialogContentText>
 
                             <ErrorText errorText={errorText} />
-
-
 
                         </div>
 

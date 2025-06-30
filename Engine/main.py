@@ -39,7 +39,6 @@ storm_controls_endpoints: list[str] = [
     "/start_storm_dont_wait",
     "/change_slow_mode",
     "/start_more_channels",
-    "/get_channels_data",
 ]
 
 
@@ -234,13 +233,21 @@ def start_more_channels() -> Response:
 
 @app.route("/get_channels_data", methods=["POST"])
 def get_channels_data() -> Response:
-    # channels: dict[str, dict[str, str]] = StreamStorm.ss_instance.all_channels
-    
+    # channels: dict[str, dict[str, str]] = StreamStorm.ss_instance.all_channels    
     
     try:
         validated_data: dict = Validate(request.json, GetChannelsDataValidation)
         
         mode: str = validated_data["mode"]
+        
+        if mode == "add" and StreamStorm.ss_instance is None:
+            return jsonify(
+                {
+                    "success": False,
+                    "message": "No storm is running. Start a storm first.",
+                }
+            )
+            
         browser_dir: str = validated_data["browser"]
         
         app_data_dir: str = user_data_dir("StreamStorm", "DarkGlance")
