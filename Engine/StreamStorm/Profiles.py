@@ -2,7 +2,7 @@ from os import environ, makedirs, listdir
 from os.path import exists
 from shutil import copytree, rmtree, Error
 from platformdirs import user_data_dir
-from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 
 from .UndetectedDrivers import UndetectedDrivers
 
