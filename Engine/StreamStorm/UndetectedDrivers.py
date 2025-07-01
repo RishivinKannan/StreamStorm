@@ -45,7 +45,7 @@ class UndetectedDrivers(Selenium):
         elif self.browser_class == "webkit":
             raise NotImplementedError("WebKit-based browser is not implemented yet.")
         else:
-            raise ValueError("Unsupported browser class for undetected drivers")
+            raise SystemError("Unsupported browser class for undetected drivers")
         print(self.driver.browser_pid)
         
     def get_total_channels(self) -> int:
@@ -85,7 +85,7 @@ class UndetectedDrivers(Selenium):
         total_channels: int = len(channels_list)
 
         if total_channels == 0:
-            raise RuntimeError("No YouTube channels found. Please add at least one channel to your YouTube account.")
+            raise SystemError("No YouTube channels found. Please add at least one channel to your YouTube account.")
         
         self.initiate_config_json(total_channels, channels)
 

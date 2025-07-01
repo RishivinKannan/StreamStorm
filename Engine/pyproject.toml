@@ -19,6 +19,8 @@ dependencies = [
     "pywebview>=5.4",
     "waitress>=3.0.2",
     "dgupdater>=1.1.4",
+    "fastapi[standard]>=0.115.14",
+    "uvicorn>=0.35.0",
 ]
 
 [dependency-groups]

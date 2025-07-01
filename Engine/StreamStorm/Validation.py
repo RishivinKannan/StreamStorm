@@ -15,9 +15,9 @@ def Validate(data: dict, validator: BaseModel) -> BaseModel:
         print(errors)
         if "ctx" in errors[0]:
             del errors[0]["ctx"]
-        raise ValueError(f"Error in {errors[0]['loc'][0]} : {errors[0]['msg']}")
+        raise Exception(f"Error in {errors[0]['loc'][0]} : {errors[0]['msg']}")
 
-class StormDataValidation(BaseModel):
+class StormData(BaseModel):
     video_url: str
     chat_url: str
     messages: list[str]
@@ -74,7 +74,7 @@ class StormDataValidation(BaseModel):
 
     @field_validator("browser")
     def validate_browser(cls, value: str) -> str:
-        if value not in ["edge", "chrome"]:
+        if value not in ("edge", "chrome"):
             raise ValueError("Invalid browser")
         
         return value
@@ -107,7 +107,7 @@ class StormDataValidation(BaseModel):
         return self
 
 
-class ProfileDataValidation(BaseModel):
+class ProfileData(BaseModel):
     browser_class: str
     limit: Optional[int] = 1
     
@@ -131,7 +131,7 @@ class ProfileDataValidation(BaseModel):
         return value
     
     
-class ChangeMessagesDataValidation(BaseModel):
+class ChangeMessagesData(BaseModel):
     messages: list[str]
     
     @field_validator("messages")
@@ -143,7 +143,7 @@ class ChangeMessagesDataValidation(BaseModel):
         
         return value
     
-class ChangeSlowModeDataValidation(BaseModel):
+class ChangeSlowModeData(BaseModel):
     slow_mode: int
     
     @field_validator("slow_mode")
@@ -156,7 +156,7 @@ class ChangeSlowModeDataValidation(BaseModel):
 
         return value
 
-class StartMoreChannelsDataValidation(BaseModel):
+class StartMoreChannelsData(BaseModel):
     channels: list[int]
 
     @field_validator("channels")
@@ -173,7 +173,7 @@ class StartMoreChannelsDataValidation(BaseModel):
         return self
     
     
-class GetChannelsDataValidation(BaseModel):
+class GetChannelsData(BaseModel):
     mode: str
     browser: str
 
@@ -210,3 +210,13 @@ class GetChannelsDataValidation(BaseModel):
             self.browser = "WebKitBasedBrowsers"
 
         return self
+    
+__all__ : list[str] = [
+    "StormData",
+    "ProfileData",
+    "ChangeMessagesData",
+    "ChangeSlowModeData",
+    "StartMoreChannelsData",
+    "GetChannelsData",
+    "Validate"
+]

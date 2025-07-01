@@ -80,7 +80,7 @@ class StreamStorm(Selenium, Profiles):
         self.all_channels = data.get("channels", {})
 
         if no_of_channels < len(self.accounts):
-            raise ValueError("Not enough channels available in your YouTube account. Create enough channels first. Then create Profiles again.")
+            raise SystemError("Not enough channels available in your YouTube account. Create enough channels first. Then create Profiles again.")
         
     def get_active_channels(self) -> list[int]:
         active_channels: list[int] = []
@@ -162,9 +162,7 @@ class StreamStorm(Selenium, Profiles):
     def get_start_storm_wait_time(self, index, no_of_profiles, slow_mode) -> float:
         return index * (slow_mode / no_of_profiles)
 
-    def start(self) -> None:
-
-        
+    def start(self) -> None:       
         
 
         self.ready_event.clear()  # Wait for the ready event to be set before starting the storming
@@ -173,7 +171,7 @@ class StreamStorm(Selenium, Profiles):
         self.check_channels_available()
         
         if self.accounts[-1] > self.total_channels:
-            raise ValueError("You have selected more accounts than available channels in your YouTube account. Create enough channels first.")
+            raise SystemError("You have selected more accounts than available channels in your YouTube account. Create enough channels first.")
         
         
         temp_profiles: list[str] = self.get_available_temp_profiles()
@@ -184,7 +182,7 @@ class StreamStorm(Selenium, Profiles):
         
         
         if no_of_temp_profiles < len(self.accounts):
-            raise ValueError("Not enough temp profiles available. Create Enough profiles first.")       
+            raise SystemError("Not enough temp profiles available. Create Enough profiles first.")       
         
 
         def start_each_worker() -> None:
@@ -204,8 +202,8 @@ class StreamStorm(Selenium, Profiles):
 
                     executor.submit(self.EachAccount, self.accounts[index], profile_dir, wait_time)
                     sleep(0.2)  # Small delay to avoid instant spike of the cpu load
-            
-            environ["BUSY"] = "False"
+
+            environ.update({"BUSY": "0"})
             print("All threads completed")
     
         Thread(target=start_each_worker).start()
@@ -228,18 +226,19 @@ class StreamStorm(Selenium, Profiles):
 
         for channel in channels:
             if channel in already_running_channels:
-                raise ValueError(f"Channel {channel} : {self.all_channels[str(channel)]['name']} is already running.")
+                raise SystemError(f"Channel {channel} : {self.all_channels[str(channel)]['name']} is already running.")
         if not enough_profiles:
-            raise ValueError("Not enough available profiles to start more channels.")
+            raise SystemError("Not enough available profiles to start more channels.")
+        
+        def start_each_worker() -> None:            
+            with ThreadPoolExecutor() as executor:
+                for index in range(len(channels)):
+                    print(index, len(available_profiles), channels[index], available_profiles[index], self.slow_mode)
+                    profile_dir: str = self.profiles_dir + f"\\{available_profiles[index]}"
+                    wait_time: int = self.get_start_storm_wait_time(index, len(available_profiles), self.slow_mode)
 
-        with ThreadPoolExecutor() as executor:
-            for index in range(len(channels)):
-                print(index, len(available_profiles), channels[index], available_profiles[index], self.slow_mode)
-                profile_dir: str = self.profiles_dir + f"\\{available_profiles[index]}"
-                wait_time: int = self.get_start_storm_wait_time(index, len(available_profiles), self.slow_mode)
-
-                executor.submit(self.EachAccount, channels[index], profile_dir, wait_time)
-                sleep(0.2)
+                    executor.submit(self.EachAccount, channels[index], profile_dir, wait_time)
+                    sleep(0.2)
             
         
         

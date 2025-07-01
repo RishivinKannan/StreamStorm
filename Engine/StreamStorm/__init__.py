@@ -1,10 +1,8 @@
 from logging import CRITICAL, basicConfig
 from os import environ
-from threading import Event
 
-environ["PAUSE"] = "False"
-environ["BUSY"] = "False"
-environ["BUSY_REASON"] = ""
+environ.update({"BUSY": "0"})
+environ.update({"BUSY_REASON": ""})
 
 
 # basicConfig(level=CRITICAL, force=True)
