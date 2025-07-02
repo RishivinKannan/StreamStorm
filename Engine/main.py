@@ -328,7 +328,7 @@ async def get_ram_info():
 def serve_api():
     from uvicorn import run
 
-    run(app, host="0.0.0.0", port=8000)
+    run(app, host="0.0.0.0", port=5000)
 
 
 if __name__ == "__main__":
