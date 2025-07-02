@@ -67,6 +67,15 @@ class StreamStorm(Selenium, Profiles):
         
         clear_ram()
         
+    def set_slow_mode(self, slow_mode: int) -> None:
+        self.slow_mode = slow_mode
+        print(f"Slow mode set to {self.slow_mode} seconds")
+        
+    def set_messages(self, messages: list[str]) -> None:
+        self.messages = messages
+        print(f"Messages set to: {self.messages}")
+        
+        
     def check_channels_available(self) -> None:
         try:
             with open(self.profiles_dir + r"\config.json", "r", encoding="utf-8") as file:

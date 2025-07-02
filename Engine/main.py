@@ -196,7 +196,7 @@ async def resume():
 
 @app.post("/change_messages")
 async def change_messages(data: ChangeMessagesData):
-    StreamStorm.ss_instance.messages = data.messages
+    StreamStorm.ss_instance.set_messages(data.messages)
 
     return {
         "success": True,
@@ -222,7 +222,7 @@ async def change_slow_mode(data: ChangeSlowModeData):
                 "message": "Cannot change slow mode before the storm starts",
             }
 
-    StreamStorm.ss_instance.slow_mode = data.slow_mode
+    StreamStorm.ss_instance.set_slow_mode(data.slow_mode)
 
     return {
         "success": True, 
@@ -309,7 +309,7 @@ async def delete_all_profiles(data: ProfileData):
 
     try:
         await run_in_threadpool(profiles.delete_all_temp_profiles)
-    except Exception as e:
+    finally:
         environ.update({"BUSY": "0", "BUSY_REASON": ""})
 
     return {
