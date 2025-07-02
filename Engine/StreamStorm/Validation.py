@@ -109,7 +109,7 @@ class StormData(BaseModel):
 
 class ProfileData(BaseModel):
     browser_class: str
-    limit: Optional[int] = 1
+    count: Optional[int] = 1
     
     
     @field_validator("browser_class")
@@ -123,10 +123,10 @@ class ProfileData(BaseModel):
 
         return value
     
-    @field_validator("limit")
-    def validate_limit(cls, value: Optional[int]) -> Optional[int]:
+    @field_validator("count")
+    def validate_count(cls, value: Optional[int]) -> Optional[int]:
         if value is not None and value < 0:
-            raise ValueError("Limit cannot be negative")
+            raise ValueError("count cannot be negative")
         
         return value
     

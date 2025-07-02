@@ -101,11 +101,11 @@ class Profiles:
 
         print(f"{profile} created")
 
-    def create_profiles(self, limit: int) -> None:
+    def create_profiles(self, count: int) -> None:
         self.__delete_profiles_dir()
         self.__create_base_profile()
         
-        profiles: list[str] = [f"temp_profile_{i}" for i in range(1, limit + 1)]
+        profiles: list[str] = [f"temp_profile_{i}" for i in range(1, count + 1)]
         
         with ThreadPoolExecutor() as executor:
             executor.map(self.__create_profile, profiles)

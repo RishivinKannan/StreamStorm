@@ -72,7 +72,7 @@ class StreamStorm(Selenium, Profiles):
             with open(self.profiles_dir + r"\config.json", "r", encoding="utf-8") as file:
                 data: dict = load(file)
         except FileNotFoundError:
-            raise FileNotFoundError("Create profiles first.")
+            raise SystemError("Create profiles first.")
             
         no_of_channels: int = data.get("no_of_channels", 0)
 
@@ -239,6 +239,9 @@ class StreamStorm(Selenium, Profiles):
 
                     executor.submit(self.EachAccount, channels[index], profile_dir, wait_time)
                     sleep(0.2)
+                    
+                    
+        Thread(target=start_each_worker).start()
             
         
         

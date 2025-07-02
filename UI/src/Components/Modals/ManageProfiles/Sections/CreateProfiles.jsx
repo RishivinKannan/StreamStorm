@@ -54,7 +54,7 @@ const CreateProfiles = () => {
 
         const data = {
             browser_class: browserClass.toLowerCase(),
-            limit: profiles,
+            count: profiles,
         }
 
         fetch(`${hostAddress}/create_profiles`, {

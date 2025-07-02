@@ -284,7 +284,7 @@ def create_profiles() -> Response:
         validated_data: dict = Validate(request.json, ProfileData)
 
         profiles: Profiles = Profiles(validated_data["browser_class"])
-        profiles.create_profiles(validated_data["limit"])
+        profiles.create_profiles(validated_data["count"])
 
         return jsonify({"success": True, "message": "Profiles created"})
     except Exception as e:
