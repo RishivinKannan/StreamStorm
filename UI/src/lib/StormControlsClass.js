@@ -190,9 +190,7 @@ class StormControlsClass {
             });
     }
 
-    changeMessages(messages) {
-
-        let success = false;
+    changeMessages(messages, setMessages, setMessagesString) {
         
         this.setChangeMessagesLoading(true);
         this.setControlsDisabled(true);
@@ -210,7 +208,8 @@ class StormControlsClass {
                     this.notifications.show('Messages changed successfully!', {
                         severity: 'success',
                     });
-                    success = true;
+                    setMessages(messages);
+                    setMessagesString(messages.join('\n'));
                 } else {
                     this.notifications.show(data.message || 'Failed to change messages', {
                         severity: 'error',
@@ -227,8 +226,6 @@ class StormControlsClass {
                 this.setChangeMessagesLoading(false);
                 this.setControlsDisabled(false);
             });
-
-        return success;
     }
 
     changeSlowMode(slowModeValue, setSlowMode) {

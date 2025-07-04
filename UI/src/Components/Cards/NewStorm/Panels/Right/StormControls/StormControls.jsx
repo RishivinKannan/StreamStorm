@@ -71,11 +71,7 @@ const StormControls = () => {
 
         if (!messages) return;
 
-        const success = formControls.SC.current.changeMessages(messages);
-        if (success) {
-            formControls.setMessages(messages);
-            formControls.setMessagesString(messages.join('\n'));
-        }
+        formControls.SC.current.changeMessages(messages, formControls.setMessages, formControls.setMessagesString);
     }
 
     const handleDontWait = async () => {

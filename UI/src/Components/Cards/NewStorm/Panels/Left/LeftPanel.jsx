@@ -292,9 +292,12 @@ const LeftPanel = () => {
                                                 sx={{
                                                     ...inputProps,
                                                 }}
-                                            // onChange={(e) => {}}
                                             />
                                         </div>
+                                        <span style={{ fontSize: "0.7rem", color: "var(--slight-light-text)" }}>
+                                            Total Channels Selected: {formControls.advancedSelectedChannels.length}
+                                        </span>
+
 
                                         <ErrorText errorText={formControls.advancedChannelsErrorText} />
 
