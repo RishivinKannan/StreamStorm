@@ -1,5 +1,5 @@
 .available-channels-container {
-    max-height: 280px;
+    height: 280px;
     width: 100%;
     overflow: auto;
 }

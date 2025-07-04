@@ -173,7 +173,7 @@ const AddChannels = ({ payload, open, onClose }) => {
                                     selectedChannels.sort((a, b) => a - b).map((channel) => (
                                         <span key={channel}>
 
-                                            {`${channel}.${channelsData[channel]?.name}`}
+                                            {`${channel}. ${channelsData[channel]?.name}`}
                                         </span>
                                     ))
                                 }

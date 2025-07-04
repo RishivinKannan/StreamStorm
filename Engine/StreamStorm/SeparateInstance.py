@@ -8,7 +8,7 @@ from time import sleep
 from .Exceptions import DriverClosedError
 from .Selenium import Selenium
 
-class SeparateAccount(Selenium):
+class SeparateInstance(Selenium):
     def __init__(
         self,
         index: int = 0,
@@ -35,7 +35,7 @@ class SeparateAccount(Selenium):
             
             sleep(3)
             
-            self.__click_account(self.index)
+            self.__click_channel(self.index)
             
             return True
         except DriverClosedError as _:           
@@ -43,7 +43,7 @@ class SeparateAccount(Selenium):
             return False
 
 
-    def __click_account(self, index: int) -> None:
+    def __click_channel(self, index: int) -> None:
         
         self.find_and_click_element(
             By.XPATH,
@@ -78,4 +78,4 @@ class SeparateAccount(Selenium):
 
 
 
-__all__: list[str] = ['SeparateAccount']
+__all__: list[str] = ['SeparateInstance']

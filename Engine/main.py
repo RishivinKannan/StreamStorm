@@ -125,7 +125,7 @@ async def storm(data: StormData):
             "message": "A storm is already running. Stop the current storm before starting a new one.",
         }
 
-    StreamStorm.each_account_instances = []
+    StreamStorm.each_channel_instances = []
 
     StreamStormObj: StreamStorm = StreamStorm(
         data.video_url,
@@ -134,7 +134,7 @@ async def storm(data: StormData):
         (data.subscribe, data.subscribe_and_wait),
         data.subscribe_and_wait_time,
         data.slow_mode,
-        data.accounts,
+        data.channels,
         data.browser,
         data.background,
     )
@@ -162,7 +162,7 @@ async def stop():
             pass
 
     with ThreadPoolExecutor() as executor:
-        executor.map(close_browser, StreamStorm.each_account_instances)
+        executor.map(close_browser, StreamStorm.each_channel_instances)
 
     StreamStorm.ss_instance = None
 

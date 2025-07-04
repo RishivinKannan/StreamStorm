@@ -45,7 +45,7 @@ const LeftPanel = () => {
         formControls.setVideoURLHelperText("");
     }
 
-    const handleAdvancedAccountSelection = async () => {
+    const handleAdvancedChannelSelection = async () => {
 
         if (formControls.browser === "") {
             formControls.setBrowserError(true);
@@ -167,61 +167,61 @@ const LeftPanel = () => {
 
             </div>
 
-            <div className="account-index-inputs-container">
-                <span className="account-index-input-heading">Accounts Selection</span>
+            <div className="channel-index-inputs-container">
+                <span className="channel-index-input-heading">Channels Selection</span>
 
-                <div className="account-index-input-radio-container">
+                <div className="channel-index-input-radio-container">
                     <RadioGroup
                         row
                         defaultValue="basic"
-                        name="account-index-radio-group"
-                        onChange={(e) => formControls.setAccountSelection(e.target.value)}
+                        name="channel-index-radio-group"
+                        onChange={(e) => formControls.setChannelSelection(e.target.value)}
                         disabled={formControls.stormInProgress || formControls.loading}
                     >
-                        <div className="account-index-radio-container">
+                        <div className="channel-index-radio-container">
                             <Radio
                                 value="basic"
-                                checked={formControls.accountSelection === "basic"}
+                                checked={formControls.channelSelection === "basic"}
                                 disabled={formControls.stormInProgress || formControls.loading}
                             />
-                            <span className="account-index-input-label">Basic</span>
+                            <span className="channel-index-input-label">Basic</span>
                         </div>
-                        <div className="account-index-radio-container">
+                        <div className="channel-index-radio-container">
                             <Radio
                                 value="intermediate"
-                                checked={formControls.accountSelection === "intermediate"}
+                                checked={formControls.channelSelection === "intermediate"}
                                 disabled={formControls.stormInProgress || formControls.loading}
                             />
-                            <span className="account-index-input-label">Intermediate</span>
+                            <span className="channel-index-input-label">Intermediate</span>
                         </div>
-                        <div className="account-index-radio-container">
+                        <div className="channel-index-radio-container">
                             <Radio
                                 value="advanced"
-                                checked={formControls.accountSelection === "advanced"}
+                                checked={formControls.channelSelection === "advanced"}
                                 disabled={formControls.stormInProgress || formControls.loading}
                             />
-                            <span className="account-index-input-label">Advanced</span>
+                            <span className="channel-index-input-label">Advanced</span>
                         </div>
                     </RadioGroup>
                 </div>
                 {
-                    formControls.accountSelection === "basic" ? (
-                        <div className="account-selection-basic-container">
+                    formControls.channelSelection === "basic" ? (
+                        <div className="channel-selection-basic-container">
                             <TextField
                                 type="number"
                                 // defaultValue={1}
                                 variant="outlined"
-                                label="No.of Accounts"
-                                className="account-index-input"
+                                label="No.of Channels"
+                                className="channel-index-input"
                                 sx={inputProps}
-                                value={formControls.noOfAccounts}
+                                value={formControls.noOfChannels}
                                 onChange={(e) => {
-                                    formControls.setNoOfAccounts(parseInt(e.target.value));
-                                    formControls.setNoOfAccountsError(false);
-                                    formControls.setNoOfAccountsHelperText("");
+                                    formControls.setNoOfChannels(parseInt(e.target.value));
+                                    formControls.setNoOfChannelsError(false);
+                                    formControls.setNoOfChannelsHelperText("");
                                 }}
-                                error={formControls.noOfAccountsError}
-                                helperText={formControls.noOfAccountsHelperText}
+                                error={formControls.noOfChannelsError}
+                                helperText={formControls.noOfChannelsHelperText}
                                 disabled={formControls.stormInProgress || formControls.loading}
 
                             />
@@ -229,50 +229,50 @@ const LeftPanel = () => {
                     ) : (
                         <div>
                             {
-                                formControls.accountSelection === "intermediate" ? (
-                                    <div className="account-selection-intermediate-container">
+                                formControls.channelSelection === "intermediate" ? (
+                                    <div className="channel-selection-intermediate-container">
                                         <TextField
                                             type="number"
                                             defaultValue={1}
                                             variant="outlined"
-                                            label="Start Account Index"
-                                            className="account-index-input"
+                                            label="Start Channel Index"
+                                            className="channel-index-input"
                                             sx={inputProps}
-                                            value={formControls.startAccountIndex}
+                                            value={formControls.startChannelIndex}
                                             onChange={(e) => {
-                                                formControls.setStartAccountIndex(parseInt(e.target.value));
-                                                formControls.setStartAccountIndexError(false);
-                                                formControls.setStartAccountIndexHelperText("");
+                                                formControls.setStartChannelIndex(parseInt(e.target.value));
+                                                formControls.setStartChannelIndexError(false);
+                                                formControls.setStartChannelIndexHelperText("");
                                             }}
-                                            error={formControls.startAccountIndexError}
-                                            helperText={formControls.startAccountIndexHelperText}
+                                            error={formControls.startChannelIndexError}
+                                            helperText={formControls.startChannelIndexHelperText}
                                             disabled={formControls.stormInProgress || formControls.loading}
                                         />
                                         <TextField
                                             type="number"
                                             // defaultValue={5}
                                             variant="outlined"
-                                            label="End Account Index"
-                                            className="account-index-input"
+                                            label="End Channel Index"
+                                            className="channel-index-input"
                                             sx={inputProps}
-                                            value={formControls.endAccountIndex}
+                                            value={formControls.endChannelIndex}
                                             onChange={(e) => {
-                                                formControls.setEndAccountIndex(parseInt(e.target.value));
-                                                formControls.setEndAccountIndexError(false);
-                                                formControls.setEndAccountIndexHelperText("");
+                                                formControls.setEndChannelIndex(parseInt(e.target.value));
+                                                formControls.setEndChannelIndexError(false);
+                                                formControls.setEndChannelIndexHelperText("");
                                             }}
-                                            error={formControls.endAccountIndexError}
-                                            helperText={formControls.endAccountIndexHelperText}
+                                            error={formControls.endChannelIndexError}
+                                            helperText={formControls.endChannelIndexHelperText}
                                             disabled={formControls.stormInProgress || formControls.loading}
                                         />
                                     </div>
                                 ) : (
-                                    <div className="account-selection-advanced-container">
+                                    <div className="channel-selection-advanced-container">
                                         <div className="row">
                                             <Button
                                                 variant="contained"
-                                                className="account-index-input"
-                                                onClick={handleAdvancedAccountSelection}
+                                                className="channel-index-input"
+                                                onClick={handleAdvancedChannelSelection}
                                                 disabled={formControls.stormInProgress || formControls.loading}
                                                 sx={{
                                                     ...btnProps,
@@ -296,7 +296,7 @@ const LeftPanel = () => {
                                             />
                                         </div>
 
-                                        <ErrorText errorText={formControls.advancedAccountsErrorText} />
+                                        <ErrorText errorText={formControls.advancedChannelsErrorText} />
 
 
                                     </div>
@@ -306,8 +306,8 @@ const LeftPanel = () => {
                     )
                 }
                 {
-                    formControls.accountSelection === "intermediate" ? (
-                        <span className='account-selection-note'>
+                    formControls.channelSelection === "intermediate" ? (
+                        <span className='channel-selection-note'>
                             Note: Index starts from 1, and the end index is inclusive.
                         </span>
                     ) : null

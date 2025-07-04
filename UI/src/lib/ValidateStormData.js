@@ -63,44 +63,44 @@ const ValidateStormData = (formControls, systemInfoControls) => {
         }
     }
 
-    if (formControls.accountSelection === 'basic') {
-        if (isNaN(formControls.noOfAccounts)) {
+    if (formControls.channelSelection === 'basic') {
+        if (isNaN(formControls.noOfChannels)) {
             isValid = false;
-            formControls.setNoOfAccountsError(true);
-            formControls.setNoOfAccountsHelperText("Enter a valid number of accounts.");
-        } else if (formControls.noOfAccounts < 1) {
+            formControls.setNoOfChannelsError(true);
+            formControls.setNoOfChannelsHelperText("Enter a valid number of channels.");
+        } else if (formControls.noOfChannels < 1) {
             isValid = false;
-            formControls.setNoOfAccountsError(true);
-            formControls.setNoOfAccountsHelperText("Number of accounts must be at least 1.");
-        } else if (formControls.noOfAccounts > (systemInfoControls.availableRAM / systemInfoControls.RAM_PER_PROFILE)) {
+            formControls.setNoOfChannelsError(true);
+            formControls.setNoOfChannelsHelperText("Number of channels must be at least 1.");
+        } else if (formControls.noOfChannels > (systemInfoControls.availableRAM / systemInfoControls.RAM_PER_PROFILE)) {
             isValid = false;
-            formControls.setErrorText(`You can run a maximum of ${Math.floor(systemInfoControls.availableRAM / systemInfoControls.RAM_PER_PROFILE)} accounts with your available RAM.`);
+            formControls.setErrorText(`You can run a maximum of ${Math.floor(systemInfoControls.availableRAM / systemInfoControls.RAM_PER_PROFILE)} channels with your available RAM.`);
         }
-    } else if (formControls.accountSelection === 'intermediate') {
-        if (isNaN(formControls.startAccountIndex)) {
+    } else if (formControls.channelSelection === 'intermediate') {
+        if (isNaN(formControls.startChannelIndex)) {
             isValid = false;
-            formControls.setStartAccountIndexError(true);
-            formControls.setStartAccountIndexHelperText("Enter a valid start account index.");
-        } else if (formControls.startAccountIndex < 1) {
+            formControls.setStartChannelIndexError(true);
+            formControls.setStartChannelIndexHelperText("Enter a valid start channel index.");
+        } else if (formControls.startChannelIndex < 1) {
             isValid = false;
-            formControls.setStartAccountIndexError(true);
-            formControls.setStartAccountIndexHelperText("Start account index must be at least 1.");
+            formControls.setStartChannelIndexError(true);
+            formControls.setStartChannelIndexHelperText("Start channel index must be at least 1.");
         }
         
-        if (isNaN(formControls.endAccountIndex)) {
+        if (isNaN(formControls.endChannelIndex)) {
             isValid = false;
-            formControls.setEndAccountIndexError(true);
-            formControls.setEndAccountIndexHelperText("Enter a valid end account index.");
-        } else if (formControls.endAccountIndex < formControls.startAccountIndex) {
+            formControls.setEndChannelIndexError(true);
+            formControls.setEndChannelIndexHelperText("Enter a valid end channel index.");
+        } else if (formControls.endChannelIndex < formControls.startChannelIndex) {
             isValid = false;
-            formControls.setEndAccountIndexError(true);
-            formControls.setEndAccountIndexHelperText("End account index cannot be less than start account index.");
+            formControls.setEndChannelIndexError(true);
+            formControls.setEndChannelIndexHelperText("End channel index cannot be less than start channel index.");
         }
 
-        const totalAccounts = formControls.endAccountIndex - formControls.startAccountIndex + 1;
-        if (totalAccounts > (systemInfoControls.availableRAM / systemInfoControls.RAM_PER_PROFILE)) {
+        const totalChannels = formControls.endChannelIndex - formControls.startChannelIndex + 1;
+        if (totalChannels > (systemInfoControls.availableRAM / systemInfoControls.RAM_PER_PROFILE)) {
             isValid = false;
-            formControls.setErrorText(`You can run a maximum of ${Math.floor(systemInfoControls.availableRAM / systemInfoControls.RAM_PER_PROFILE)} accounts with your available RAM.`);
+            formControls.setErrorText(`You can run a maximum of ${Math.floor(systemInfoControls.availableRAM / systemInfoControls.RAM_PER_PROFILE)} channels with your available RAM.`);
         }
     }
 
@@ -112,7 +112,7 @@ const ValidateStormData = (formControls, systemInfoControls) => {
 
     if (systemInfoControls.availableRAM === null) {
         isValid = false;
-        formControls.setErrorText("Not enough RAM to run even one account. If this is a mistake, Refresh RAM and try again.");
+        formControls.setErrorText("Not enough RAM to run even one channel. If this is a mistake, Refresh RAM and try again.");
     }
 
     return isValid;

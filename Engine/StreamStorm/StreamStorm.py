@@ -12,13 +12,13 @@ from threading import Event
 from selenium.common.exceptions import InvalidSessionIdException
 
 from .Selenium import Selenium
-from .SeparateAccount import SeparateAccount
+from .SeparateInstance import SeparateInstance
 from .Profiles import Profiles
 from .Lib import clear_ram
 
 
 class StreamStorm(Selenium, Profiles):
-    each_account_instances: list[SeparateAccount] = []
+    each_channel_instances: list[SeparateInstance] = []
     ss_instance: Self = None
 
     def __init__(
@@ -29,9 +29,9 @@ class StreamStorm(Selenium, Profiles):
         subscribe: tuple[bool, bool] = (False, False),
         subscribe_and_wait_time: int = 70,
         slow_mode: int = 0,
-        # start_account_index: int = 1,
-        # end_account_index: int = 10,
-        accounts: list[int] = None,
+        # start_channel_index: int = 1,
+        # end_channel_index: int = 10,
+        channels: list[int] = None,
         browser: str = "edge",
         background: bool = True,
         shared_data: dict = None,
@@ -45,9 +45,9 @@ class StreamStorm(Selenium, Profiles):
         self.subscribe: tuple[bool, bool] = subscribe
         self.subscribe_and_wait_time: int = subscribe_and_wait_time
         self.slow_mode: int = slow_mode
-        # self.start_account_index: int = start_account_index
-        # self.end_account_index: int = end_account_index
-        self.accounts: list[int] = sorted(accounts)
+        # self.start_channel_index: int = start_channel_index
+        # self.end_channel_index: int = end_channel_index
+        self.channels: list[int] = sorted(channels)
         self.browser: str = browser
         self.background: bool = background
         
@@ -56,7 +56,7 @@ class StreamStorm(Selenium, Profiles):
         self.ready_event: Event = Event()
         self.pause_event: Event = Event()
         
-        self.total_instances: int = len(accounts)
+        self.total_instances: int = len(channels)
         self.ready_to_storm_instances: int = 0
         self.total_channels: int = 0
         self.all_channels: dict[str, dict[str, str]] = {}
@@ -88,9 +88,9 @@ class StreamStorm(Selenium, Profiles):
         self.total_channels = no_of_channels
         self.all_channels = data.get("channels", {})
 
-        if no_of_channels < len(self.accounts):
-            raise SystemError("Not enough channels available in your YouTube account. Create enough channels first. Then create Profiles again.")
-        
+        if no_of_channels < len(self.channels):
+            raise SystemError("Not enough channels available in your YouTube Account. Create enough channels first. Then create Profiles again in the app.")
+
     def get_active_channels(self) -> list[int]:
         active_channels: list[int] = []
         
@@ -100,47 +100,43 @@ class StreamStorm(Selenium, Profiles):
                 
         return active_channels
         
-    def EachAccount(self, index: int, profile_dir: str, wait_time: float = 0) -> None:
+    def EachChannel(self, index: int, profile_dir: str, wait_time: float = 0) -> None:
         
         print(f"Using profile: {profile_dir}")
         profile_dir_name: str=  profile_dir.split("\\")[-1]
         
         try:
 
-            Separate_Account = SeparateAccount(
+            SI = SeparateInstance(
                 index,
                 profile_dir,
                 self.browser,
                 self.background,
             )
 
-            print("Separate Account obj created")
-
             self.assigned_profiles[profile_dir_name] = index
 
-            print("Assigned profile to account:", index)
+            print("Assigned profile to channel:", index)
 
-            StreamStorm.each_account_instances.append(Separate_Account)
-            print("Added Separate Account to each_account_instances")
-            logged_in: bool = Separate_Account.login()
-            print("Logged in:", logged_in)
+            StreamStorm.each_channel_instances.append(SI)
+            logged_in: bool = SI.login()
             
             if not logged_in:
                 self.total_instances -= 1
                 self.assigned_profiles[profile_dir_name] = None
-                StreamStorm.each_account_instances.remove(Separate_Account)
-                print(f"========================= Login failed on account {index} : {self.all_channels[str(index)]['name']}. =========================")
+                StreamStorm.each_channel_instances.remove(SI)
+                print(f"========================= Login failed on channel {index} : {self.all_channels[str(index)]['name']}. =========================")
                 return
 
             if self.subscribe[0]:
-                Separate_Account.go_to_page(self.url)
-                Separate_Account.subscribe_to_channel()
+                SI.go_to_page(self.url)
+                SI.subscribe_to_channel()
 
-            Separate_Account.driver.set_window_size(500, 800)
-            Separate_Account.go_to_page(self.chat_url)
+            SI.driver.set_window_size(500, 800)
+            SI.go_to_page(self.chat_url)
             
             self.ready_to_storm_instances += 1
-            print(f"@@@@@@@@@@@@@@@@@@@@@@@@@ Account {index} : {self.all_channels[str(index)]['name']} is ready @@@@@@@@@@@@@@@@@@@@@@@@@")
+            print(f"@@@@@@@@@@@@@@@@@@@@@@@@@ Channel {index} : {self.all_channels[str(index)]['name']} is ready @@@@@@@@@@@@@@@@@@@@@@@@@")
 
             if self.subscribe[1]:
                 sleep(self.subscribe_and_wait_time)
@@ -154,7 +150,7 @@ class StreamStorm(Selenium, Profiles):
                 self.pause_event.wait()
         
                 # input()
-                Separate_Account.send_message(choice(self.messages))
+                SI.send_message(choice(self.messages))
                 sleep(self.slow_mode)
 
         except (
@@ -165,7 +161,7 @@ class StreamStorm(Selenium, Profiles):
             ConnectionResetError,
             TimeoutError,
         ) as e:
-            print(f"Error in account {index}: {e}")
+            print(f"Error in channel {index}: {e}")
             pass
         
     def get_start_storm_wait_time(self, index, no_of_profiles, slow_mode) -> float:
@@ -179,8 +175,8 @@ class StreamStorm(Selenium, Profiles):
         
         self.check_channels_available()
         
-        if self.accounts[-1] > self.total_channels:
-            raise SystemError("You have selected more accounts than available channels in your YouTube account. Create enough channels first.")
+        if self.channels[-1] > self.total_channels:
+            raise SystemError("You have selected more channels than available channels in your YouTube channel. Create enough channels first.")
         
         
         temp_profiles: list[str] = self.get_available_temp_profiles()
@@ -190,7 +186,7 @@ class StreamStorm(Selenium, Profiles):
         
         
         
-        if no_of_temp_profiles < len(self.accounts):
+        if no_of_temp_profiles < len(self.channels):
             raise SystemError("Not enough temp profiles available. Create Enough profiles first.")       
         
 
@@ -199,17 +195,16 @@ class StreamStorm(Selenium, Profiles):
             def wait_for_all_worker_to_be_ready() -> None:
                 while self.ready_to_storm_instances < self.total_instances:
                     sleep(1)
-                self.ready_event.set()  # Set the event to signal that all instances are ready           
-                 
-                 
-            Thread(target=wait_for_all_worker_to_be_ready).start()     
-            
+                self.ready_event.set()  # Set the event to signal that all instances are ready
+
+            Thread(target=wait_for_all_worker_to_be_ready).start()
+
             with ThreadPoolExecutor() as executor:
-                for index in range(len(self.accounts)):
+                for index in range(len(self.channels)):
                     profile_dir: str = self.profiles_dir + f"\\{temp_profiles[index]}"
                     wait_time: int = self.get_start_storm_wait_time(index, no_of_temp_profiles, self.slow_mode)
 
-                    executor.submit(self.EachAccount, self.accounts[index], profile_dir, wait_time)
+                    executor.submit(self.EachChannel, self.channels[index], profile_dir, wait_time)
                     sleep(0.2)  # Small delay to avoid instant spike of the cpu load
 
             environ.update({"BUSY": "0"})
@@ -246,7 +241,7 @@ class StreamStorm(Selenium, Profiles):
                     profile_dir: str = self.profiles_dir + f"\\{available_profiles[index]}"
                     wait_time: int = self.get_start_storm_wait_time(index, len(available_profiles), self.slow_mode)
 
-                    executor.submit(self.EachAccount, channels[index], profile_dir, wait_time)
+                    executor.submit(self.EachChannel, channels[index], profile_dir, wait_time)
                     sleep(0.2)
                     
                     

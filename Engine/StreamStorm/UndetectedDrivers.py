@@ -51,7 +51,7 @@ class UndetectedDrivers(Selenium):
     def get_total_channels(self) -> int:
         
         try:
-            # select first account if popup appears
+            # select first channel if popup appears
             self.find_and_click_element(By.XPATH, "//ytd-popup-container//*[@id='contents']/ytd-account-item-renderer[1]", for_profiles_init=True)
         except (NoSuchElementException, ElementNotInteractableException):
             pass
@@ -85,7 +85,7 @@ class UndetectedDrivers(Selenium):
         total_channels: int = len(channels_list)
 
         if total_channels == 0:
-            raise SystemError("No YouTube channels found. Please add at least one channel to your YouTube account.")
+            raise SystemError("No YouTube channels found. Please add at least one channel to your YouTube Account.")
         
         self.initiate_config_json(total_channels, channels)
 

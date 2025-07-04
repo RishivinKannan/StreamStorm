@@ -81,7 +81,7 @@ const StormControls = () => {
     const handleDontWait = async () => {
 
         const confirmed = await dialogs.open(AreYouSure, {
-            text: <span>Are you sure you want to <strong style={{ color: "var(--input-active-red-dark)" }}>NOT WAIT</strong> for all the accounts to be ready?</span>
+            text: <span>Are you sure you want to <strong style={{ color: "var(--input-active-red-dark)" }}>NOT WAIT</strong> for all the channels to be ready?</span>
         });
 
         if (confirmed) {

@@ -25,9 +25,9 @@ class StormData(BaseModel):
     subscribe_and_wait: bool
     subscribe_and_wait_time: int
     slow_mode: int
-    # start_account_index: int
-    # end_account_index: int
-    accounts: list[int]
+    # start_channel_index: int
+    # end_channel_index: int
+    channels: list[int]
     browser: str
     background: bool
 
@@ -79,17 +79,17 @@ class StormData(BaseModel):
         
         return value
     
-    @field_validator("accounts")
-    def validate_accounts(cls, value: list[int]) -> list[int]:
+    @field_validator("channels")
+    def validate_channels(cls, value: list[int]) -> list[int]:
         if not value:
-            raise ValueError("Accounts cannot be empty")
+            raise ValueError("Channels cannot be empty")
         
-        if not all(isinstance(account, int) for account in value):
-            raise ValueError("All accounts must be integers")
+        if not all(isinstance(channel, int) for channel in value):
+            raise ValueError("All channels must be integers")
         
-        if any(account < 0 for account in value):
-            raise ValueError("Account IDs cannot be negative")
-        
+        if any(channel < 0 for channel in value):
+            raise ValueError("Channel IDs cannot be negative")
+
         return value
     
     @model_validator(mode = 'before')
@@ -102,7 +102,7 @@ class StormData(BaseModel):
         if self.video_url.replace("watch", "live_chat") != self.chat_url:
             raise ValueError("Invalid video URL")
         
-        self.accounts = list(set(self.accounts)) # Remove duplicates
+        self.channels = list(set(self.channels)) # Remove duplicates
         
         return self
 

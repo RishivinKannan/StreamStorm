@@ -48,22 +48,22 @@ const NewStorm = () => {
     const [slowModeError, setSlowModeError] = useState(false);
     const [slowModeHelperText, setSlowModeHelperText] = useState("");
 
-    const [accountSelection, setAccountSelection] = useState('basic');
+    const [channelSelection, setChannelSelection] = useState('basic');
 
-    const [noOfAccounts, setNoOfAccounts] = useState(1);
-    const [noOfAccountsError, setNoOfAccountsError] = useState(false);
-    const [noOfAccountsHelperText, setNoOfAccountsHelperText] = useState("");
+    const [noOfChannels, setNoOfChannels] = useState(1);
+    const [noOfChannelsError, setNoOfChannelsError] = useState(false);
+    const [noOfChannelsHelperText, setNoOfChannelsHelperText] = useState("");
 
-    const [startAccountIndex, setStartAccountIndex] = useState(1);
-    const [startAccountIndexError, setStartAccountIndexError] = useState(false);
-    const [startAccountIndexHelperText, setStartAccountIndexHelperText] = useState("");
+    const [startChannelIndex, setStartChannelIndex] = useState(1);
+    const [startChannelIndexError, setStartChannelIndexError] = useState(false);
+    const [startChannelIndexHelperText, setStartChannelIndexHelperText] = useState("");
 
-    const [endAccountIndex, setEndAccountIndex] = useState(0);
-    const [endAccountIndexError, setEndAccountIndexError] = useState(false);
-    const [endAccountIndexHelperText, setEndAccountIndexHelperText] = useState("");
+    const [endChannelIndex, setEndChannelIndex] = useState(0);
+    const [endChannelIndexError, setEndChannelIndexError] = useState(false);
+    const [endChannelIndexHelperText, setEndChannelIndexHelperText] = useState("");
 
     const [advancedSelectedChannels, setAdvancedSelectedChannels] = useState([]);
-    const [advancedAccountsErrorText, setAdvancedAccountsErrorText] = useState("");
+    const [advancedChannelsErrorText, setAdvancedChannelsErrorText] = useState("");
 
     const [browser, setBrowser] = useState('');
     const [browserError, setBrowserError] = useState(false);
@@ -74,7 +74,7 @@ const NewStorm = () => {
 
 
 
-    const getAccounts = () => {
+    const getChannels = () => {
         const getRange = (start, end) => {
             const range = [];
             
@@ -85,11 +85,11 @@ const NewStorm = () => {
             return range;
         }
 
-        if (accountSelection === 'basic') {
-            return getRange(1, noOfAccounts);
-        } else if (accountSelection === 'intermediate') {
-            return getRange(startAccountIndex, endAccountIndex);
-        } else if (accountSelection === 'advanced') {
+        if (channelSelection === 'basic') {
+            return getRange(1, noOfChannels);
+        } else if (channelSelection === 'intermediate') {
+            return getRange(startChannelIndex, endChannelIndex);
+        } else if (channelSelection === 'advanced') {
             return advancedSelectedChannels;
         }
     }
@@ -101,11 +101,11 @@ const NewStorm = () => {
         subscribe, setSubscribe, subscribeAndWait, setSubscribeAndWait,
         subscribeWaitTime, setSubscribeWaitTime, subscribeWaitTimeError, setSubscribeWaitTimeError, subscribeWaitTimeHelperText, setSubscribeWaitTimeHelperText,
         slowMode, setSlowMode, slowModeError, setSlowModeError, slowModeHelperText, setSlowModeHelperText,
-        accountSelection, setAccountSelection,
-        noOfAccounts, setNoOfAccounts, noOfAccountsError, setNoOfAccountsError, noOfAccountsHelperText, setNoOfAccountsHelperText,
-        startAccountIndex, setStartAccountIndex, startAccountIndexError, setStartAccountIndexError, startAccountIndexHelperText, setStartAccountIndexHelperText,
-        endAccountIndex, setEndAccountIndex, endAccountIndexError, setEndAccountIndexError, endAccountIndexHelperText, setEndAccountIndexHelperText,
-        advancedSelectedChannels, setAdvancedSelectedChannels, advancedAccountsErrorText, setAdvancedAccountsErrorText,
+        channelSelection, setChannelSelection,
+        noOfChannels, setNoOfChannels, noOfChannelsError, setNoOfChannelsError, noOfChannelsHelperText, setNoOfChannelsHelperText,
+        startChannelIndex, setStartChannelIndex, startChannelIndexError, setStartChannelIndexError, startChannelIndexHelperText, setStartChannelIndexHelperText,
+        endChannelIndex, setEndChannelIndex, endChannelIndexError, setEndChannelIndexError, endChannelIndexHelperText, setEndChannelIndexHelperText,
+        advancedSelectedChannels, setAdvancedSelectedChannels, advancedChannelsErrorText, setAdvancedChannelsErrorText,
         browser, setBrowser, browserError, setBrowserError, browserHelperText, setBrowserHelperText,
         loadInBackground, setLoadInBackground, errorText, setErrorText,
         hostAddress, SC,
@@ -119,11 +119,11 @@ const NewStorm = () => {
                 subscribe_and_wait: subscribeAndWait,
                 subscribe_and_wait_time: subscribeWaitTime,
                 slow_mode: slowMode,
-                // start_account_index: accountSelection === 'basic' ? 1 : startAccountIndex,
-                // end_account_index: accountSelection === 'basic' ? noOfAccounts : endAccountIndex,
+                // start_channel_index: channelSelection === 'basic' ? 1 : startChannelIndex,
+                // end_channel_index: channelSelection === 'basic' ? noOfChannels : endChannelIndex,
                 browser: browser,
                 background: loadInBackground,
-                accounts: getAccounts(),
+                channels: getChannels(),
             };
         }
     };

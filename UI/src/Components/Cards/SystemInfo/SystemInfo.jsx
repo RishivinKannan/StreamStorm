@@ -72,13 +72,13 @@ const SystemInfo = () => {
                             Refresh RAM
                         </Button>
                         <span className='ram-note'>
-                            To operate one account you need approximately {RAM_PER_PROFILE}MB of Free RAM.
+                            To operate one channel you need approximately {RAM_PER_PROFILE}MB of Free RAM.
                             
                         </span>
                         <span className='ram-note'>
                             {
                                 systemInfoControls.availableRAM ? (
-                                    `Since you have ${systemInfoControls.availableRAM} MB of RAM available, you can run approximately ${Math.floor(systemInfoControls.availableRAM / RAM_PER_PROFILE)} accounts.`
+                                    `Since you have ${systemInfoControls.availableRAM} MB of RAM available, you can run approximately ${Math.floor(systemInfoControls.availableRAM / RAM_PER_PROFILE)} channels.`
                                 ) : (
                                     "RAM information is currently unavailable."
                                 )

@@ -169,7 +169,7 @@ class StormControlsClass {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    this.notifications.show('Each account will start storming without waiting for others!', {
+                    this.notifications.show('Each channel will start storming without waiting for others!', {
                         severity: 'success',
                     });
                 } else {

@@ -88,7 +88,7 @@ def storm() -> Response:
             }
         )
 
-    StreamStorm.each_account_instances = []
+    StreamStorm.each_channel_instances = []
 
     try:
         validated_data: dict = Validate(request.json, StormData)
@@ -100,7 +100,7 @@ def storm() -> Response:
             (validated_data["subscribe"], validated_data["subscribe_and_wait"]),
             validated_data["subscribe_and_wait_time"],
             validated_data["slow_mode"],
-            validated_data["accounts"],
+            validated_data["channels"],
             validated_data["browser"],
             validated_data["background"],
         )
@@ -129,7 +129,7 @@ def stop() -> Response:
             pass
 
     with ThreadPoolExecutor() as executor:
-        executor.map(close_browser, StreamStorm.each_account_instances)
+        executor.map(close_browser, StreamStorm.each_channel_instances)
 
     StreamStorm.ss_instance = None
 
