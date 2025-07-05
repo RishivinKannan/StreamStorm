@@ -353,7 +353,7 @@ if __name__ == "__main__":
     try:
         create_window(
             title="StreamStorm",
-            url="https://streamstorm-ui.netlify.app/",
+            url="https://streamstorm-ui.web.app/",
             width=1300,
             height=900,
             confirm_close=True,
