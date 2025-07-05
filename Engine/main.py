@@ -328,7 +328,7 @@ async def get_ram_info():
 def serve_api():
     from uvicorn import run
 
-    run(app, host="0.0.0.0", port=5000)
+    run(app, host="0.0.0.0", port=1919) # 1919, because 19 is the character number for "S" in the alphabet.
 
 
 if __name__ == "__main__":

@@ -1,9 +1,4 @@
 from time import sleep
-from selenium.webdriver.chrome.service import Service
-
-from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.microsoft import EdgeChromiumDriverManager
-# from webdriver_manager.firefox import GeckoDriverManager
 
 from selenium.webdriver import Edge, Chrome#, Firefox
 from selenium.webdriver import EdgeOptions, ChromeOptions#, FirefoxOptions
@@ -49,16 +44,6 @@ class Selenium:
         self.user_data_dir: str = user_data_dir
         self.browser: str = browser
         self.background: bool = background
-        
-    def install_driver(self, browser: str) -> str:
-        if browser == 'chrome':
-            return ChromeDriverManager().install()
-        elif browser == 'edge':
-            return EdgeChromiumDriverManager().install()
-        # elif browser == 'firefox':
-        #     return GeckoDriverManager().install()
-        else:
-            raise ValueError("Invalid browser")
         
     def __add_all_options(self, browser: str, options: ArgOptions) -> ArgOptions:
         

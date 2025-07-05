@@ -8,9 +8,9 @@ const fetchRAM = async (hostAddress, notifications, controls) => {
 
     } catch (error) {
         console.error("Error fetching RAM data:", error);
-        notifications.show("Failed to fetch RAM data", {
-            severity: 'error',
-        });
+        // notifications.show("Failed to fetch RAM data", {
+        //     severity: 'error',
+        // });
     }
 }
 

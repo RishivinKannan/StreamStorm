@@ -9,6 +9,6 @@ export const BROWSER_CLASSES = [
     "webkit"
 ]
 
-export const DEFAULT_HOST_ADDRESS = "http://localhost:5000";
-export const RAM_PER_PROFILE = 400;
+export const DEFAULT_HOST_ADDRESS = "http://localhost:1919";
+export const RAM_PER_PROFILE = 300;
 
