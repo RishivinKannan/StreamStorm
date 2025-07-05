@@ -1,0 +1,26 @@
+StreamStorm - Personal Use License  
+Copyright (c) 2025 Ashif (DarkGlance)
+
+Permission is hereby granted to any individual to view, use, and run the source code of this project for personal and non-commercial purposes, provided that:
+
+1. The source code must always be accessed from the official repository at:
+   https://github.com/Ashif4354/StreamStorm
+
+2. Redistribution of this source code, in part or in full, in any form — including but not limited to:
+   - Copying and uploading to another public or private repository
+   - Sharing as downloadable archives
+   - Forking for public publishing  
+   — is strictly prohibited.
+
+3. Commercial use, resale, rebranding, sublicensing, or redistribution of any part of this software or its components is not allowed.
+
+4. Personal modifications are permitted **only for private use**. You must not publish, share, or distribute modified versions of the software.
+
+5. All references to the original authorship (Ashif aka DarkGlance) must remain intact in the code and documentation.
+
+6. Any violations of this license will be considered a breach of the author's terms and may result in legal action.
+
+For collaborations, contributions, or licensing under different terms, contact:
+📧 darkglance.developer@gmail.com  
+
+All rights reserved.
