@@ -19,7 +19,7 @@
   },
   {
    "optionDest": "icon_file",
-   "value": "D:/PROGRAMMING/PROJECTS/StreamStorm/UI/dist/favicon.ico"
+   "value": "D:/PROGRAMMING/PROJECTS/StreamStorm/UI/public/favicon.ico"
   },
   {
    "optionDest": "name",
@@ -60,6 +60,10 @@
   {
    "optionDest": "bootloader_ignore_signals",
    "value": false
+  },
+  {
+   "optionDest": "datas",
+   "value": "D:/PROGRAMMING/PROJECTS/StreamStorm/Engine/RAMMap.exe;."
   }
  ],
  "nonPyinstallerOptions": {
