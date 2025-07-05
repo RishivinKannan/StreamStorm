@@ -8,7 +8,13 @@
 2. In auto-py-to-exe
         - "Convert .py to .exe"
 
-3. In the output directory
+3. Update version in the following files
+        - Engine/pyproject.toml
+        - Site/package.json
+        - UI/package.json
+        - INNO Setup/create_setup.iss
+
+4. In the output directory
         dgupdater init (if not already done)
         dgupdater commit 
         dgupdater publish
