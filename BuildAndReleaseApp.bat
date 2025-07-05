@@ -3,18 +3,18 @@ uv sync
 call .venv/Scripts/activate
 cd..
 
-auto-py-to-exe -c apte-ss-config.json
+call auto-py-to-exe -c apte-ss-config.json
 
 cd Site
-vite build
+call vite build
 cd..
 
 cd UI
-vite build
+call vite build
 cd ..
 
-firebase deploy
+call firebase deploy
 
 cd output
-dgupdater commit
-dgupdater publish
+call dgupdater commit
+call dgupdater publish
