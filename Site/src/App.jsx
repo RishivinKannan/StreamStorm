@@ -4,6 +4,7 @@ import './App.css'
 import HomePage from './Components/HomePage';
 import TermsAndConditions from './Components/TermsAndConditions';
 import PrivacyPolicy from './Components/PrivacyPolicy';
+import Instructions from './Components/Instructions';
 
 
 const App = () => {
@@ -15,6 +16,7 @@ const App = () => {
                 <Route path="/tc" element={<TermsAndConditions />} />
                 <Route path="/pp" element={<PrivacyPolicy />} />
                 <Route path="*" element={<HomePage />} />
+                <Route path="/instructions" element={<Instructions />} />
             </Routes>
         </BrowserRouter>
     )

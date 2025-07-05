@@ -24,7 +24,7 @@ const DrawerComponent = ({ open, onClose }) => {
             >
                 {/* <AppTitle /> */}
                 <span className="drawer-title">Menu</span>
-                <NavBar orientation="vertical" />
+                <NavBar orientation="vertical" onClose={onClose} />
 
 
             </Box>

@@ -8,7 +8,7 @@ import NavBar from './NavBar';
 import DrawerComponent from './Drawer';
 
 const Header = () => {
-    const isSmallScreen = useMediaQuery('(max-width: 700px)');
+    const isSmallScreen = useMediaQuery('(max-width: 760px)');
     const [drawerOpen, setDrawerOpen] = useState(false);
 
     return (

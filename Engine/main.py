@@ -1,3 +1,9 @@
+# StreamStorm - Personal Use Only
+# Copyright (c) 2025 Ashif (DarkGlance)
+# Licensed under the StreamStorm Personal Use License
+# See LICENSE file or visit: https://github.com/Ashif4354/StreamStorm
+# Unauthorized Redistribution or Commercial Use is Prohibited
+
 from os import environ
 from os.path import join, exists
 from json import load
