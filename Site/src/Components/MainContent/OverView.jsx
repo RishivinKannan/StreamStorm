@@ -12,7 +12,7 @@ const OverView = () => {
                     No coding required. Just Pure, unadulterated disruptions
                 </span>
                 <div className="overview-buttons-container">
-                    <a href="https://github.com/Ashif4354/StreamStorm/releases/latest/download/StreamStorm.exe" download>
+                    <a href="https://github.com/Ashif4354/StreamStorm/releases/latest/download/StreamStorm.Setup.exe" download>
                         <button className="overview-download-button">
                             Download Now
                         </button>
