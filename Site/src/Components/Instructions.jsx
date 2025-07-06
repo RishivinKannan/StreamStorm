@@ -273,7 +273,7 @@ const Instructions = () => {
               <ul className="instructions-list">
                 <li className="instructions-list-item">If you want to access the application from another device on the same network, you need to provide the IP address of your machine running the application.</li>
                 <li className="instructions-list-item">You can find your IP address by running the command <code className="instructions-inline-code">ipconfig</code> in the command prompt or powershell. Look for the <code className="instructions-inline-code">IPv4 Address</code> under your active network connection. eg. <code className="instructions-inline-code">192.168.1.100</code></li>
-                <li className="instructions-list-item">Once you have your IP address, you can access the application from another device by entering the URL <code className="instructions-inline-code">http://&lt;your-ip-address&gt;:1919</code> in the browser.</li>
+                <li className="instructions-list-item">Once you have your IP address, you can access the application from another device by entering the URL <code className="instructions-inline-code">http://&lt;your-ip-address&gt;:1919</code> in the Host Configuration Menu and saving it.</li>
               </ul>
             </li>
             <li className="instructions-list-item">
@@ -281,7 +281,7 @@ const Instructions = () => {
               <ul className="instructions-list">
                 <li className="instructions-list-item">If you want to access the application from another device on a different network, you need to configure port forwarding on your router.</li>
                 <li className="instructions-list-item">You need to forward the port <code className="instructions-inline-code">1919</code> to the IP address of your machine running the application.</li>
-                <li className="instructions-list-item">Once you have configured port forwarding, you can access the application from another device by entering the URL <code className="instructions-inline-code">http://&lt;your-public-ip-address&gt;:1919</code> in the browser.</li>
+                <li className="instructions-list-item">Once you have configured port forwarding, you can access the application from another device by entering the URL <code className="instructions-inline-code">http://&lt;your-public-ip-address&gt;:1919</code> in the Host Configuration Menu and saving it.</li>
                 <li className="instructions-list-item">You can find your public IP address by searching for "What is my IP" in Google. eg. <code className="instructions-inline-code">203.0.113.0</code></li>
                 <li className="instructions-list-item">If you didn't understand how to configure port forwarding, you can search in Google for "How to configure port forwarding" for your router model. There will be many tutorials available online.</li>
               </ul>

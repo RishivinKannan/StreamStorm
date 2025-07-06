@@ -134,12 +134,12 @@ First you need to make sure that the application is running on your machine, The
 * **Same Network**
     * If you want to access the application from another device on the same network, you need to provide the IP address of your machine running the application.
     * You can find your IP address by running the command `ipconfig` in the command prompt or powershell. Look for the `IPv4 Address` under your active network connection. eg. `192.168.1.100`
-    * Once you have your IP address, you can access the application from another device by entering the URL `http://<your-ip-address>:1919` in the browser.
+    * Once you have your IP address, you can access the application from another device by entering the URL `http://<your-ip-address>:1919` in the Host Configuration Menu and saving it.
 
 * **Different Network**
     * If you want to access the application from another device on a different network, you need to configure port forwarding on your router.
     * You need to forward the port `1919` to the IP address of your machine running the application.
-    * Once you have configured port forwarding, you can access the application from another device by entering the URL `http://<your-public-ip-address>:1919` in the browser.
+    * Once you have configured port forwarding, you can access the application from another device by entering the URL `http://<your-public-ip-address>:1919` in the Host Configuration Menu and saving it.
     * You can find your public IP address by searching for "What is my IP" in Google. eg. `203.0.113.0`
     * If you didn't understand how to configure port forwarding, you can search in Google for "How to configure port forwarding" for your router model. There will be many tutorials available online.
 
