@@ -1,5 +1,4 @@
 import LaunchIcon from '@mui/icons-material/Launch';
-import ss from "../../assets/ss.png"
 
 const OverView = () => {
     return (
@@ -8,8 +7,8 @@ const OverView = () => {
                 <h2 className="tag-line">Unleash Chaos in <span className="red-text">YouTube Live Chats</span></h2>
                 <span className="overview-description">
                     A desktop application to automate mass messaging. 
-                    Storm chats in YouTube Live Streams at full throttle. 
-                    No coding required. Just Pure, unadulterated disruptions
+                    Storm chats in YouTube Live Streams at full throttle with zero efforts. 
+                    No coding, no limits. Just Pure, unadulterated disruptions and chaos on command.
                 </span>
                 <div className="overview-buttons-container">
                     <a href="https://github.com/Ashif4354/StreamStorm/releases/latest/download/StreamStorm.Setup.exe" download>
@@ -22,9 +21,14 @@ const OverView = () => {
                         View on GitHub &nbsp;&nbsp;<LaunchIcon />
                     </button>
                 </div>
-
+                <span className="download-note">
+                    <i>For Windows 10+ | macOS & linux build coming soon...</i>
+                </span>
+                <span className="download-note">
+                    Safe to install. No background monitoring. No data collected. Fully open source.
+                </span>
                 <div className="overview-image-container">
-                    <img src={ss} alt="StreamStorm Overview" className="overview-media" />
+                    <img src="assets/ss.png" alt="StreamStorm Overview" className="overview-media" />
                 </div>
             </div>
         </section>
