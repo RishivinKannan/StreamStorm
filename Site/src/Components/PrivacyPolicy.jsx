@@ -29,7 +29,7 @@ const PrivacyPolicy = () => {
           <h2>3. No Tracking</h2>
           <p>
             StreamStorm does not use cookies, analytics, telemetry, or any background tracking methods.
-            App-la run panna time la, unakku pathi yaarum theriyaadhu 😉
+            App use panna unna pathi yaarukkum theriyaadhu 😉
           </p>
         </section>
 
