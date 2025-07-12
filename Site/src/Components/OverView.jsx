@@ -1,6 +1,19 @@
 import LaunchIcon from '@mui/icons-material/Launch';
+import { analytics } from '../config/firebase';
+import { logEvent } from 'firebase/analytics';
 
 const OverView = () => {
+
+    const handleDownload = () => {
+        logEvent(analytics, 'download_count');
+    }
+    
+    const handleGitHubClick = () => {
+        logEvent(analytics, 'github_repo_visit');
+
+        window.open('https://github.com/Ashif4354/StreamStorm', '_blank');
+    }
+
     return (
         <section id="overview" className="overview">
             <div className="overview-inner-container">
@@ -12,12 +25,12 @@ const OverView = () => {
                 </span>
                 <div className="overview-buttons-container">
                     <a href="https://github.com/Ashif4354/StreamStorm/releases/latest/download/StreamStorm.Setup.exe" download>
-                        <button className="overview-download-button">
+                        <button className="overview-download-button" onClick={handleDownload}>
                             Download Now
                         </button>
                     </a>
 
-                    <button className="overview-github-button" onClick={() => window.open('https://github.com/Ashif4354/StreamStorm', '_blank')}>
+                    <button className="overview-github-button" onClick={handleGitHubClick}>
                         View on GitHub &nbsp;&nbsp;<LaunchIcon />
                     </button>
                 </div>

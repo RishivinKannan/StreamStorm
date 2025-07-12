@@ -1,13 +1,13 @@
-import Header from './Header';
-import MainContent from './MainContent/MainContent';
-import Footer from './Footer';
+import OverView from './OverView';
+import Features from './Features';
+import Disclaimer from './Disclaimer';
 
 const HomePage = () => {
     return (
-        <main className="main-container">
-            <Header />   
-            <MainContent />      
-            <Footer />            
+        <main className="main-content-container">
+            <OverView />
+            <Features />
+            <Disclaimer />    
         </main>
     );
 };
