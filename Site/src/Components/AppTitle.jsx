@@ -1,9 +1,15 @@
+import { Link } from "react-router";
+
 const AppTitle = () => {
+
+    const titleClickHandler = () => {
+        window.scrollTo(0, 0);
+    }
     return (
-        <div className="header-title-container" onClick={() => window.scrollTo(0, 0)}>
+        <Link to="/" className="header-title-container" onClick={titleClickHandler}>
             <span className="header-title-stream">Stream</span>
             <span className="header-title-storm">Storm</span>
-        </div>
+        </Link>
     )
 }
 
