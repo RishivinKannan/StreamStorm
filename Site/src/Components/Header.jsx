@@ -2,6 +2,7 @@ import { useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useMediaQuery } from '@mui/material';
+import { useLocation } from 'react-router-dom';
 
 import AppTitle from './AppTitle'
 import NavBar from './NavBar';
@@ -9,13 +10,14 @@ import DrawerComponent from './Drawer';
 
 const Header = () => {
     const isSmallScreen = useMediaQuery('(max-width: 760px)');
+    const location = useLocation();
     const [drawerOpen, setDrawerOpen] = useState(false);
 
     return (
-        <header className={`header header-${isSmallScreen ? 'small' : 'large'}`}>
+        <header className={`header header-${isSmallScreen ? 'small' : 'large'} ${location.pathname === '/' ? '' : 'only-title-header'}`}>
             <AppTitle />
             {
-                isSmallScreen ? (
+                isSmallScreen && location.pathname === '/' ? (
                     <IconButton
                         onClick={() => setDrawerOpen(true)}
                         sx={{
@@ -33,10 +35,6 @@ const Header = () => {
 
                 )
             }
-
-            {/* <div className="download-btn-container">
-                    <button className="download-btn">Download</button>
-                </div> */}
 
             <DrawerComponent open={drawerOpen} onClose={() => setDrawerOpen(false)} />
 

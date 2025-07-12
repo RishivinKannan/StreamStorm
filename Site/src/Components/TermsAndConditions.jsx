@@ -1,4 +1,17 @@
+import { useEffect } from 'react';
+import { logEvent } from 'firebase/analytics';
+import { analytics } from '../config/firebase';
+
 const TermsAndConditions = () => {
+
+  useEffect(() => {
+    logEvent(analytics, 'tc_viewed', {
+      page_location: window.location.href,
+      page_path: window.location.pathname,
+      page_title: document.title
+    });
+  }, []);
+
   return (
     <div className="tc-page">
       <div className="tc-container">
@@ -19,8 +32,9 @@ const TermsAndConditions = () => {
             <li>Redistribution, reuploading, or republishing of this software is strictly prohibited.</li>
             <li>
               The source must always be accessed only from the official repository at:{' '}
+              
               <a href="https://github.com/Ashif4354/StreamStorm" target="_blank" rel="noopener noreferrer">
-                github.com/Ashif4354/StreamStorm
+                Official repo
               </a>
             </li>
             <li>Personal modifications are allowed only for private use and should not be shared or published.</li>

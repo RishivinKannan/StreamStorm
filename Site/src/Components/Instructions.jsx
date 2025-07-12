@@ -1,241 +1,19 @@
+import { useEffect } from 'react';
+import { logEvent } from 'firebase/analytics';
+import { analytics } from '../config/firebase';
+
 const Instructions = () => {
-  // The CSS is embedded here for self-containment, but can be moved to a separate .css file.
-  const styles = `
-    :root {
-      --dark-gray: #1a1a1a;
-      --light-gray: #262626;
-      --white: #fafafa;
-      --light-white: #fafafacc;
-      --light-red: #ea4848;
-      --light-red-hover: #d43f3f;
-      --gray-text: #a3a3a3;
-      --border-radius: 0.5rem;
-    }
 
-    html {
-        scroll-behavior: smooth;
-    }
-
-    .instructions-page-body {
-        background-color: var(--dark-gray);
-        color: var(--light-white);
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-        line-height: 1.6;
-        padding: 2rem;
-    }
-
-    .instructions-container {
-        max-width: 960px;
-        margin: 0 auto;
-        background-color: var(--light-gray);
-        padding: 2rem 3rem;
-        border-radius: var(--border-radius);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    }
-    
-    .instructions-main-heading {
-        color: var(--white);
-        font-size: 2.5rem;
-        font-weight: 700;
-        text-align: center;
-        margin-bottom: 2rem;
-        border-bottom: 2px solid var(--gray-text);
-        padding-bottom: 1rem;
-    }
-    
-    .instructions-index {
-        background-color: var(--dark-gray);
-        padding: 1.5rem 2rem;
-        border-radius: var(--border-radius);
-        margin-bottom: 2.5rem;
-    }
-
-    .instructions-index-heading {
-        color: var(--white);
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid #444;
-    }
-
-    .instructions-index-list {
-        list-style: none;
-        padding: 0;
-    }
-    
-    .instructions-index-list .instructions-index-list {
-        padding-left: 1.5rem;
-        margin-top: 0.5rem;
-    }
-
-    .instructions-index-link {
-        color: var(--gray-text);
-        text-decoration: none;
-        font-size: 1.1rem;
-        transition: color 0.2s ease-in-out;
-        display: inline-block;
-        padding: 0.25rem 0;
-    }
-
-    .instructions-index-link:hover {
-        color: var(--white);
-    }
-
-    .instructions-section-heading {
-        color: var(--white);
-        font-size: 2rem;
-        font-weight: 600;
-        margin-top: 2.5rem;
-        margin-bottom: 1.5rem;
-        border-bottom: 1px solid #444;
-        padding-bottom: 0.5rem;
-    }
-
-    .instructions-step-heading {
-        color: var(--white);
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin-top: 2rem;
-        margin-bottom: 1rem;
-    }
-
-    .instructions-list {
-        padding-left: 1.5rem;
-        color: var(--gray-text);
-        list-style-position: outside;
-    }
-    
-    .instructions-list-item {
-        margin-bottom: 0.75rem;
-        padding-left: 0.5rem;
-    }
-    
-    .instructions-list-item::marker {
-      color: var(--light-red);
-      font-weight: 500;
-    }
-
-    .instructions-container ol {
-        list-style-type: decimal;
-    }
-
-    .instructions-container ul {
-        list-style-type: disc;
-    }
-
-    .instructions-container ul ul {
-        list-style-type: circle;
-    }
-    
-    .instructions-list .instructions-list {
-        margin-top: 0.75rem;
-        padding-left: 1.5rem;
-    }
-
-    .instructions-paragraph {
-        margin-bottom: 1rem;
-        color: var(--gray-text);
-    }
-    
-    .instructions-highlight {
-        background-color: rgba(72, 179, 234, 0.1);
-        border-left: 4px solid #48b3ea;
-        padding: 1rem 1.5rem;
-        margin: 1.5rem 0;
-        border-radius: 0 var(--border-radius) var(--border-radius) 0;
-        color: var(--light-white);
-    }
-
-    .instructions-link {
-        color: var(--light-red);
-        text-decoration: none;
-        font-weight: 500;
-        transition: color 0.2s ease-in-out;
-    }
-
-    .instructions-link:hover {
-        color: var(--light-red-hover);
-        text-decoration: underline;
-    }
-
-    .instructions-inline-code {
-        background-color: var(--dark-gray);
-        padding: 0.2rem 0.5rem;
-        border-radius: 0.3rem;
-        font-family: 'Menlo', 'Consolas', 'Monaco', monospace;
-        color: var(--light-white);
-        font-size: 0.9em;
-    }
-
-    .instructions-code-block {
-        background-color: var(--dark-gray);
-        padding: 1rem;
-        border-radius: var(--border-radius);
-        margin: 1rem 0;
-        overflow-x: auto;
-        font-family: 'Menlo', 'Consolas', 'Monaco', monospace;
-        white-space: pre-wrap;
-        color: var(--gray-text);
-    }
-
-    .instructions-note {
-        font-style: italic;
-        color: var(--gray-text);
-        margin-top: 1.5rem;
-        padding: 1rem;
-        background-color: rgba(0,0,0,0.1);
-        border-left: 3px solid var(--gray-text);
-        border-radius: 0 0.3rem 0.3rem 0;
-    }
-    
-    .instructions-warning {
-        background-color: rgba(234, 72, 72, 0.1);
-        border-left: 4px solid var(--light-red);
-        padding: 1rem 1.5rem;
-        margin: 1.5rem 0;
-        border-radius: 0 var(--border-radius) var(--border-radius) 0;
-    }
-
-    .instructions-warning-text {
-        color: var(--light-white);
-    }
-    
-    .instructions-warning-text strong {
-        color: var(--light-red);
-    }
-    
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .instructions-page-body {
-            padding: 1rem;
-        }
-        .instructions-container {
-            padding: 1.5rem;
-        }
-        .instructions-main-heading {
-            font-size: 2rem;
-        }
-        .instructions-section-heading {
-            font-size: 1.75rem;
-        }
-        .instructions-step-heading {
-            font-size: 1.25rem;
-        }
-    }
-    
-    @media (max-width: 480px) {
-        .instructions-container {
-            padding: 1rem;
-        }
-        .instructions-list {
-            padding-left: 1rem;
-        }
-    }
-  `;
+  useEffect(() => {
+    logEvent(analytics, 'instructions_viewed', {
+      page_location: window.location.href,
+      page_path: window.location.pathname,
+      page_title: document.title
+    });
+  }, []);
 
   return (
-    <>
-      <style>{styles}</style>
+    <div className="instructions-page">
       <div className="instructions-page-body">
         <div className="instructions-container">
           <h1 className="instructions-main-heading">Instructions To Use The StreamStorm Application</h1>
@@ -529,7 +307,7 @@ const Instructions = () => {
           </ul>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

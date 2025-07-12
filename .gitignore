@@ -1,3 +1,5 @@
 test_files
 output
 .firebase
+.env
+.env.production
