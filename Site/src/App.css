@@ -35,6 +35,10 @@ h2 {
     z-index: 100;
 }
 
+.only-title-header {
+    justify-content: center;
+}
+
 .header-small {
     padding: 0;
     justify-content: center;
@@ -46,6 +50,8 @@ h2 {
     /* justify-content: center; */
     font-weight: 700;
     font-size: 1.5rem;
+    cursor: pointer;
+    text-decoration: none;
 }
 
 .header-title-stream {
@@ -407,7 +413,7 @@ button {
     justify-content: center;
     align-items: center;
     padding: 1rem 0;
-    background: var(--dark-gray);
+    background: #111111;
     color: var(--white);
     height: 5rem;
 }
@@ -435,7 +441,7 @@ button {
 .tc-page {
     background-color: var(--dark-gray);
     min-height: 100vh;
-    padding: 3rem 1rem;
+    padding: 6rem 2rem 2rem 2rem;
 }
 
 .tc-container {
@@ -496,7 +502,7 @@ button {
 .pp-page {
     background-color: var(--dark-gray);
     min-height: 100vh;
-    padding: 3rem 1rem;
+    padding: 6rem 1rem 3rem 1rem;
 }
 
 .pp-container {
@@ -547,12 +553,15 @@ button {
     text-decoration: underline;
 }
 
+.instructions-page {
+}
+
 .instructions-page-body {
     background-color: var(--dark-gray);
     color: var(--light-white);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     line-height: 1.6;
-    padding: 2rem;
+    padding: 6rem 2rem 2rem 2rem;
 }
 
 .instructions-container {
@@ -612,7 +621,6 @@ button {
     color: var(--white);
 }
 
-
 .instructions-section-heading {
     color: var(--white);
     font-size: 2rem;
@@ -635,22 +643,18 @@ button {
     padding-left: 1.5rem;
     color: var(--gray-text);
     list-style-position: outside;
-    /* Ensures markers are outside the text flow */
 }
 
 .instructions-list-item {
     margin-bottom: 0.75rem;
     padding-left: 0.5rem;
-    /* Adds space between marker and text */
 }
 
-/* Style for the bullets and numbers */
 .instructions-list-item::marker {
     color: var(--light-red);
     font-weight: 500;
 }
 
-/* Explicitly set list styles */
 .instructions-container ol {
     list-style-type: decimal;
 }
@@ -671,6 +675,15 @@ button {
 .instructions-paragraph {
     margin-bottom: 1rem;
     color: var(--gray-text);
+}
+
+.instructions-highlight {
+    background-color: rgba(72, 179, 234, 0.1);
+    border-left: 4px solid #48b3ea;
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    color: var(--light-white);
 }
 
 .instructions-link {
@@ -729,4 +742,37 @@ button {
 
 .instructions-warning-text strong {
     color: var(--light-red);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .instructions-page-body {
+        padding: 6rem 1rem 2rem 1rem;
+    }
+
+    .instructions-container {
+        padding: 1.5rem;
+    }
+
+    .instructions-main-heading {
+        font-size: 2rem;
+    }
+
+    .instructions-section-heading {
+        font-size: 1.75rem;
+    }
+
+    .instructions-step-heading {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .instructions-container {
+        padding: 1rem;
+    }
+
+    .instructions-list {
+        padding-left: 1rem;
+    }
 }
