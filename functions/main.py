@@ -1,5 +1,4 @@
-from logging import Logger, getLogger
-from firebase_functions import https_fn, options
+from firebase_functions import https_fn, options, logger
 from firebase_admin import initialize_app, firestore
 
 from google.cloud.firestore import (
@@ -9,10 +8,7 @@ from google.cloud.firestore import (
     Increment,
 )
 
-ss_logger: Logger = getLogger("streamstorm")
-
 initialize_app()
-
 
 options.set_global_options(
     region="asia-south1",
@@ -27,7 +23,7 @@ def get_doc_ref(collection: str, document: str) -> DocumentReference:
     cors=options.CorsOptions(cors_origins=["*"], cors_methods=["*"]),
 )
 def visit_count(req: https_fn.Request) -> https_fn.Response:
-    ss_logger.info("Visit count function triggered...")
+    logger.info("Visit count function triggered...")
 
     doc_ref: DocumentReference = get_doc_ref("streamstorm", "counts")
 
@@ -37,7 +33,7 @@ def visit_count(req: https_fn.Request) -> https_fn.Response:
 
     count: int = doc.to_dict().get("visit", 0)
 
-    ss_logger.info(f"New visit count: {count}")
+    logger.info(f"New visit count: {count}")
 
     return {"success": True, "count": count}
 
@@ -46,10 +42,10 @@ def visit_count(req: https_fn.Request) -> https_fn.Response:
     cors=options.CorsOptions(cors_origins=["*"], cors_methods=["*"]),
 )
 def downloads_count(req: https_fn.Request) -> https_fn.Response:
-    ss_logger.info("Downloads count function triggered...")
+    logger.info("Downloads count function triggered...")
 
     data: dict = req.data
-    ss_logger.debug(f"Request data: {data}")
+    logger.debug(f"Request data: {data}")
 
     doc_ref: DocumentReference = get_doc_ref("streamstorm", "counts")
 
@@ -60,6 +56,6 @@ def downloads_count(req: https_fn.Request) -> https_fn.Response:
     
     count: int = doc.to_dict().get("downloads", 0)
     
-    ss_logger.info(f"New downloads count: {count}")
+    logger.info(f"New downloads count: {count}")
 
     return {"success": True, "count": count}
