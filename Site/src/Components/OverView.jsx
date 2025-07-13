@@ -1,11 +1,24 @@
+import { useState } from 'react';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { analytics } from '../config/firebase';
 import { logEvent } from 'firebase/analytics';
+import { useDownloadCount } from '../context/DownloadCountContext';
 
 const OverView = () => {
 
+    const [downloadButtonDisabled, setDownloadButtonDisabled] = useState(false);
+
+    const {downloadCount, updateDownloadCount} = useDownloadCount();
+
+
     const handleDownload = () => {
+        setDownloadButtonDisabled(true);
         logEvent(analytics, 'download_count');
+        updateDownloadCount();
+
+        setTimeout(() => {
+            setDownloadButtonDisabled(false);
+        }, 5000); // Reset button after 5 seconds
     }
     
     const handleGitHubClick = () => {
@@ -25,8 +38,8 @@ const OverView = () => {
                 </span>
                 <div className="overview-buttons-container">
                     <a href="https://github.com/Ashif4354/StreamStorm/releases/latest/download/StreamStorm.Setup.exe" download>
-                        <button className="overview-download-button" onClick={handleDownload}>
-                            Download Now
+                        <button className="overview-download-button" onClick={handleDownload} disabled={downloadButtonDisabled}>
+                            Download
                         </button>
                     </a>
 
@@ -34,6 +47,13 @@ const OverView = () => {
                         View on GitHub &nbsp;&nbsp;<LaunchIcon />
                     </button>
                 </div>
+                {
+                    downloadCount && (
+                        <span className="download-note">
+                            <i>Total Downloads: {downloadCount}</i>
+                        </span>
+                    )
+                }
                 <span className="download-note">
                     <i>For Windows 10+ | macOS & linux build coming soon...</i>
                 </span>

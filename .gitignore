@@ -3,3 +3,4 @@ output
 .firebase
 .env
 .env.production
+*.log

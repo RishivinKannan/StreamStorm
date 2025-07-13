@@ -418,15 +418,24 @@ button {
     height: 5rem;
 }
 
-.footer-links {
+.footer-elements {
     display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     gap: 2rem;
     margin-bottom: 0.5rem;
 }
 
-.footer-link {
+@media (max-width: 768px) {
+    .footer-elements {
+        flex-direction: column;
+        gap:0rem;
+    }
+    
+}
+
+.footer-element {
     color: var(--gray-text);
     text-decoration: none;
     cursor: pointer;
@@ -434,7 +443,7 @@ button {
     transition: color 0.2s ease-in-out;
 }
 
-.footer-link:hover {
+.footer-element:hover {
     color: var(--white);
 }
 

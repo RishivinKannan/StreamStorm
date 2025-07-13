@@ -30,5 +30,20 @@
         }
       ]
     }
+  ],
+  "functions": [
+    {
+      "runtime": "python312",
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "venv",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local",
+        "__pycache__"
+      ]
+    }
   ]
 }
