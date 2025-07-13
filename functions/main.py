@@ -1,4 +1,3 @@
-from dotenv import load_dotenv
 from os import getenv
 
 from firebase_functions import https_fn, options, logger, scheduler_fn
@@ -11,7 +10,7 @@ from google.cloud.firestore import (
     Increment,
 )
 
-load_dotenv()
+from lib.DiscordWebhook import send_discord_webhook
 
 initialize_app()
 
@@ -32,6 +31,8 @@ def visit_count(req: https_fn.Request) -> https_fn.Response:
     doc_ref.update({"visit": Increment(1)})
     doc: DocumentSnapshot = doc_ref.get()
     count: int = doc.to_dict().get("visit", 0)
+    
+    send_discord_webhook("visit")
 
     logger.info(f"New visit count: {count}")
     return {"success": True, "count": count}
@@ -50,6 +51,8 @@ def downloads_count(req: https_fn.Request) -> https_fn.Response:
 
     doc: DocumentSnapshot = doc_ref.get()    
     count: int = doc.to_dict().get("downloads", 0)
+    
+    send_discord_webhook("download")
     
     logger.info(f"New downloads count: {count}")
     return {"success": True, "count": count}
