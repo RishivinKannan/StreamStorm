@@ -48,11 +48,11 @@ def downloads_count(req: https_fn.Request) -> https_fn.Response:
 
     if data.get("mode") == "set":
         doc_ref.update({"downloads": Increment(1)})
+        send_discord_webhook("download")
 
     doc: DocumentSnapshot = doc_ref.get()    
     count: int = doc.to_dict().get("downloads", 0)
     
-    send_discord_webhook("download")
     
     logger.info(f"New downloads count: {count}")
     return {"success": True, "count": count}
