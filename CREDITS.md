@@ -21,6 +21,7 @@
     - [Uvicorn Documentation](https://www.uvicorn.org/)
     - [auto-py-to-exe Documentation](https://pypi.org/project/auto-py-to-exe/)
     - [Pydantic Documentation](https://docs.pydantic.dev/latest/)
+    - [Firebase Documentation](https://firebase.google.com/docs)
 
 - Images and Icons
     - [Tornado - By Freepik](https://www.flaticon.com/free-icon/tornado_785130?term=tornado&related_id=785130)
