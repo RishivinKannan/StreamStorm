@@ -1,4 +1,7 @@
-from firebase_functions import https_fn, options, logger
+from dotenv import load_dotenv
+from os import getenv
+
+from firebase_functions import https_fn, options, logger, scheduler_fn
 from firebase_admin import initialize_app, firestore
 
 from google.cloud.firestore import (
@@ -8,10 +11,12 @@ from google.cloud.firestore import (
     Increment,
 )
 
+load_dotenv()
+
 initialize_app()
 
 options.set_global_options(
-    region="asia-south1",
+    region=getenv("FUNCTIONS_REGION"),
     enforce_app_check=True,
 )
 
@@ -19,43 +24,63 @@ def get_doc_ref(collection: str, document: str) -> DocumentReference:
     db: FireStoreClient = firestore.client()
     return db.collection(collection).document(document)
 
-@https_fn.on_call(
-    cors=options.CorsOptions(cors_origins=["*"], cors_methods=["*"]),
-)
+@https_fn.on_call(cors=options.CorsOptions(cors_origins=["*"], cors_methods=["*"]))
 def visit_count(req: https_fn.Request) -> https_fn.Response:
     logger.info("Visit count function triggered...")
 
     doc_ref: DocumentReference = get_doc_ref("streamstorm", "counts")
-
     doc_ref.update({"visit": Increment(1)})
-
     doc: DocumentSnapshot = doc_ref.get()
-
     count: int = doc.to_dict().get("visit", 0)
 
     logger.info(f"New visit count: {count}")
-
     return {"success": True, "count": count}
 
 
-@https_fn.on_call(
-    cors=options.CorsOptions(cors_origins=["*"], cors_methods=["*"]),
-)
+@https_fn.on_call(cors=options.CorsOptions(cors_origins=["*"], cors_methods=["*"]))
 def downloads_count(req: https_fn.Request) -> https_fn.Response:
     logger.info("Downloads count function triggered...")
 
     data: dict = req.data
-    logger.debug(f"Request data: {data}")
-
+    logger.info(f"Request data: {data}")
     doc_ref: DocumentReference = get_doc_ref("streamstorm", "counts")
 
     if data.get("mode") == "set":
         doc_ref.update({"downloads": Increment(1)})
 
-    doc: DocumentSnapshot = doc_ref.get()
-    
+    doc: DocumentSnapshot = doc_ref.get()    
     count: int = doc.to_dict().get("downloads", 0)
     
     logger.info(f"New downloads count: {count}")
-
     return {"success": True, "count": count}
+
+@scheduler_fn.on_schedule(schedule="0 0 * * *") # Daily at midnight
+def ping_mongodb_cluster(event: scheduler_fn.ScheduledEvent) -> None:
+    """
+    Function to ping the MongoDB cluster to ensure it doesn't go idle.
+    """
+    try:
+        from pymongo import MongoClient
+        from pymongo.synchronous.database import Database
+        from pymongo.synchronous.collection import Collection
+        
+        with MongoClient(getenv("MONGO_DB_URI")) as client:
+            client.admin.command('ping')
+            logger.info("MongoDB cluster pinged successfully.")
+            
+            db: Database = client["DGUPDATER"]
+            collection: Collection = db["StreamStorm"]
+
+            collection.find_one({"_id": "StreamStorm_config"})
+            logger.info("MongoDB collection accessed successfully.")
+            
+    except Exception as e:
+        logger.error(f"Error pinging MongoDB cluster: {e}")
+        
+    finally:
+        logger.info("Function ping_mongodb_cluster has been executed")
+    
+
+
+
+
