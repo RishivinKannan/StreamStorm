@@ -62,7 +62,6 @@ class Selenium:
             options.add_argument("--disable-extensions")
             options.add_argument("--disable-first-run-ui")
             options.add_argument("--disable-features=Translate,BackForwardCache,Sync,MediaRouter,DialMediaRouteProvider")
-            options.add_argument("--disable-gpu")
             options.add_argument("--disable-hang-monitor")
             options.add_argument("--disable-infobars")
             options.add_argument("--disable-logging")
