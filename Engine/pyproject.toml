@@ -22,4 +22,6 @@ dependencies = [
 [dependency-groups]
 dev = [
     "auto-py-to-exe>=2.46.0",
+    "pyinstaller>=6.15.0",
+    "tomlkit>=0.13.3",
 ]
