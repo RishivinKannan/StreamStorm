@@ -11,8 +11,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
 
-from concurrent.futures import ThreadPoolExecutor
-from asyncio import Task, create_task, gather
+from asyncio import Task, gather
 
 from .StreamStorm import StreamStorm
 from .Profiles import Profiles

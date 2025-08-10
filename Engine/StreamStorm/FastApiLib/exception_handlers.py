@@ -13,7 +13,6 @@ async def common_exception_handler(request: Request, exc: Exception) -> JSONResp
     
     
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    print(exc.errors())
 
     return JSONResponse(
         status_code=422,

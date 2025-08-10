@@ -3,11 +3,9 @@ from json import dump
 from time import sleep
 from warnings import deprecated
 from undetected_chromedriver import Chrome
-# from undetected_geckodriver import Firefox
 
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, NoSuchWindowException, ElementNotInteractableException
-# from selenium.webdriver import FirefoxOptions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.remote.webelement import WebElement
