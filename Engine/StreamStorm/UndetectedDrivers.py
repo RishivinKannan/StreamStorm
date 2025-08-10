@@ -21,7 +21,7 @@ class UndetectedDrivers(Selenium):
         
         super().__init__(base_profile_dir, background=False)
 
-    def initiate_config_json(self, no_of_channels: int = 0, channels: dict = None) -> None:
+    def initiate_config_json(self, no_of_channels: int = 0, channels: dict[int, dict[str, str]] = {}) -> None:
 
         data: dict = {
             "no_of_channels": no_of_channels,
@@ -51,7 +51,7 @@ class UndetectedDrivers(Selenium):
         
         print(self.driver.browser_pid)
         
-    def get_total_channels(self) -> int:
+    def get_total_channels(self) -> None:
         
         try:
             # select first channel if popup appears
@@ -66,7 +66,7 @@ class UndetectedDrivers(Selenium):
 
         channels_list: list[WebElement] = self.driver.find_elements(By.XPATH, "//*[@id='submenu']//*[@id='container']//*[@id='contents']//*[@id='contents']/ytd-account-item-renderer")
         
-        channels = {}
+        channels: dict[int, dict[str, str]] = {}
 
         for index in range(len(channels_list)):
             try:
@@ -135,3 +135,6 @@ class UndetectedDrivers(Selenium):
                         
         except (NoSuchWindowException, AttributeError):
             raise RuntimeError("The Browser window was closed or not found. Please try again.")
+
+
+__all__: list[str] = ["UndetectedDrivers"]

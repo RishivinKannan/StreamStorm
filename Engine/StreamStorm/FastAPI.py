@@ -11,7 +11,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
 
-from asyncio import Task, gather
+from asyncio import gather
 
 from .StreamStorm import StreamStorm
 from .Profiles import Profiles
@@ -161,17 +161,9 @@ async def stop():
             if instance.page:
                 await instance.page.close()
         except Exception:
-            pass
+            pass # log.warn
 
-    # with ThreadPoolExecutor() as executor:
-    #     executor.map(close_browser, StreamStorm.each_channel_instances)
-    
-    tasks: Task = []
-    for instance in StreamStorm.each_channel_instances:
-        task: Task = close_browser(instance)
-        tasks.append(task)
-    
-    await gather(*tasks)        
+    await gather(*(close_browser(i) for i in StreamStorm.each_channel_instances))
 
     StreamStorm.ss_instance = None
 

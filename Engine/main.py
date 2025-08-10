@@ -14,13 +14,13 @@ from uvicorn import run as run_uvicorn
 
 from StreamStorm.FastAPI import app
 
-def serve_api():
+def serve_api() -> None:
     run_uvicorn(app, host="0.0.0.0", port=1919) # 1919, because 19 is the character number for "S" in the English alphabets.
     
-def set_rammap_path():
+def set_rammap_path() -> None:
     environ.update({"rammap_path": join(dirname(abspath(__file__)), "RAMMap.exe")})
 
-def main():
+def main() -> None:
     check_update()   
 
     set_rammap_path()
@@ -41,11 +41,8 @@ def main():
     finally:
         # Ensure the API is stopped when the webview is closed
         kill(getpid(), SIGTERM)
-    
-
-
-
-
+        
+        
 if __name__ == "__main__":
     main()
     

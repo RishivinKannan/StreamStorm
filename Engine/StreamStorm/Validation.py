@@ -1,7 +1,9 @@
 from typing import Self, Optional
+from warnings import deprecated
 from pydantic import BaseModel, field_validator, model_validator
 
-def Validate(data: dict, validator: BaseModel) -> BaseModel:
+@deprecated("Not used anymore since migrated to FastAPI")
+def Validate(data: dict, validator: BaseModel) -> dict:
     try:
         validated_data = validator(**data)
         return validated_data.model_dump()
@@ -22,8 +24,6 @@ class StormData(BaseModel):
     subscribe_and_wait: bool
     subscribe_and_wait_time: int
     slow_mode: int
-    # start_channel_index: int
-    # end_channel_index: int
     channels: list[int]
     browser: str
     background: bool
@@ -84,8 +84,8 @@ class StormData(BaseModel):
         if not all(isinstance(channel, int) for channel in value):
             raise ValueError("All channels must be integers")
         
-        if any(channel < 0 for channel in value):
-            raise ValueError("Channel IDs cannot be negative")
+        if any(channel <= 0 for channel in value):
+            raise ValueError("Channel IDs must be positive integers")
 
         return value
     

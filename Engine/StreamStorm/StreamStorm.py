@@ -1,7 +1,7 @@
 from asyncio import Task, sleep, Event, create_task, gather, TimeoutError as AsyncTimeoutError
 from random import choice
 from os import environ
-from typing import Self
+from typing import Optional
 from json import loads, JSONDecodeError
 from http.client import RemoteDisconnected
 from urllib3.exceptions import ProtocolError, ReadTimeoutError
@@ -21,7 +21,7 @@ from .Lib import clear_ram
 
 class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothing
     each_channel_instances: list[SeparateInstance] = []
-    ss_instance: Self = None
+    ss_instance: Optional["StreamStorm"] = None
 
     def __init__(
         self,
@@ -31,7 +31,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
         subscribe: tuple[bool, bool] = (False, False),
         subscribe_and_wait_time: int = 70,
         slow_mode: int = 0,
-        channels: list[int] = None,
+        channels: list[int] = [],
         background: bool = True
     ) -> None:
         
@@ -210,7 +210,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
             tasks: list[Task] = []
             for index in range(len(self.channels)):
                 profile_dir: str = self.profiles_dir + f"\\{temp_profiles[index]}"
-                wait_time: int = self.get_start_storm_wait_time(index, no_of_temp_profiles, self.slow_mode)
+                wait_time: float = self.get_start_storm_wait_time(index, no_of_temp_profiles, self.slow_mode)
 
                 # executor.submit(self.EachChannel, self.channels[index], profile_dir, wait_time)
                 task: Task = create_task(self.EachChannel(self.channels[index], profile_dir, wait_time))
@@ -251,7 +251,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
             for index in range(len(channels)):
                 print(index, len(available_profiles), channels[index], available_profiles[index], self.slow_mode)
                 profile_dir: str = self.profiles_dir + f"\\{available_profiles[index]}"
-                wait_time: int = self.get_start_storm_wait_time(index, len(available_profiles), self.slow_mode)
+                wait_time: float = self.get_start_storm_wait_time(index, len(available_profiles), self.slow_mode)
 
                 task: Task = create_task(self.EachChannel(channels[index], profile_dir, wait_time))
                 tasks.append(task)
@@ -260,9 +260,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
             await gather(*tasks)
             print("All Coroutines completed")
 
-        create_task(start_each_worker())
+        create_task(start_each_worker())       
 
-        
-        
 
-        
+__all__: list[str] = ["StreamStorm"]

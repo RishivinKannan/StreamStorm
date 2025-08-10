@@ -27,6 +27,5 @@ def clear_ram() -> None:
     except Exception as e:
         print(f"😵 Unexpected error: {e}")
 
-__all__: list[str] = [
-    "clear_ram",
-]
+
+__all__: list[str] = ["clear_ram"]
