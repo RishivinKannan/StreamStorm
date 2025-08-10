@@ -10,6 +10,7 @@ from logging import basicConfig, INFO, info as log_info
 basicConfig(level=INFO)
 
 ROOT: Path = Path(__file__).parent.resolve()
+
 log_info(f"Root directory: {ROOT}")
 
 def update_versions(new_version: str) -> None:
