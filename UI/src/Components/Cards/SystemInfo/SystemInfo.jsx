@@ -26,8 +26,8 @@ const SystemInfo = () => {
     }
     
     useEffect(() => {
-        const interval = setInterval(() => {
-            systemInfoControls.fetchRAM(hostAddress, notifications, systemInfoControls);
+        const interval = setInterval(async () => {
+            await systemInfoControls.fetchRAM(hostAddress, notifications, systemInfoControls);
         }, 1000);
 
         return () => clearInterval(interval);

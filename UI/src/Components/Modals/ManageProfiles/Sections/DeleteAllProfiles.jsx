@@ -1,40 +1,39 @@
 import { useContext, useState } from 'react';
 import { Trash2 } from 'lucide-react';
-import { Button, MenuItem, TextField, useColorScheme } from '@mui/material';
+import { Button, useColorScheme } from '@mui/material';
 import { useLocalStorageState } from '@toolpad/core/useLocalStorageState';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { RefreshCw } from 'lucide-react';
+import { useDialogs } from '@toolpad/core/useDialogs';
 
 import "./Sections.css";
-import { BROWSER_CLASSES, BROWSERS } from '../../../../lib/Constants';
 import { CustomMUIPropsContext } from '../../../../lib/ContextAPI';
 import ErrorText from '../../../Elements/ErrorText';
+import AreYouSure from '../../../Dialogs/AreYouSure';
 
 const DeleteAllProfiles = () => {
 
     const { colorScheme } = useColorScheme();
-    const { btnProps, inputProps } = useContext(CustomMUIPropsContext);
+    const { btnProps } = useContext(CustomMUIPropsContext);
+    const dialogs = useDialogs();
 
     const [hostAddress] = useLocalStorageState("hostAddress");
     const notifications = useNotifications();
 
-    const [browserClass, setBrowserClass] = useState("");
-    const [browserError, setBrowserError] = useState(false);
-    const [browserHelperText, setBrowserHelperText] = useState("");
-
     const [errorText, setErrorText] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const handleDeleteAllProfiles = () => {
-        setErrorText("");
-        if (!browserClass) {
-            setBrowserError(true);
-            setBrowserHelperText("Select a browserClass");
-            return;
-        } else {
-            setBrowserError(false);
-            setBrowserHelperText("");
+    const handleDeleteAllProfiles = async () => {
+        
+        const confirmed = await dialogs.open(AreYouSure, {
+            text: <span>Are you sure you want to <strong style={{ color: "var(--input-active-red-dark)" }}>DELETE</strong> all profiles</span>
+        });
+        
+        if(!confirmed) {
+            return
         }
+        
+        setErrorText("");
         setLoading(true);
 
         fetch(`${hostAddress}/delete_all_profiles`, {
@@ -42,7 +41,7 @@ const DeleteAllProfiles = () => {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ browser_class: browserClass }),
+            body: JSON.stringify({}),
         })
             .then((response) => response.json())
             .then((data) => {
@@ -77,48 +76,7 @@ const DeleteAllProfiles = () => {
             </div>
 
             <div className="section-content">
-                <TextField
-                    fullWidth
-                    select
-                    label="Browser Class"
-                    variant="outlined"
-                    sx={{
-                        ...inputProps,
-                        marginTop: "1rem",
-                    }}
-                    value={browserClass}
-                    onChange={(e) => {
-                        setBrowserClass(e.target.value);
-                        setBrowserError(false);
-                        setBrowserHelperText("");
-                        setErrorText("");
-                    }}
-                    error={browserError}
-                    helperText={browserHelperText}
-                    disabled={loading}
-                >
-                    {
-                        BROWSER_CLASSES.map((className) => {
-                            let MenuItemText, MenuItemDisabled;
-
-                            if (className === "chromium") {
-                                MenuItemText = "Chromium (Chrome, Edge, etc.)";
-                            } else if (className === "gecko") {
-                                MenuItemText = "Gecko (Firefox)";
-                                MenuItemDisabled = true
-                            } else if (className === "webkit") {
-                                MenuItemText = "WebKit (Safari)";
-                                MenuItemDisabled = true;
-                            }
-
-                            return (
-                                <MenuItem key={className} value={className} disabled={MenuItemDisabled}>
-                                    {MenuItemText} {MenuItemDisabled ? "(Not supported yet)" : ""}
-                                </MenuItem>
-                            )
-                        })
-                    }
-                </TextField>
+                
             </div>
 
             <div className="section-action">
@@ -137,7 +95,7 @@ const DeleteAllProfiles = () => {
 
                 >
                     {
-                        loading ? "Deleting Profiles..." : "Delete Profiles"
+                        loading ? "Deleting Profiles..." : "Delete All Profiles"
                     }
                 </Button>
 

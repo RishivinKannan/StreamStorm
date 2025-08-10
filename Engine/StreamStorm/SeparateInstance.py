@@ -1,77 +1,59 @@
-from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import ElementNotInteractableException
-from time import sleep
+from asyncio import sleep
+from playwright.async_api._generated import Locator
 
-from .Exceptions import DriverClosedError
-from .Selenium import Selenium
+from .Exceptions import BrowserClosedError
+from .Playwright import Playwright
 
-class SeparateInstance(Selenium):
+class SeparateInstance(Playwright):
     def __init__(
         self,
         index: int = 0,
         user_data_dir: str = '',
-        browser: str = 'edge',
         background: bool = True
     ) -> None:
-        super().__init__(user_data_dir, browser, background)
+        super().__init__(user_data_dir, background)
         
         self.index: int = index
 
 
-    def login(self) -> bool:
-        
-        
-
-        self.open_browser()
-
-        self.go_to_page("https://www.youtube.com/account") # We are going to account page because it loads faster than the main page
+    async def login(self) -> bool:        
 
         try:
-            self.find_and_click_element(By.XPATH, '//*[@id="avatar-btn"]') # Click on avatar button
-            self.find_and_click_element(By.XPATH, "//*[text()='Switch account']") # Click on switch account button
+            await self.open_browser()
+            await self.go_to_page("https://www.youtube.com/account") # We are going to account page because it loads faster than the main page
             
-            sleep(3)
-            
-            self.__click_channel(self.index)
-            
+            await self.find_and_click_element('//*[@id="avatar-btn"]') # Click on avatar button
+            await self.find_and_click_element("//*[text()='Switch account']") # Click on switch account button
+
+            await sleep(3)
+            await self.__click_channel(self.index)
+
             return True
-        except DriverClosedError as _:           
-            
+        
+        except BrowserClosedError as _:  
             return False
 
 
-    def __click_channel(self, index: int) -> None:
-        
-        self.find_and_click_element(
-            By.XPATH,
+    async def __click_channel(self, index: int) -> None:
+
+        await self.find_and_click_element(
             f"//*[@id='contents']/ytd-account-item-renderer[{index}]"
         )
 
-    def subscribe_to_channel(self) -> None:
-                    
-        self.find_and_click_element(
-            By.XPATH,
+    async def subscribe_to_channel(self) -> None:
+
+        await self.find_and_click_element(
             "//div[@id='subscribe-button']/*//button[.//span[text()='Subscribe']]",
-            False,
             True
-        )
+        )           
         
-            
-        
-    def __get_chat_field(self) -> WebElement:
-        chat_field: WebElement = WebDriverWait(self.driver, 15).until(EC.presence_of_element_located((By.XPATH, "//yt-live-chat-text-input-field-renderer//div[@id='input']")))
-        
+    async def __get_chat_field(self) -> Locator:
+        chat_field: Locator = await self.find_element("//yt-live-chat-text-input-field-renderer//div[@id='input']")
         return chat_field
-    
-    def send_message(self, message: str) -> None:
-        try:
-            chat_field: WebElement = self.__get_chat_field()
-            self.type_and_enter(chat_field, message)
-        except ElementNotInteractableException as _:
-            self.driver.execute("alert", {"text": "Element not interactable. Please check the chat field."})
+
+    async def send_message(self, message: str) -> None:
+        chat_field: Locator = await self.__get_chat_field()
+        await self.type_and_enter(chat_field, message)
         
         
 

@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "StreamStorm"
-#define MyAppVersion "2.0.1"
+#define MyAppVersion "3.0.0"
 #define MyAppPublisher "DarkGlance"
 #define MyAppURL "https://streamstorm.darkglance.in"
 #define MyAppExeName "StreamStorm.exe"

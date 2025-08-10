@@ -26,3 +26,6 @@ def clear_ram() -> None:
         print("🔒 Permission denied while trying to run RAMMap.exe.")
     except Exception as e:
         print(f"😵 Unexpected error: {e}")
+
+
+__all__: list[str] = ["clear_ram"]

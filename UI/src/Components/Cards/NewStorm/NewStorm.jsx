@@ -65,10 +65,6 @@ const NewStorm = () => {
     const [advancedSelectedChannels, setAdvancedSelectedChannels] = useState([]);
     const [advancedChannelsErrorText, setAdvancedChannelsErrorText] = useState("");
 
-    const [browser, setBrowser] = useState('');
-    const [browserError, setBrowserError] = useState(false);
-    const [browserHelperText, setBrowserHelperText] = useState("");
-
     const [loadInBackground, setLoadInBackground] = useState(false);
     const [errorText, setErrorText] = useState("");
 
@@ -106,7 +102,6 @@ const NewStorm = () => {
         startChannelIndex, setStartChannelIndex, startChannelIndexError, setStartChannelIndexError, startChannelIndexHelperText, setStartChannelIndexHelperText,
         endChannelIndex, setEndChannelIndex, endChannelIndexError, setEndChannelIndexError, endChannelIndexHelperText, setEndChannelIndexHelperText,
         advancedSelectedChannels, setAdvancedSelectedChannels, advancedChannelsErrorText, setAdvancedChannelsErrorText,
-        browser, setBrowser, browserError, setBrowserError, browserHelperText, setBrowserHelperText,
         loadInBackground, setLoadInBackground, errorText, setErrorText,
         hostAddress, SC,
 
@@ -119,9 +114,6 @@ const NewStorm = () => {
                 subscribe_and_wait: subscribeAndWait,
                 subscribe_and_wait_time: subscribeWaitTime,
                 slow_mode: slowMode,
-                // start_channel_index: channelSelection === 'basic' ? 1 : startChannelIndex,
-                // end_channel_index: channelSelection === 'basic' ? noOfChannels : endChannelIndex,
-                browser: browser,
                 background: loadInBackground,
                 channels: getChannels(),
             };

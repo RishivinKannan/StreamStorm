@@ -1,12 +1,11 @@
-from os.path import dirname, normpath, join        
+from os.path import dirname, normpath, join
 from json import dump
 from time import sleep
+from warnings import deprecated
 from undetected_chromedriver import Chrome
-# from undetected_geckodriver import Firefox
 
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, NoSuchWindowException, ElementNotInteractableException
-# from selenium.webdriver import FirefoxOptions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.remote.webelement import WebElement
@@ -15,15 +14,14 @@ from .Selenium import Selenium
 
 
 class UndetectedDrivers(Selenium):
-    def __init__(self, base_profile_dir: str, browser_class: str) -> None:
+    def __init__(self, base_profile_dir: str) -> None:
         self.base_profile_dir: str = base_profile_dir
-        self.browser_class: str = browser_class
         self.youtube_login_url: str = "https://accounts.google.com/ServiceLogin?service=youtube"
         self.config_json_path: str = join(dirname(normpath(self.base_profile_dir)), "config.json")
         
-        super().__init__(base_profile_dir, "chrome", background=False)
+        super().__init__(base_profile_dir, background=False)
 
-    def initiate_config_json(self, no_of_channels: int = 0, channels: dict = None) -> None:
+    def initiate_config_json(self, no_of_channels: int = 0, channels: dict[int, dict[str, str]] = {}) -> None:
 
         data: dict = {
             "no_of_channels": no_of_channels,
@@ -34,21 +32,26 @@ class UndetectedDrivers(Selenium):
             with open(self.config_json_path, "w", encoding="utf-8") as file:
                 dump(data, file, indent=4)
         except Exception as e:
-            raise RuntimeError(f"Failed to create config.json: {e}")     
-        
+            raise RuntimeError(f"Failed to create config.json: {e}")  
+         
+    @deprecated("Using user installed Chrome now.")
+    def get_browser_path(self) -> str:
+        from playwright.sync_api import sync_playwright
 
-    def initiate_base_profile(self):
-        if self.browser_class == "chromium":
-            self.driver = Chrome(user_data_dir=self.base_profile_dir)
-        elif self.browser_class == "gecko":
-            raise NotImplementedError("Gecko-based browser is not implemented yet.")
-        elif self.browser_class == "webkit":
-            raise NotImplementedError("WebKit-based browser is not implemented yet.")
-        else:
-            raise SystemError("Unsupported browser class for undetected drivers")
+        with sync_playwright() as p:
+            chromium_executable: str = p.chromium.executable_path
+            return chromium_executable
+
+
+    def initiate_base_profile(self) -> None:
+
+        self.driver = Chrome(
+            user_data_dir=self.base_profile_dir,
+        )
+        
         print(self.driver.browser_pid)
         
-    def get_total_channels(self) -> int:
+    def get_total_channels(self) -> None:
         
         try:
             # select first channel if popup appears
@@ -63,7 +66,7 @@ class UndetectedDrivers(Selenium):
 
         channels_list: list[WebElement] = self.driver.find_elements(By.XPATH, "//*[@id='submenu']//*[@id='container']//*[@id='contents']//*[@id='contents']/ytd-account-item-renderer")
         
-        channels = {}
+        channels: dict[int, dict[str, str]] = {}
 
         for index in range(len(channels_list)):
             try:
@@ -85,16 +88,17 @@ class UndetectedDrivers(Selenium):
         total_channels: int = len(channels_list)
 
         if total_channels == 0:
-            raise SystemError("No YouTube channels found. Please add at least one channel to your YouTube Account.")
+            raise SystemError("No YouTube channels found. Add at least one channel to your YouTube Account.")
         
         self.initiate_config_json(total_channels, channels)
 
     def youtube_login(self) -> None:
-        self.driver.get(self.youtube_login_url)
+        self.go_to_page(self.youtube_login_url)
+        logged_in: bool = False
 
         default_tab: str = self.driver.current_window_handle
         try:
-            while True:
+            while not logged_in:
                 tabs: list[str] = self.driver.window_handles
                 
                 for tab in tabs:
@@ -117,17 +121,13 @@ class UndetectedDrivers(Selenium):
                         
                         self.driver.close()
                         sleep(2)
-                        
-                        # try:                        
-                        #     process = Process(self.driver.browser_pid)
-                        #     while process.is_running():
-                        #         sleep(0.5)
-                        # except NoSuchProcess:
-                        #     pass
-                        
-                        return
+
+                        logged_in = True
                     except NoSuchElementException:
                         self.driver.get(self.youtube_login_url)
                         
         except (NoSuchWindowException, AttributeError):
             raise RuntimeError("The Browser window was closed or not found. Please try again.")
+
+
+__all__: list[str] = ["UndetectedDrivers"]

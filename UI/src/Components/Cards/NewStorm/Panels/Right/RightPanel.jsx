@@ -1,20 +1,19 @@
 import { useContext } from 'react';
 import { useColorScheme } from '@mui/material/styles';
-import { MenuItem, TextField, Switch, Button, Divider } from "@mui/material";
+import { Switch, Button, Divider } from "@mui/material";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { RefreshCw, Users } from 'lucide-react';
 
 import "./RightPanel.css";
 import StormControls from './StormControls/StormControls';
 import { CustomMUIPropsContext, StormDataContext, SystemInfoContext } from '../../../../../lib/ContextAPI';
-import { BROWSERS } from '../../../../../lib/Constants';
 import ErrorText from '../../../../Elements/ErrorText';
 
 const RightPanel = (props) => {
 
     const { setManageProfilesOpen } = props;
     const { colorScheme } = useColorScheme();
-    const { btnProps, inputProps } = useContext(CustomMUIPropsContext);
+    const { btnProps } = useContext(CustomMUIPropsContext);
     const formControls = useContext(StormDataContext);
     const systemInfoControls = useContext(SystemInfoContext);
 
@@ -26,33 +25,6 @@ const RightPanel = (props) => {
 
     return (
         <div className="right-panel-container">
-            <TextField
-                select
-                variant="outlined"
-                label="Select Browser"
-                sx={inputProps}
-                value={formControls.browser}
-                onChange={(e) => {
-                    formControls.setBrowser(e.target.value);
-                    formControls.setBrowserError(false);
-                    formControls.setBrowserHelperText("");
-                }}
-                error={formControls.browserError}
-                helperText={formControls.browserHelperText}
-                disabled={formControls.stormInProgress || formControls.loading}
-
-            >
-                {
-                    BROWSERS.map((browser) => {
-                        let browserText = browser.toLowerCase();
-                        return (
-                            <MenuItem key={browser} value={browserText}>
-                                {browser}
-                            </MenuItem>
-                        )
-                    })
-                }
-            </TextField>
 
             <div className="switches-container">
                 <div className={`switch-container ${colorScheme}-bordered-container`}>

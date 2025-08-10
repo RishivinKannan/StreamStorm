@@ -19,9 +19,7 @@
 }
 
 .section-content-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    display: flex;
 }
 
 @media (max-width: 460px) {

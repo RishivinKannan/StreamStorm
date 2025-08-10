@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import { useColorScheme } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Switch from '@mui/material/Switch';
@@ -47,11 +47,6 @@ const LeftPanel = () => {
 
     const handleAdvancedChannelSelection = async () => {
 
-        if (formControls.browser === "") {
-            formControls.setBrowserError(true);
-            formControls.setBrowserHelperText("Select a browser first.");
-            return;
-        }
         const selectedChannels = await dialogs.open(AddChannels, {
             mode: "new",
             formControls,

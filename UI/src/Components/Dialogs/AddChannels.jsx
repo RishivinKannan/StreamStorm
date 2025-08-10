@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Avatar, Button, Checkbox, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, LinearProgress, List, ListItem, useColorScheme } from "@mui/material";
+import { Avatar, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, LinearProgress, List, ListItem, useColorScheme } from "@mui/material";
 
 import "./Dialogs.css";
 import { CustomMUIPropsContext, SystemInfoContext } from "../../lib/ContextAPI";
@@ -8,7 +8,7 @@ import { useNotifications } from "@toolpad/core/useNotifications";
 import ErrorText from "../Elements/ErrorText";
 
 const AddChannels = ({ payload, open, onClose }) => {
-    const { mode, formControls, defaultSelectedChannels } = payload;
+    const { mode, defaultSelectedChannels } = payload;
     const { btnProps } = useContext(CustomMUIPropsContext);
     const systemInfoControls = useContext(SystemInfoContext);
 
@@ -30,7 +30,7 @@ const AddChannels = ({ payload, open, onClose }) => {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ mode, browser: formControls.browser }),
+            body: JSON.stringify({ mode }),
         })
             .then((response) => response.json())
             .then((data) => {

@@ -1,25 +1,27 @@
-from time import sleep
-from threading import Thread
+from asyncio import Task, sleep, Event, create_task, gather, TimeoutError as AsyncTimeoutError
 from random import choice
 from os import environ
-from typing import Self
-from json import load
+from typing import Optional
+from json import loads, JSONDecodeError
 from http.client import RemoteDisconnected
 from urllib3.exceptions import ProtocolError, ReadTimeoutError
-from concurrent.futures import ThreadPoolExecutor
-from threading import Event
+from aiofiles import open as aio_open
 
-from selenium.common.exceptions import InvalidSessionIdException
+from playwright.async_api import (
+    Error as PlaywrightError, 
+    TimeoutError as PlaywrightTimeoutError,
+)
+from playwright._impl._errors import TargetClosedError
 
-from .Selenium import Selenium
+from .Exceptions import BrowserClosedError, ElementNotFound
 from .SeparateInstance import SeparateInstance
 from .Profiles import Profiles
 from .Lib import clear_ram
 
 
-class StreamStorm(Selenium, Profiles):
+class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothing
     each_channel_instances: list[SeparateInstance] = []
-    ss_instance: Self = None
+    ss_instance: Optional["StreamStorm"] = None
 
     def __init__(
         self,
@@ -29,15 +31,11 @@ class StreamStorm(Selenium, Profiles):
         subscribe: tuple[bool, bool] = (False, False),
         subscribe_and_wait_time: int = 70,
         slow_mode: int = 0,
-        # start_channel_index: int = 1,
-        # end_channel_index: int = 10,
-        channels: list[int] = None,
-        browser: str = "edge",
-        background: bool = True,
-        shared_data: dict = None,
+        channels: list[int] = [],
+        background: bool = True
     ) -> None:
         
-        Profiles.__init__(self, browser=browser)
+        super().__init__()
         
         self.url: str = url
         self.chat_url: str = chat_url
@@ -45,13 +43,8 @@ class StreamStorm(Selenium, Profiles):
         self.subscribe: tuple[bool, bool] = subscribe
         self.subscribe_and_wait_time: int = subscribe_and_wait_time
         self.slow_mode: int = slow_mode
-        # self.start_channel_index: int = start_channel_index
-        # self.end_channel_index: int = end_channel_index
         self.channels: list[int] = sorted(channels)
-        self.browser: str = browser
         self.background: bool = background
-        
-        self.shared_data: dict = shared_data
         
         self.ready_event: Event = Event()
         self.pause_event: Event = Event()
@@ -67,20 +60,20 @@ class StreamStorm(Selenium, Profiles):
         
         clear_ram()
         
-    def set_slow_mode(self, slow_mode: int) -> None:
+    async def set_slow_mode(self, slow_mode: int) -> None:
         self.slow_mode = slow_mode
         print(f"Slow mode set to {self.slow_mode} seconds")
         
-    def set_messages(self, messages: list[str]) -> None:
+    async def set_messages(self, messages: list[str]) -> None:
         self.messages = messages
         print(f"Messages set to: {self.messages}")
         
         
-    def check_channels_available(self) -> None:
+    async def check_channels_available(self) -> None:
         try:
-            with open(self.profiles_dir + r"\config.json", "r", encoding="utf-8") as file:
-                data: dict = load(file)
-        except FileNotFoundError:
+            async with aio_open(self.profiles_dir + r"\config.json", "r", encoding="utf-8") as file:
+                data: dict = loads(await file.read()) # We are using loads instead of load to avoid blocking the event loop
+        except (FileNotFoundError, JSONDecodeError, ):
             raise SystemError("Create profiles first.")
             
         no_of_channels: int = data.get("no_of_channels", 0)
@@ -90,8 +83,8 @@ class StreamStorm(Selenium, Profiles):
 
         if no_of_channels < len(self.channels):
             raise SystemError("Not enough channels available in your YouTube Account. Create enough channels first. Then create Profiles again in the app.")
-
-    def get_active_channels(self) -> list[int]:
+    
+    async def get_active_channels(self) -> list[int]:
         active_channels: list[int] = []
         
         for channel_index in self.assigned_profiles.values():
@@ -100,7 +93,7 @@ class StreamStorm(Selenium, Profiles):
                 
         return active_channels
         
-    def EachChannel(self, index: int, profile_dir: str, wait_time: float = 0) -> None:
+    async def EachChannel(self, index: int, profile_dir: str, wait_time: float = 0) -> None:
         
         print(f"Using profile: {profile_dir}")
         profile_dir_name: str=  profile_dir.split("\\")[-1]
@@ -110,7 +103,6 @@ class StreamStorm(Selenium, Profiles):
             SI = SeparateInstance(
                 index,
                 profile_dir,
-                self.browser,
                 self.background,
             )
 
@@ -119,7 +111,7 @@ class StreamStorm(Selenium, Profiles):
             print("Assigned profile to channel:", index)
 
             StreamStorm.each_channel_instances.append(SI)
-            logged_in: bool = SI.login()
+            logged_in: bool = await SI.login()
             
             if not logged_in:
                 self.total_instances -= 1
@@ -129,37 +121,53 @@ class StreamStorm(Selenium, Profiles):
                 return
 
             if self.subscribe[0]:
-                SI.go_to_page(self.url)
-                SI.subscribe_to_channel()
+                await SI.go_to_page(self.url)
+                await SI.subscribe_to_channel()
 
-            SI.driver.set_window_size(500, 800)
-            SI.go_to_page(self.chat_url)
+            await SI.page.set_viewport_size({"width": 500, "height": 900})
+            await SI.go_to_page(self.chat_url)
             
             self.ready_to_storm_instances += 1
             print(f"@@@@@@@@@@@@@@@@@@@@@@@@@ Channel {index} : {self.all_channels[str(index)]['name']} is ready @@@@@@@@@@@@@@@@@@@@@@@@@")
 
             if self.subscribe[1]:
-                sleep(self.subscribe_and_wait_time)
+                await sleep(self.subscribe_and_wait_time)
                  
                 
-            self.ready_event.wait() # Wait for the ready event to be set before starting the storming
+            await self.ready_event.wait() # Wait for the ready event to be set before starting the storming
 
-            sleep(wait_time)  # Wait for the initial delay before starting to storm
+            await sleep(wait_time)  # Wait for the initial delay before starting to storm
 
             while True:
-                self.pause_event.wait()
+                await self.pause_event.wait()
         
                 # input()
-                SI.send_message(choice(self.messages))
-                sleep(self.slow_mode)
+                try:
+                    await SI.send_message(choice(self.messages))
+                    
+                except (BrowserClosedError, ElementNotFound, TargetClosedError):
+                    print(f"Error in finding chat field in channel {index}")
+                    
+                    self.assigned_profiles[profile_dir_name] = None
+                    StreamStorm.each_channel_instances.remove(SI)
+                    break
+                    
+                except Exception as e:
+                    print(f"$$$$$$$$$$ New Error in channel {index} ({type(e).__name__}): {e}")
+                    break
+                
+
+                await sleep(self.slow_mode)
 
         except (
-            InvalidSessionIdException,
             RemoteDisconnected,
             ProtocolError,
             ReadTimeoutError,
             ConnectionResetError,
             TimeoutError,
+            AsyncTimeoutError,
+            PlaywrightError,
+            PlaywrightTimeoutError,
         ) as e:
             print(f"Error in channel {index}: {e}")
             pass
@@ -167,13 +175,13 @@ class StreamStorm(Selenium, Profiles):
     def get_start_storm_wait_time(self, index, no_of_profiles, slow_mode) -> float:
         return index * (slow_mode / no_of_profiles)
 
-    def start(self) -> None:       
+    async def start(self) -> None:       
         
 
         self.ready_event.clear()  # Wait for the ready event to be set before starting the storming
         self.ready_to_storm_instances = 0
         
-        self.check_channels_available()
+        await self.check_channels_available()
         
         if self.channels[-1] > self.total_channels:
             raise SystemError("You have selected more channels than available channels in your YouTube channel. Create enough channels first.")
@@ -190,31 +198,34 @@ class StreamStorm(Selenium, Profiles):
             raise SystemError("Not enough temp profiles available. Create Enough profiles first.")       
         
 
-        def start_each_worker() -> None:
-            
-            def wait_for_all_worker_to_be_ready() -> None:
+        async def start_each_worker() -> None:
+
+            async def wait_for_all_worker_to_be_ready() -> None:
                 while self.ready_to_storm_instances < self.total_instances:
-                    sleep(1)
+                    await sleep(1)
                 self.ready_event.set()  # Set the event to signal that all instances are ready
 
-            Thread(target=wait_for_all_worker_to_be_ready).start()
+            create_task(wait_for_all_worker_to_be_ready())
+            
+            tasks: list[Task] = []
+            for index in range(len(self.channels)):
+                profile_dir: str = self.profiles_dir + f"\\{temp_profiles[index]}"
+                wait_time: float = self.get_start_storm_wait_time(index, no_of_temp_profiles, self.slow_mode)
 
-            with ThreadPoolExecutor() as executor:
-                for index in range(len(self.channels)):
-                    profile_dir: str = self.profiles_dir + f"\\{temp_profiles[index]}"
-                    wait_time: int = self.get_start_storm_wait_time(index, no_of_temp_profiles, self.slow_mode)
+                # executor.submit(self.EachChannel, self.channels[index], profile_dir, wait_time)
+                task: Task = create_task(self.EachChannel(self.channels[index], profile_dir, wait_time))
+                tasks.append(task)
+                await sleep(0.2)  # Small delay to avoid instant spike of the cpu load
 
-                    executor.submit(self.EachChannel, self.channels[index], profile_dir, wait_time)
-                    sleep(0.2)  # Small delay to avoid instant spike of the cpu load
-
+            await gather(*tasks)  # Wait for all tasks to complete
             environ.update({"BUSY": "0"})
-            print("All threads completed")
+            print("All Coroutines completed")
+
+        create_task(start_each_worker())
     
-        Thread(target=start_each_worker).start()
-    
-    def start_more_channels(self, channels: list[int]) -> None:
+    async def start_more_channels(self, channels: list[int]) -> None:
         
-        def get_profiles() -> tuple[bool, list[str]]:
+        async def get_profiles() -> tuple[bool, list[str]]:
             count: int = 0
             available_profiles: list[str] = []
             for key, value in self.assigned_profiles.items():
@@ -224,7 +235,7 @@ class StreamStorm(Selenium, Profiles):
 
             return count >= len(channels), available_profiles[:len(channels)]
 
-        enough_profiles, available_profiles = get_profiles()
+        enough_profiles, available_profiles = await get_profiles()
 
         already_running_channels: list[int] = self.assigned_profiles.values()
 
@@ -234,20 +245,22 @@ class StreamStorm(Selenium, Profiles):
         if not enough_profiles:
             raise SystemError("Not enough available profiles to start more channels.")
         
-        def start_each_worker() -> None:            
-            with ThreadPoolExecutor() as executor:
-                for index in range(len(channels)):
-                    print(index, len(available_profiles), channels[index], available_profiles[index], self.slow_mode)
-                    profile_dir: str = self.profiles_dir + f"\\{available_profiles[index]}"
-                    wait_time: int = self.get_start_storm_wait_time(index, len(available_profiles), self.slow_mode)
-
-                    executor.submit(self.EachChannel, channels[index], profile_dir, wait_time)
-                    sleep(0.2)
-                    
-                    
-        Thread(target=start_each_worker).start()
+        async def start_each_worker() -> None:  
             
-        
-        
+            tasks: list[Task] = []   
+            for index in range(len(channels)):
+                print(index, len(available_profiles), channels[index], available_profiles[index], self.slow_mode)
+                profile_dir: str = self.profiles_dir + f"\\{available_profiles[index]}"
+                wait_time: float = self.get_start_storm_wait_time(index, len(available_profiles), self.slow_mode)
 
-        
+                task: Task = create_task(self.EachChannel(channels[index], profile_dir, wait_time))
+                tasks.append(task)
+                await sleep(0.2)
+
+            await gather(*tasks)
+            print("All Coroutines completed")
+
+        create_task(start_each_worker())       
+
+
+__all__: list[str] = ["StreamStorm"]

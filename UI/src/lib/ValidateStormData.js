@@ -104,12 +104,6 @@ const ValidateStormData = (formControls, systemInfoControls) => {
         }
     }
 
-    if (!formControls.browser) {
-        isValid = false;
-        formControls.setBrowserError(true);
-        formControls.setBrowserHelperText("Select a browser.");
-    }
-
     if (systemInfoControls.availableRAM === null) {
         isValid = false;
         formControls.setErrorText("Not enough RAM to run even one channel. If this is a mistake, Refresh RAM and try again.");

@@ -2,7 +2,7 @@
 class ElementNotFound(Exception):
     pass
 
-class DriverClosedError(Exception):
+class BrowserClosedError(Exception):
     pass
 
-__all__: list[str] = ['ElementNotFound']
+__all__: list[str] = ['ElementNotFound', 'BrowserClosedError']
