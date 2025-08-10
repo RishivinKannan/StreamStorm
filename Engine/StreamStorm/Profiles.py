@@ -1,4 +1,4 @@
-from os import environ, makedirs, listdir
+from os import makedirs, listdir
 from os.path import exists
 from shutil import copytree, rmtree, Error
 from platformdirs import user_data_dir
@@ -8,41 +8,20 @@ from .UndetectedDrivers import UndetectedDrivers
 
 
 class Profiles:
-    def __init__(self, browser_class: str = None, browser: str = None) -> None:
-        
-        if not browser_class:
-            browser_class: str = self._get_browser_class(browser)        
-        self.browser_class: str = browser_class
+    def __init__(self) -> None:
         
         self.app_data_dir: str = user_data_dir("StreamStorm", "DarkGlance")
         self.profiles_dir: str = self.__get_profiles_dir()
-        self.base_profile_dir: str = self.profiles_dir + r"\BaseProfile"
+        self.base_profile_dir: str = self.__get_base_profile_dir()
 
-    @classmethod
-    def _get_browser_class(cls, browser) -> str:
-        if browser in ("edge", "chrome"):
-            return "chromium"
-
-        elif browser in ("firefox",):
-            raise NotImplementedError("Gecko-based browsers like Firefox are not supported yet.")
-            return "gecko"
-
-        elif browser in ("safari",):
-            raise NotImplementedError("WebKit-based browsers like Safari are not supported yet.")
-            # return "webkit"
-
-        raise ValueError("Invalid browser")
 
     def __get_profiles_dir(self) -> str:
-        if self.browser_class == "chromium":
-            return self.app_data_dir + r"\ChromiumBasedBrowsers"
-
-        # elif self.browser_class == "gecko":
-        #     return self.app_data_dir + r"\GeckoBasedBrowsers"
-
-        # elif self.browser_class == "webkit":
-        #     return self.app_data_dir + r"\WebKitBasedBrowsers"
-        
+        return self.app_data_dir + r"\ChromiumProfiles"
+    
+    
+    def __get_base_profile_dir(self) -> str:
+        return self.profiles_dir + r"\BaseProfile"
+            
         
     def get_available_temp_profiles(self, for_deletion: bool = False) -> list[str]:
         temp_profiles: list[str] = [
@@ -76,7 +55,7 @@ class Profiles:
         
         makedirs(self.base_profile_dir, exist_ok=True)
 
-        UD: UndetectedDrivers = UndetectedDrivers(self.base_profile_dir, self.browser_class)
+        UD: UndetectedDrivers = UndetectedDrivers(self.base_profile_dir)
         UD.initiate_base_profile()
         UD.youtube_login()
 

@@ -1,9 +1,6 @@
 from typing import Self, Optional
 from pydantic import BaseModel, field_validator, model_validator
 
-from .Profiles import Profiles
-
-
 def Validate(data: dict, validator: BaseModel) -> BaseModel:
     try:
         validated_data = validator(**data)
@@ -196,20 +193,6 @@ class GetChannelsData(BaseModel):
 
         return value
     
-    @model_validator(mode='after')
-    def validate_data(self) -> Self:
-        self.browser = self.browser.lower()
-        
-        browser_class: str = Profiles._get_browser_class(self.browser)
-        
-        if browser_class =="chromium":
-            self.browser = "ChromiumBasedBrowsers"
-        elif browser_class == "gecko":
-            self.browser = "GeckoBasedBrowsers"
-        elif browser_class == "webkit":
-            self.browser = "WebKitBasedBrowsers"
-
-        return self
     
 __all__ : list[str] = [
     "StormData",

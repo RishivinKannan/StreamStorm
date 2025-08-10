@@ -15,6 +15,8 @@ dependencies = [
     "dgupdater>=1.1.4",
     "fastapi[standard]>=0.115.14",
     "uvicorn>=0.35.0",
+    "playwright>=1.53.0",
+    "aiofiles>=24.1.0",
 ]
 
 [dependency-groups]
