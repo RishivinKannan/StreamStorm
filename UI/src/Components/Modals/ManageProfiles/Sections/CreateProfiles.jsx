@@ -1,12 +1,11 @@
 import { useContext, useState } from 'react';
 import { UserPlus } from 'lucide-react';
-import { Button, MenuItem, TextField, useColorScheme } from '@mui/material';
+import { Button, TextField, useColorScheme } from '@mui/material';
 import { useLocalStorageState } from '@toolpad/core/useLocalStorageState';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { RefreshCw } from 'lucide-react';
 
 import "./Sections.css";
-import { BROWSERS, BROWSER_CLASSES } from '../../../../lib/Constants';
 import { CustomMUIPropsContext } from '../../../../lib/ContextAPI';
 import ErrorText from '../../../Elements/ErrorText';
 
@@ -17,9 +16,6 @@ const CreateProfiles = () => {
     const [hostAddress] = useLocalStorageState("hostAddress");
     const notifications = useNotifications();
 
-    const [browserClass, setBrowserClass] = useState("");
-    const [browserError, setBrowserError] = useState(false);
-    const [browserHelperText, setBrowserHelperText] = useState("");
 
     const [profiles, setProfiles] = useState(1);
     const [profilesError, setProfilesError] = useState(false);
@@ -31,15 +27,6 @@ const CreateProfiles = () => {
     const handleCreateProfiles = () => {
 
         setErrorText("");
-
-        if (!browserClass) {
-            setBrowserError(true);
-            setBrowserHelperText("Select a browser class");
-            return;
-        } else {
-            setBrowserError(false);
-            setBrowserHelperText("");
-        }
 
         if (profiles < 1) {
             setProfilesError(true);
@@ -53,7 +40,6 @@ const CreateProfiles = () => {
         setLoading(true);
 
         const data = {
-            browser_class: browserClass.toLowerCase(),
             count: profiles,
         }
 
@@ -67,7 +53,6 @@ const CreateProfiles = () => {
             .then((response) => response.json())
             .then((data) => {
                 if (data.success) {
-                    setBrowserClass("");
                     setProfiles(1);
                     notifications.show("Profiles created successfully!", {
                         severity: "success",
@@ -98,49 +83,7 @@ const CreateProfiles = () => {
                 <h3 className={`section-title ${colorScheme}-text`}>Create / Fix Profiles</h3>
             </div>
 
-            <div className="section-content-grid">
-                <TextField
-                    fullWidth
-                    select
-                    disabled={loading}
-                    label="Browser Class"
-                    variant="outlined"
-                    sx={{
-                        ...inputProps,
-                        marginTop: "1rem",
-                    }}
-                    value={browserClass}
-                    onChange={(e) => {
-                        setBrowserClass(e.target.value);
-                        setBrowserError(false);
-                        setBrowserHelperText("");
-                        setErrorText("");
-                    }}
-                    error={browserError}
-                    helperText={browserHelperText}
-                >
-                    {
-                        BROWSER_CLASSES.map((className) => {
-                            let MenuItemText, MenuItemDisabled;
-
-                            if (className === "chromium") {
-                                MenuItemText = "Chromium (Chrome, Edge, etc.)";
-                            } else if (className === "gecko") {
-                                MenuItemText = "Gecko (Firefox)";
-                                MenuItemDisabled = true
-                            } else if (className === "webkit") {
-                                MenuItemText = "WebKit (Safari)";
-                                MenuItemDisabled = true;
-                            }
-
-                            return (
-                                <MenuItem key={className} value={className} disabled={MenuItemDisabled}>
-                                    {MenuItemText} {MenuItemDisabled ? "(Not supported yet)" : ""}
-                                </MenuItem>
-                            )
-                        })
-                    }
-                </TextField>
+            <div className="section-content-grid">                
 
                 <TextField
                     fullWidth

@@ -25,7 +25,6 @@ class StormData(BaseModel):
     subscribe_and_wait_time: int
     slow_mode: int
     channels: list[int]
-    browser: str
     background: bool
 
     @field_validator("video_url")
@@ -68,13 +67,6 @@ class StormData(BaseModel):
             raise ValueError("Slow mode cannot be negative")
         
         return value
-
-    @field_validator("browser")
-    def validate_browser(cls, value: str) -> str:
-        if value not in ("edge", "chrome"):
-            raise ValueError("Invalid browser")
-        
-        return value
     
     @field_validator("channels")
     def validate_channels(cls, value: list[int]) -> list[int]:
@@ -105,20 +97,7 @@ class StormData(BaseModel):
 
 
 class ProfileData(BaseModel):
-    browser_class: str
     count: Optional[int] = 1
-    
-    
-    @field_validator("browser_class")
-    def validate_browser(cls, value: str) -> str:
-        if value not in [
-            "chromium", 
-            # "gecko", 
-            # "webkit"
-        ]:
-            raise ValueError("Invalid browser class")
-
-        return value
     
     @field_validator("count")
     def validate_count(cls, value: Optional[int]) -> Optional[int]:
@@ -172,25 +151,12 @@ class StartMoreChannelsData(BaseModel):
     
 class GetChannelsData(BaseModel):
     mode: str
-    browser: str
 
     @field_validator("mode")
     def validate_mode(cls, value: str) -> str:
         if value not in ["new", "add"]:
             raise ValueError("Invalid mode")
         
-        return value
-
-    @field_validator("browser")
-    def validate_browser(cls, value: str) -> str:
-        if value not in [
-            "chrome", 
-            "edge",
-            # "firefox",
-            # "safari"
-        ]:
-            raise ValueError("Invalid browser")
-
         return value
     
     

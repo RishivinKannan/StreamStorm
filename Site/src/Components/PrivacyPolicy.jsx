@@ -39,7 +39,7 @@ const PrivacyPolicy = () => {
             The app uses the internet only for:
             <ul>
               <li>Checking for software updates</li>
-              <li>Downloading required browser webdrivers</li>
+              <li>Downloading required browser webdrivers (chromedriver)</li>
               <li>Sending analytics data</li>
             </ul>
             These operations are technical and do not involve any personal data.

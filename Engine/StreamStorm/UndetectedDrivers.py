@@ -121,13 +121,6 @@ class UndetectedDrivers(Selenium):
                         
                         self.driver.close()
                         sleep(2)
-                        
-                        # try:                        
-                        #     process = Process(self.driver.browser_pid)
-                        #     while process.is_running():
-                        #         sleep(0.5)
-                        # except NoSuchProcess:
-                        #     pass
 
                         logged_in = True
                     except NoSuchElementException:
