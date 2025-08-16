@@ -5,18 +5,19 @@ import { Ban, Pause, Play, Plus, RefreshCw, SquarePen, StopCircle, Zap } from 'l
 import { useDialogs } from '@toolpad/core/useDialogs';
 
 import "./StormControls.css";
-import { CustomMUIPropsContext, StormDataContext, } from "../../../../../../lib/ContextAPI";
+import { CustomMUIPropsContext } from "../../../../../../lib/ContextAPI";
 import Ping from "../../../../../Elements/Ping/Ping";
 import StormControlsClass from "../../../../../../lib/StormControlsClass";
 import AreYouSure from "../../../../../Dialogs/AreYouSure";
 import ChangeMessages from "../../../../../Dialogs/ChangeMessages";
 import ChangeSlowMode from "../../../../../Dialogs/ChangeSlowMode";
 import AddChannels from "../../../../../Dialogs/AddChannels";
+import { useStormData } from "../../../../../../context/StormDataContext";
 
 const StormControls = () => {
 
     const { btnProps } = useContext(CustomMUIPropsContext);
-    const formControls = useContext(StormDataContext);
+    const formControls = useStormData();
     const { colorScheme } = useColorScheme();
     const dialogs = useDialogs();
 

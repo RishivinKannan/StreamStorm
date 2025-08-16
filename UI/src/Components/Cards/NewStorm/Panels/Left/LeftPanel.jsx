@@ -6,15 +6,16 @@ import { Button, Radio, RadioGroup } from "@mui/material";
 import { useDialogs } from "@toolpad/core/useDialogs";
 
 import "./LeftPanel.css";
-import { CustomMUIPropsContext, StormDataContext } from "../../../../../lib/ContextAPI";
+import { CustomMUIPropsContext } from "../../../../../lib/ContextAPI";
 import AddChannels from "../../../../Dialogs/AddChannels";
 import ErrorText from "../../../../Elements/ErrorText";
+import { useStormData } from "../../../../../context/StormDataContext";
 
 const LeftPanel = () => {
 
     const { colorScheme } = useColorScheme();
     const { inputProps, btnProps } = useContext(CustomMUIPropsContext);
-    const formControls = useContext(StormDataContext);
+    const formControls = useStormData();
     const dialogs = useDialogs();
 
     const messagesChangeHandler = (e) => {

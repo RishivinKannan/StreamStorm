@@ -6,6 +6,7 @@ import { CustomMUIPropsContext, SystemInfoContext } from './ContextAPI';
 import { getCustomMUIProps } from "./CustomMUIProps";
 import fetchRAM from "./FetchRAM"
 import { RAM_PER_PROFILE } from "./Constants";
+import { StormDataProvider } from "../context/StormDataContext";
 
 
 const AppProviders = ({ children, theme }) => {
@@ -25,8 +26,9 @@ const AppProviders = ({ children, theme }) => {
                             autoHideDuration: 2500,
                         },
                     }}>
-                        {children}
-
+                        <StormDataProvider>
+                            {children}
+                        </StormDataProvider>
                     </NotificationsProvider>
                 </DialogsProvider>
             </SystemInfoContext.Provider>

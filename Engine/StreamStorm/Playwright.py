@@ -5,6 +5,7 @@ from playwright.async_api import (
     TimeoutError as PlaywrightTimeoutError,
 )
 from playwright.async_api._generated import Browser, BrowserContext, Locator, Page
+from playwright._impl._errors import TargetClosedError
 
 from .BrowserAutomator import BrowserAutomator
 from .Exceptions import BrowserClosedError, ElementNotFound
@@ -17,6 +18,7 @@ class Playwright(BrowserAutomator):
     def __init__(self, user_data_dir: str, background: bool) -> None:
         self.user_data_dir: str = user_data_dir
         self.background: bool = background
+        self.__instance_alive: bool = True
 
     async def __get_chromium_options(self) -> dict[str, str | bool | list[str]]:
         options: dict[str, str | bool | list[str]] = {
@@ -72,6 +74,18 @@ class Playwright(BrowserAutomator):
                     await browser_obj.close()
                     
         return cls._chrome_version
+    
+    def _attach_error_listeners(self):
+        def mark_dead():
+            self.__instance_alive = False
+        try:   
+            self.page.on("close", mark_dead)
+            self.page.on("crash", mark_dead)
+            self.page.on("pageerror", mark_dead)
+            self.browser.on("close", mark_dead)
+            self.browser.browser.on("disconnected", mark_dead)
+        except Exception as _:
+            self.__instance_alive = False
 
     async def open_browser(self) -> None:
         self.playwright: AsyncPlaywright = await async_playwright().start()
@@ -83,6 +97,7 @@ class Playwright(BrowserAutomator):
         )
 
         self.page: Page = await self.browser.new_page()
+        await self.__close_about_blank_page()
 
         self.page.set_default_navigation_timeout(15000)
         self.page.set_default_timeout(15000)
@@ -93,11 +108,27 @@ class Playwright(BrowserAutomator):
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                           f"(KHTML, like Gecko) Chrome/{browser_version} Safari/537.36"
         })
-        
+
+        self._attach_error_listeners()
+
+    async def is_instance_alive(self) -> bool:
+        try:
+            if not self.browser.browser.is_connected():
+                self.__instance_alive = False
+
+            await self.page.title()
+            _: str = self.page.url
+            await self.page.evaluate("() => 1")
+        except TargetClosedError as _:
+            self.__instance_alive = False
+
+        return self.__instance_alive
+
+
     async def go_to_page(self, url: str) -> None:
         try:
             await self.page.goto(url)
-            await self.__close_about_blank_page()
+            
         except PlaywrightTimeoutError as e:
             print(f"Timeout error occurred while navigating to {url}: {e}")
             await self.page.close(
