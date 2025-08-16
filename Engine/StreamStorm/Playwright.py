@@ -1,3 +1,4 @@
+from asyncio import Lock
 from playwright.async_api import (
     async_playwright,
     Playwright as AsyncPlaywright,
@@ -10,6 +11,9 @@ from .Exceptions import BrowserClosedError, ElementNotFound
 
 
 class Playwright(BrowserAutomator):
+    _chrome_version: str = None
+    _version_lock: Lock = Lock()
+
     def __init__(self, user_data_dir: str, background: bool) -> None:
         self.user_data_dir: str = user_data_dir
         self.background: bool = background
@@ -57,10 +61,17 @@ class Playwright(BrowserAutomator):
                     break
         except Exception as e:
             print(f"Error closing about:blank page: {e}")
-            
-    async def __get_browser_version(self):
-        browser_obj: Browser = await self.playwright.chromium.launch(channel="chrome")
-        return browser_obj.version
+
+    @classmethod
+    async def __get_browser_version(cls, playwright: AsyncPlaywright):
+        if cls._chrome_version is None:
+            async with cls._version_lock:
+                if cls._chrome_version is None: # We are checking two times because multiple coroutines could be trying to access this at the same time
+                    browser_obj: Browser = await playwright.chromium.launch(channel="chrome")
+                    cls._chrome_version = browser_obj.version
+                    await browser_obj.close()
+                    
+        return cls._chrome_version
 
     async def open_browser(self) -> None:
         self.playwright: AsyncPlaywright = await async_playwright().start()
@@ -76,9 +87,11 @@ class Playwright(BrowserAutomator):
         self.page.set_default_navigation_timeout(15000)
         self.page.set_default_timeout(15000)
         
+        browser_version: str = await self.__get_browser_version(self.playwright)
+        
         await self.page.set_extra_http_headers({
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                          f"(KHTML, like Gecko) Chrome/{await self.__get_browser_version()} Safari/537.36"
+                          f"(KHTML, like Gecko) Chrome/{browser_version} Safari/537.36"
         })
         
     async def go_to_page(self, url: str) -> None:
