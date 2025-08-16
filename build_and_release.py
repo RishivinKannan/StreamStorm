@@ -10,7 +10,6 @@ from logging import basicConfig, INFO, info as log_info
 basicConfig(level=INFO)
 
 ROOT: Path = Path(__file__).parent.resolve()
-
 log_info(f"Root directory: {ROOT}")
 
 def update_versions(new_version: str) -> None:
@@ -71,22 +70,11 @@ def generate_exe() -> None:
     call("uv sync", shell=True)
     chdir(ROOT)
 
-    icon_path: Path = ROOT / "UI" / "public" / "favicon.ico"
-    rammap_path: Path = ROOT / "Engine" / "RAMMap.exe"
-    main_path: Path = ROOT / "Engine" / "main.py"
-
     build_command: str = ([
         "pyinstaller",
+        "StreamStorm.spec",
         "--noconfirm",
-        "--onefile",
-        "--windowed",
-        f"--icon={icon_path}",
-        "--name=StreamStorm",
-        "--contents-directory=data",
-        "--clean",
-        "--uac-admin",
-        f"--add-data={rammap_path};.",
-        str(main_path)
+        "--clean"
     ])
 
     log_info(f"Running build command: {' '.join(build_command)}")
