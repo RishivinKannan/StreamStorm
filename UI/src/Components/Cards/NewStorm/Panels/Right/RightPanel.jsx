@@ -6,15 +6,16 @@ import { RefreshCw, Users } from 'lucide-react';
 
 import "./RightPanel.css";
 import StormControls from './StormControls/StormControls';
-import { CustomMUIPropsContext, StormDataContext, SystemInfoContext } from '../../../../../lib/ContextAPI';
+import { CustomMUIPropsContext, SystemInfoContext } from '../../../../../lib/ContextAPI';
 import ErrorText from '../../../../Elements/ErrorText';
+import { useStormData } from '../../../../../context/StormDataContext';
 
 const RightPanel = (props) => {
 
     const { setManageProfilesOpen } = props;
     const { colorScheme } = useColorScheme();
     const { btnProps } = useContext(CustomMUIPropsContext);
-    const formControls = useContext(StormDataContext);
+    const formControls = useStormData();
     const systemInfoControls = useContext(SystemInfoContext);
 
 

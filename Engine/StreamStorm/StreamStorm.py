@@ -149,7 +149,11 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
                     print(f"Error in finding chat field in channel {index}")
                     
                     self.assigned_profiles[profile_dir_name] = None
-                    StreamStorm.each_channel_instances.remove(SI)
+                    try:
+                        StreamStorm.each_channel_instances.remove(SI)
+                    except ValueError:
+                        pass
+                    
                     break
                     
                 except Exception as e:

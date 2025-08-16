@@ -27,8 +27,9 @@ from .FastApiLib.exception_handlers import (
     common_exception_handler,
     validation_exception_handler,
 )
+from.FastApiLib.LifeSpan import lifespan
 
-app: FastAPI = FastAPI()
+app: FastAPI = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -108,6 +109,8 @@ async def validate_request(request: Request, call_next) -> JSONResponse:
 
     return response
 
+
+
 @app.get("/")
 async def root() -> dict[str, str]:
     return {
@@ -146,6 +149,7 @@ async def storm(data: StormData):
         await StreamStormObj.start()
     except SystemError as e:
         environ.update({"BUSY": "0", "BUSY_REASON": ""})
+        StreamStorm.ss_instance = None
         raise e
 
     return {
@@ -323,6 +327,17 @@ async def get_ram_info():
         "free": virtual_memory().available / (1024**3),
         "total": virtual_memory().total / (1024**3),
     }
+    
+@app.get("/engine-status")
+async def status():
+    response: dict = {}
+
+    if StreamStorm.ss_instance is not None:
+        response["storm_in_progress"] = True
+    else:
+        response["storm_in_progress"] = False
+
+    return response
     
 
 __all__: list[str] = ["app"]
