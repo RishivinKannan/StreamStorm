@@ -12,7 +12,7 @@ from webview import create_window, start
 from threading import Thread
 from uvicorn import run as run_uvicorn
 
-from StreamStorm.FastAPI import app
+from StreamStorm import app
 
 def serve_api() -> None:
     run_uvicorn(app, host="0.0.0.0", port=1919) # 1919, because 19 is the character number for "S" in the English alphabets.

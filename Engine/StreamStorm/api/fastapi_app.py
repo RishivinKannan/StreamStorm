@@ -13,9 +13,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from asyncio import gather
 
-from .StreamStorm import StreamStorm
-from .Profiles import Profiles
-from .Validation import (
+from ..core.StreamStorm import StreamStorm
+from ..core.Profiles import Profiles
+from .validation import (
     StormData,
     ProfileData,
     ChangeMessagesData,
@@ -23,11 +23,11 @@ from .Validation import (
     StartMoreChannelsData,
     GetChannelsData,
 )
-from .FastApiLib.exception_handlers import (
+from .lib.exception_handlers import (
     common_exception_handler,
     validation_exception_handler,
 )
-from.FastApiLib.LifeSpan import lifespan
+from .lib.LifeSpan import lifespan
 
 app: FastAPI = FastAPI(lifespan=lifespan)
 

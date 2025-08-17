@@ -13,11 +13,10 @@ from playwright.async_api import (
 )
 from playwright._impl._errors import TargetClosedError
 
-from .Exceptions import BrowserClosedError, ElementNotFound
+from ..utils.exceptions import BrowserClosedError, ElementNotFound
 from .SeparateInstance import SeparateInstance
 from .Profiles import Profiles
-from .Lib import clear_ram
-
+from ..utils.clear_ram import clear_ram
 
 class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothing
     each_channel_instances: list[SeparateInstance] = []

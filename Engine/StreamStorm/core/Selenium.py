@@ -4,7 +4,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import ElementNotInteractableException
 
-from .Exceptions import BrowserClosedError, ElementNotFound
+from ..utils.exceptions import BrowserClosedError, ElementNotFound
 from .BrowserAutomator import BrowserAutomator
         
 

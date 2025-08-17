@@ -1,7 +1,7 @@
 from asyncio import sleep
 from playwright.async_api._generated import Locator
 
-from .Exceptions import BrowserClosedError
+from ..utils.exceptions import BrowserClosedError
 from .Playwright import Playwright
 
 class SeparateInstance(Playwright):

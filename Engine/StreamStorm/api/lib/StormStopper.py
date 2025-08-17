@@ -1,6 +1,6 @@
 from typing import NoReturn
 from asyncio import sleep
-from ..StreamStorm import StreamStorm
+from ...core.StreamStorm import StreamStorm
 
 async def background_storm_stopper() -> NoReturn:
     while True:

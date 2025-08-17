@@ -8,7 +8,7 @@ from playwright.async_api._generated import Browser, BrowserContext, Locator, Pa
 from playwright._impl._errors import TargetClosedError
 
 from .BrowserAutomator import BrowserAutomator
-from .Exceptions import BrowserClosedError, ElementNotFound
+from ..utils.exceptions import BrowserClosedError, ElementNotFound
 
 
 class Playwright(BrowserAutomator):
