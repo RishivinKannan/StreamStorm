@@ -15,7 +15,7 @@ class CustomLogger:
     def __init__(self):
         self.logging_dir: Path = Path(user_data_dir("StreamStorm", "DarkGlance")) / "logs"
 
-    def get_console_handler(self) -> RichHandler:
+    def __get_console_handler(self) -> RichHandler:
 
         handler: RichHandler = RichHandler(
             rich_tracebacks=True,
@@ -36,7 +36,7 @@ class CustomLogger:
         
         return handler
     
-    def get_file_handler(self) -> FileHandler:
+    def __get_file_handler(self) -> FileHandler:
         
         self.logging_dir.mkdir(parents=True, exist_ok=True)
         
@@ -65,7 +65,7 @@ class CustomLogger:
         self.logger.addHandler(queue_handler)
         self.logger.propagate = False
 
-        CustomLogger.listener = QueueListener(self.log_queue, self.get_console_handler(), self.get_file_handler())
+        CustomLogger.listener = QueueListener(self.log_queue, self.__get_console_handler(), self.__get_file_handler())
         CustomLogger.listener.start()
         
         atexit_register(CustomLogger.listener.stop)

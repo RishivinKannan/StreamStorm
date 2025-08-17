@@ -20,7 +20,6 @@ from StreamStorm.utils.CustomLogger import CustomLogger
 CustomLogger().setup_logging()
 
 logger: Logger = getLogger("streamstorm." + __name__)
-fast_api_logger: Logger = getLogger("fast_api")
 
 def serve_api() -> None:
     run_uvicorn(app, host="0.0.0.0", port=1919, log_level="warning") # 1919, because 19 is the character number for "S" in the English alphabets.
