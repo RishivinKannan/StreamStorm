@@ -6,6 +6,7 @@ from json import loads, JSONDecodeError
 from http.client import RemoteDisconnected
 from urllib3.exceptions import ProtocolError, ReadTimeoutError
 from aiofiles import open as aio_open
+from logging import getLogger, Logger
 
 from playwright.async_api import (
     Error as PlaywrightError, 
@@ -17,6 +18,8 @@ from ..utils.exceptions import BrowserClosedError, ElementNotFound
 from .SeparateInstance import SeparateInstance
 from .Profiles import Profiles
 from ..utils.clear_ram import clear_ram
+
+logger: Logger = getLogger("streamstorm." + __name__)
 
 class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothing
     each_channel_instances: list[SeparateInstance] = []
@@ -61,13 +64,13 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
         
     async def set_slow_mode(self, slow_mode: int) -> None:
         self.slow_mode = slow_mode
-        print(f"Slow mode set to {self.slow_mode} seconds")
-        
+        logger.info(f"Slow mode set to {self.slow_mode} seconds")
+
     async def set_messages(self, messages: list[str]) -> None:
         self.messages = messages
-        print(f"Messages set to: {self.messages}")
-        
-        
+        logger.info(f"Messages set to: {self.messages}")
+
+
     async def check_channels_available(self) -> None:
         try:
             async with aio_open(self.profiles_dir + r"\config.json", "r", encoding="utf-8") as file:
@@ -94,7 +97,9 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
         
     async def EachChannel(self, index: int, profile_dir: str, wait_time: float = 0) -> None:
         
-        print(f"Using profile: {profile_dir}")
+        channel_name: str = self.all_channels[str(index)]['name']
+
+        logger.info(f"[{index}] [{channel_name}] Using profile: {profile_dir}")
         profile_dir_name: str=  profile_dir.split("\\")[-1]
         
         try:
@@ -105,9 +110,11 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
                 self.background,
             )
 
+            SI.channel_name = channel_name
+
             self.assigned_profiles[profile_dir_name] = index
 
-            print("Assigned profile to channel:", index)
+            logger.info(f"[{index}] [{channel_name}] Assigned profile {profile_dir_name}")
 
             StreamStorm.each_channel_instances.append(SI)
             logged_in: bool = await SI.login()
@@ -116,7 +123,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
                 self.total_instances -= 1
                 self.assigned_profiles[profile_dir_name] = None
                 StreamStorm.each_channel_instances.remove(SI)
-                print(f"========================= Login failed on channel {index} : {self.all_channels[str(index)]['name']}. =========================")
+                logger.error(f"[{index}] [{channel_name}] : Login failed")
                 return
 
             if self.subscribe[0]:
@@ -127,7 +134,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
             await SI.go_to_page(self.chat_url)
             
             self.ready_to_storm_instances += 1
-            print(f"@@@@@@@@@@@@@@@@@@@@@@@@@ Channel {index} : {self.all_channels[str(index)]['name']} is ready @@@@@@@@@@@@@@@@@@@@@@@@@")
+            logger.info(f"[{index}] [{channel_name}] : Ready To Storm")
 
             if self.subscribe[1]:
                 await sleep(self.subscribe_and_wait_time)
@@ -145,8 +152,8 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
                     await SI.send_message(choice(self.messages))
                     
                 except (BrowserClosedError, ElementNotFound, TargetClosedError):
-                    print(f"Error in finding chat field in channel {index}")
-                    
+                    logger.error(f"[{index}] [{channel_name}] : Error in finding chat field")
+
                     self.assigned_profiles[profile_dir_name] = None
                     
                     try:
@@ -157,7 +164,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
                     break
                     
                 except Exception as e:
-                    print(f"$$$$$$$$$$ New Error in channel {index} ({type(e).__name__}): {e}")
+                    logger.error(f"[{index}] [{channel_name}] : New Error ({type(e).__name__}): {e}")
                     break
                 
 
@@ -173,7 +180,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
             PlaywrightError,
             PlaywrightTimeoutError,
         ) as e:
-            print(f"Error in channel {index}: {e}")
+            logger.error(f"[{index}] [{channel_name}] : Error: {e}")
             pass
         
     def get_start_storm_wait_time(self, index, no_of_profiles, slow_mode) -> float:
@@ -223,7 +230,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
 
             await gather(*tasks)  # Wait for all tasks to complete
             environ.update({"BUSY": "0"})
-            print("All Coroutines completed")
+            logger.info("All Coroutines completed")
 
         create_task(start_each_worker())
     
@@ -253,7 +260,6 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
             
             tasks: list[Task] = []   
             for index in range(len(channels)):
-                print(index, len(available_profiles), channels[index], available_profiles[index], self.slow_mode)
                 profile_dir: str = self.profiles_dir + f"\\{available_profiles[index]}"
                 wait_time: float = self.get_start_storm_wait_time(index, len(available_profiles), self.slow_mode)
 
@@ -262,7 +268,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
                 await sleep(0.2)
 
             await gather(*tasks)
-            print("All Coroutines completed")
+            logger.info("All Coroutines completed")
 
         create_task(start_each_worker())       
 

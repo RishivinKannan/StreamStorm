@@ -11,23 +11,33 @@ from os.path import dirname, abspath, join
 from webview import create_window, start
 from threading import Thread
 from uvicorn import run as run_uvicorn
+from logging import Logger, getLogger
 
 from StreamStorm import app
+from StreamStorm.utils.CustomLogger import CustomLogger
+
+
+CustomLogger().setup_logging()
+
+logger: Logger = getLogger("streamstorm." + __name__)
+fast_api_logger: Logger = getLogger("fast_api")
 
 def serve_api() -> None:
-    run_uvicorn(app, host="0.0.0.0", port=1919) # 1919, because 19 is the character number for "S" in the English alphabets.
-    
+    run_uvicorn(app, host="0.0.0.0", port=1919, log_level="warning") # 1919, because 19 is the character number for "S" in the English alphabets.
+
 def set_rammap_path() -> None:
     environ.update({"rammap_path": join(dirname(abspath(__file__)), "RAMMap.exe")})
+    logger.info(f"RAMMap path set to: {environ['rammap_path']}")
 
 def main() -> None:
+    
     check_update()   
 
     set_rammap_path()
 
     Thread(target=serve_api, daemon=True).start()
-    # serve_api()
-    
+    logger.info("API server started.")
+
     try:
         create_window(
             title="StreamStorm",
@@ -37,10 +47,11 @@ def main() -> None:
             height=900,
             confirm_close=True,
         )
-
+        logger.info("Webview created.")
         start()
     finally:
         # Ensure the API is stopped when the webview is closed
+        logger.info("Webview closed, stopping API server.")
         kill(getpid(), SIGTERM)
         
         

@@ -3,9 +3,11 @@ from os.path import exists
 from shutil import copytree, rmtree, Error
 from platformdirs import user_data_dir
 from concurrent.futures import ThreadPoolExecutor
+from logging import Logger, getLogger
 
 from .UndetectedDrivers import UndetectedDrivers
 
+logger: Logger = getLogger("streamstorm." + __name__)
 
 class Profiles:
     def __init__(self) -> None:
@@ -47,8 +49,8 @@ class Profiles:
     def __delete_profiles_dir(self) -> None:
         if exists(self.profiles_dir):
             rmtree(self.profiles_dir, ignore_errors=True)
-            print(f"Profiles directory {self.profiles_dir} deleted.")
-    
+            logger.info(f"Profiles directory {self.profiles_dir} deleted.")
+
     def __create_base_profile(self) -> None:
         if exists(self.base_profile_dir):
             rmtree(self.base_profile_dir)        
@@ -61,7 +63,7 @@ class Profiles:
 
     def __create_profile(self, profile: str) -> None:
 
-        print(f"Creating {profile}")
+        logger.info(f"Creating {profile}")
 
         tempdir: str = self.profiles_dir + f"\\{profile}"
 
@@ -73,12 +75,10 @@ class Profiles:
                 dirs_exist_ok=True,
             )
         except Error as e:
-            print("e", type(e), e)
-            print("e.args", type(e.args), e.args)
             str_error: str = str(e)
-            print("str_error", type(str_error), str_error)
+            logger.error(f"Error occurred while creating {profile}: {str_error}")
 
-        print(f"{profile} created")
+        logger.info(f"{profile} created")
 
     def create_profiles(self, count: int) -> None:
         self.__delete_profiles_dir()

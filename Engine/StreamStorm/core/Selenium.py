@@ -20,7 +20,6 @@ class Selenium(BrowserAutomator):
         try:
             element: WebElement = WebDriverWait(self.driver, wait_time).until(EC.element_to_be_clickable((by, value)))
         except TimeoutException as _:
-            # print(e)
             raise ElementNotFound
         
         return element
