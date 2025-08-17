@@ -98,8 +98,9 @@ class Playwright(BrowserAutomator):
     async def open_browser(self) -> None:
         self.playwright: AsyncPlaywright = await async_playwright().start()
 
-        browser_options = await self.__get_chromium_options()
+        browser_options: dict[str, str | bool | list[str]] = await self.__get_chromium_options()
         logger.debug(f"[{self.index}] [{self.channel_name}] Browser options configured with {len(browser_options['args'])} arguments")
+        logger.debug(f"[{self.index}] [{self.channel_name}] Browser arguments: {'\n'.join(browser_options['args'])}")
         
         self.browser: BrowserContext = (
             await self.playwright.chromium.launch_persistent_context(
@@ -122,7 +123,7 @@ class Playwright(BrowserAutomator):
         })
 
         self._attach_error_listeners()
-        logger.debug(f"[{self.index}] [{self.channel_name}] Browser setup completed successfully")
+        logger.debug(f"[{self.index}] [{self.channel_name}] Browser setup completed")
 
     async def is_instance_alive(self) -> bool:
         try:
@@ -146,7 +147,6 @@ class Playwright(BrowserAutomator):
 
 
     async def go_to_page(self, url: str) -> None:
-        logger.debug(f"[{self.index}] [{self.channel_name}] Navigating to: {url}")
         
         try:
             await self.page.goto(url)
@@ -159,27 +159,27 @@ class Playwright(BrowserAutomator):
             )
             raise BrowserClosedError
 
-    async def find_element(self, selector: str) -> Locator:
+    async def find_element(self, selector: str, selector_name: str) -> Locator:
         """Find an element on the page."""
-        logger.debug(f"[{self.index}] [{self.channel_name}] Looking for element: {selector}")
+        logger.debug(f"[{self.index}] [{self.channel_name}] Looking for element: {selector_name} : {selector}")
 
         element: Locator = self.page.locator(selector)
         try:
             await element.wait_for(state="visible")
-            logger.debug(f"[{self.index}] [{self.channel_name}] Element found: {selector}")
+            logger.debug(f"[{self.index}] [{self.channel_name}] Element found: {selector_name} : {selector}")
         except PlaywrightTimeoutError:
-            logger.debug(f"[{self.index}] [{self.channel_name}] Element not found: {selector}")
+            logger.debug(f"[{self.index}] [{self.channel_name}] Element not found: {selector_name} : {selector}")
             raise ElementNotFound
 
         return element
 
     async def find_and_click_element(
-        self, selector: str, for_subscribe: bool = False
+        self, selector: str, selector_name: str, for_subscribe: bool = False
     ) -> None:
         """Find an element and click it."""
 
         try:
-            element = await self.find_element(selector)
+            element: Locator = await self.find_element(selector, selector_name)
             await element.click()
         except ElementNotFound:
             if for_subscribe:

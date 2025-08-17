@@ -71,7 +71,7 @@ async def root() -> dict[str, str]:
 @app.post("/storm")
 async def storm(data: StormData):
     if StreamStorm.ss_instance is not None:
-        logger.debug("Storm request rejected - instance already running")
+        logger.info("Storm request rejected - instance already running")
         return {
             "success": False,
             "message": "A storm is already running. Stop the current storm before starting a new one.",

@@ -251,6 +251,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
             async def wait_for_all_worker_to_be_ready() -> None:
                 while self.ready_to_storm_instances < self.total_instances:
                     await sleep(1)
+                logger.debug(f"All {self.total_instances} instances ready - starting storm")
                 self.ready_event.set()  # Set the event to signal that all instances are ready
 
             create_task(wait_for_all_worker_to_be_ready())

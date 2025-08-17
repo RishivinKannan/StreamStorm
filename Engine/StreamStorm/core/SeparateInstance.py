@@ -28,14 +28,11 @@ class SeparateInstance(Playwright):
             logger.debug(f"[{self.index}] [{self.channel_name}] Opening browser...")
             await self.open_browser()
             
-            logger.debug(f"[{self.index}] [{self.channel_name}] Navigating to YouTube account page...")
             await self.go_to_page("https://www.youtube.com/account") # We are going to account page because it loads faster than the main page
             
-            logger.debug(f"[{self.index}] [{self.channel_name}] Clicking avatar button...")
-            await self.find_and_click_element('//*[@id="avatar-btn"]') # Click on avatar button
+            await self.find_and_click_element('//*[@id="avatar-btn"]', 'avatar_button') # Click on avatar button
             
-            logger.debug(f"[{self.index}] [{self.channel_name}] Clicking switch account...")
-            await self.find_and_click_element("//*[text()='Switch account']") # Click on switch account button
+            await self.find_and_click_element("//*[text()='Switch account']", 'switch_account_button') # Click on switch account button
 
             await sleep(3)
             logger.debug(f"[{self.index}] [{self.channel_name}] Selecting channel {self.index}...")
@@ -45,26 +42,27 @@ class SeparateInstance(Playwright):
             return True
         
         except BrowserClosedError as _:  
-            logger.debug(f"[{self.index}] [{self.channel_name}] Login failed due to browser closure")
+            logger.error(f"[{self.index}] [{self.channel_name}] Login failed due to browser closure")
             return False
 
 
     async def __click_channel(self, index: int) -> None:
         logger.debug(f"[{self.index}] [{self.channel_name}] Clicking on channel at position {index}")
         await self.find_and_click_element(
-            f"//*[@id='contents']/ytd-account-item-renderer[{index}]"
+            f"//*[@id='contents']/ytd-account-item-renderer[{index}]",
+            "channel_element"
         )
 
     async def subscribe_to_channel(self) -> None:
-        logger.debug(f"[{self.index}] [{self.channel_name}] Attempting to subscribe to channel...")
         await self.find_and_click_element(
             "//div[@id='subscribe-button']/*//button[.//span[text()='Subscribe']]",
+            "subscribe_button",
             True
         )           
         logger.debug(f"[{self.index}] [{self.channel_name}] Subscribe action completed")
         
     async def __get_chat_field(self) -> Locator:
-        chat_field: Locator = await self.find_element("//yt-live-chat-text-input-field-renderer//div[@id='input']")
+        chat_field: Locator = await self.find_element("//yt-live-chat-text-input-field-renderer//div[@id='input']", "chat_field")
         return chat_field
 
     async def send_message(self, message: str) -> None:
