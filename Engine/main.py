@@ -22,7 +22,12 @@ CustomLogger().setup_logging()
 logger: Logger = getLogger("streamstorm." + __name__)
 
 def serve_api() -> None:
-    run_uvicorn(app, host="0.0.0.0", port=1919, log_level="warning") # 1919, because 19 is the character number for "S" in the English alphabets.
+    run_uvicorn(
+        app, 
+        host="0.0.0.0", 
+        port=1919, # 1919, because 19 is the character number for "S" in the English alphabets.
+        log_level="warning"
+    ) 
 
 def set_rammap_path() -> None:
     environ.update({"rammap_path": join(dirname(abspath(__file__)), "RAMMap.exe")})

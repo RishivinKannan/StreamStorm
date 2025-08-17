@@ -1,4 +1,4 @@
-from logging import Formatter, Logger, getLogger, DEBUG, FileHandler
+from logging import Formatter, Logger, getLogger, DEBUG, INFO, FileHandler
 from logging.handlers import QueueHandler, QueueListener
 from platformdirs import user_data_dir
 from pathlib import Path
@@ -21,7 +21,7 @@ class CustomLogger:
 
         handler: RichHandler = RichHandler(
             rich_tracebacks=True,
-            markup=True,
+            markup=False,
             show_time=True,
             show_path=True,
             show_level=True,

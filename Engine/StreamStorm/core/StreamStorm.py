@@ -26,7 +26,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
         'url', 'chat_url', 'messages', 'subscribe', 'subscribe_and_wait_time', 
         'slow_mode', 'channels', 'background', 'ready_event', 'pause_event',
         'total_instances', 'ready_to_storm_instances', 'total_channels', 
-        'all_channels', 'assigned_profiles'
+        'all_channels', 'assigned_profiles', 'run_stopper_event'
     )
     
     each_channel_instances: list[SeparateInstance] = []
@@ -57,6 +57,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
         
         self.ready_event: Event = Event()
         self.pause_event: Event = Event()
+        self.run_stopper_event: Event = Event()
         
         self.total_instances: int = len(channels)
         self.ready_to_storm_instances: int = 0
@@ -137,6 +138,9 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
             
             logger.debug(f"[{index}] [{channel_name}] Attempting login...")
             logged_in: bool = await SI.login()
+            
+            self.run_stopper_event.set()  # Set the event to signal that the run stopper can for instance errors
+            logger.debug(f"[{index}] [{channel_name}] Run stopper event set")
             
             if not logged_in:
                 logger.debug(f"[{index}] [{channel_name}] Login failed - removing from instances")

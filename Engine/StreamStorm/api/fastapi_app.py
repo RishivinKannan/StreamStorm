@@ -92,6 +92,7 @@ async def storm(data: StormData):
 
     StreamStormObj.ready_event.clear()  # Clear the ready event to ensure it will be only set when all instances are ready
     StreamStormObj.pause_event.set()  # Set the pause event to allow storming to start immediately
+    StreamStormObj.run_stopper_event.clear()  # Clear the run stopper event to wait for instances to be ready before starting
 
     environ.update({"BUSY": "1", "BUSY_REASON": "Storming in progress"})
     logger.debug("Environment updated to BUSY state")

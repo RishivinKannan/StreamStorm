@@ -12,6 +12,8 @@ async def background_storm_stopper() -> NoReturn:
         if StreamStorm.ss_instance is None:
             continue
         
+        await StreamStorm.ss_instance.run_stopper_event.wait()
+        
         statuses: list[bool] = [await instance.is_instance_alive() for instance in StreamStorm.each_channel_instances.copy()]
         
         if len(statuses) == 0:
@@ -20,5 +22,6 @@ async def background_storm_stopper() -> NoReturn:
         if not any(statuses):
             StreamStorm.ss_instance = None
             StreamStorm.each_channel_instances.clear()
+            StreamStorm.ss_instance.run_stopper_event.clear()
 
 __all__: list[str] = ["background_storm_stopper"]
