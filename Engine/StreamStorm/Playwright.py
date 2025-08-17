@@ -76,14 +76,15 @@ class Playwright(BrowserAutomator):
         return cls._chrome_version
     
     def _attach_error_listeners(self):
-        def mark_dead():
+        def mark_dead(marker: str):
             self.__instance_alive = False
+            print(f"StreamStorm instance marked as dead by: {marker}")
+            
         try:   
-            self.page.on("close", mark_dead)
-            self.page.on("crash", mark_dead)
-            self.page.on("pageerror", mark_dead)
-            self.browser.on("close", mark_dead)
-            self.browser.browser.on("disconnected", mark_dead)
+            self.page.on("close", lambda _: mark_dead("page.on_close"))
+            self.page.on("crash", lambda _: mark_dead("page.on_crash"))
+            self.browser.on("close", lambda _: mark_dead("browser.on_close"))
+            self.browser.browser.on("disconnected", lambda _: mark_dead("browser.browser.on_disconnected"))
         except Exception as _:
             self.__instance_alive = False
 
@@ -113,15 +114,22 @@ class Playwright(BrowserAutomator):
 
     async def is_instance_alive(self) -> bool:
         try:
-            if not self.browser.browser.is_connected():
+            if not self.browser.browser.is_connected(): # test 1
                 self.__instance_alive = False
+                print("StreamStorm instance marked as dead by: browser.browser.is_connected")
 
-            await self.page.title()
-            _: str = self.page.url
-            await self.page.evaluate("() => 1")
+            await self.page.title() # test 2
+            _: str = self.page.url # test 3
+            await self.page.evaluate("() => 1") # test 4
         except TargetClosedError as _:
             self.__instance_alive = False
+            print("StreamStorm instance marked as dead by: TargetClosedError")
 
+        except Exception as e:
+            print(f"Error occurred while checking StreamStorm instance: {type(e).__name__}, {e}")
+            print("StreamStorm instance marked as dead by: Exception")
+            self.__instance_alive = False
+        
         return self.__instance_alive
 
 

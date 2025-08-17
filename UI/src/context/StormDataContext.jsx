@@ -7,7 +7,7 @@ const StormDataContext = createContext();
 const StormDataProvider = ({ children }) => {
 
     const notifications = useNotifications();
-    const [hostAddress] = useLocalStorageState('hostAddress');
+    const [hostAddress] = useLocalStorageState('hostAddress', "http://localhost:1919");
 
 
     const SC = useRef(null);
