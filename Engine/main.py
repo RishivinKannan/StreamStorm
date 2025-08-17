@@ -32,6 +32,7 @@ def main() -> None:
         create_window(
             title="StreamStorm",
             url="https://streamstorm-ui.web.app/",
+            # url="http://localhost:5173", # Local development URL
             width=1300,
             height=900,
             confirm_close=True,
