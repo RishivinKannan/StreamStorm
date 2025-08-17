@@ -1,6 +1,5 @@
-from logging import Formatter, Logger, getLogger, DEBUG, FileHandler, StreamHandler
+from logging import Formatter, Logger, getLogger, DEBUG, FileHandler
 from logging.handlers import QueueHandler, QueueListener
-from typing import TextIO
 from platformdirs import user_data_dir
 from pathlib import Path
 from queue import Queue
