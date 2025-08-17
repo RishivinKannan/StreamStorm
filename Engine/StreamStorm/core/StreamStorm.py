@@ -22,6 +22,13 @@ from ..utils.clear_ram import clear_ram
 logger: Logger = getLogger("streamstorm." + __name__)
 
 class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothing
+    __slots__: tuple[str, ...] = (
+        'url', 'chat_url', 'messages', 'subscribe', 'subscribe_and_wait_time', 
+        'slow_mode', 'channels', 'background', 'ready_event', 'pause_event',
+        'total_instances', 'ready_to_storm_instances', 'total_channels', 
+        'all_channels', 'assigned_profiles'
+    )
+    
     each_channel_instances: list[SeparateInstance] = []
     ss_instance: Optional["StreamStorm"] = None
 
@@ -60,6 +67,10 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
         
         StreamStorm.ss_instance = self
         
+        logger.debug(f"StreamStorm initialized with url: {self.url}, channels: {self.channels}, "
+                    f"messages count: {len(self.messages)}, slow_mode: {self.slow_mode}s, "
+                    f"background: {self.background}")
+        
         clear_ram()
         
     async def set_slow_mode(self, slow_mode: int) -> None:
@@ -72,18 +83,24 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
 
 
     async def check_channels_available(self) -> None:
+        logger.debug(f"Checking channel availability for profiles in: {self.profiles_dir}")
+        
         try:
             async with aio_open(self.profiles_dir + r"\config.json", "r", encoding="utf-8") as file:
                 data: dict = loads(await file.read()) # We are using loads instead of load to avoid blocking the event loop
         except (FileNotFoundError, PermissionError, UnicodeDecodeError, JSONDecodeError):
+            logger.debug("Failed to read config.json - profiles not created yet")
             raise SystemError("Create profiles first.")
             
         no_of_channels: int = data.get("no_of_channels", 0)
 
         self.total_channels = no_of_channels
         self.all_channels = data.get("channels", {})
+        
+        logger.debug(f"Found {no_of_channels} channels in config, required: {len(self.channels)}")
 
         if no_of_channels < len(self.channels):
+            logger.debug(f"Insufficient channels: available={no_of_channels}, required={len(self.channels)}")
             raise SystemError("Not enough channels available in your YouTube Account. Create enough channels first. Then create Profiles again in the app.")
     
     async def get_active_channels(self) -> list[int]:
@@ -99,7 +116,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
         
         channel_name: str = self.all_channels[str(index)]['name']
 
-        logger.info(f"[{index}] [{channel_name}] Using profile: {profile_dir}")
+        logger.info(f"[{index}] [{channel_name}] Using profile: {profile_dir}, Wait time: {wait_time}s")
         profile_dir_name: str=  profile_dir.split("\\")[-1]
         
         try:
@@ -117,41 +134,57 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
             logger.info(f"[{index}] [{channel_name}] Assigned profile {profile_dir_name}")
 
             StreamStorm.each_channel_instances.append(SI)
+            
+            logger.debug(f"[{index}] [{channel_name}] Attempting login...")
             logged_in: bool = await SI.login()
             
             if not logged_in:
+                logger.debug(f"[{index}] [{channel_name}] Login failed - removing from instances")
                 self.total_instances -= 1
                 self.assigned_profiles[profile_dir_name] = None
                 StreamStorm.each_channel_instances.remove(SI)
                 logger.error(f"[{index}] [{channel_name}] : Login failed")
                 return
 
+            logger.debug(f"[{index}] [{channel_name}] Login successful")
+
             if self.subscribe[0]:
+                logger.debug(f"[{index}] [{channel_name}] Navigating to subscribe URL: {self.url}")
                 await SI.go_to_page(self.url)
                 await SI.subscribe_to_channel()
+                logger.debug(f"[{index}] [{channel_name}] Subscription attempt completed")
 
             await SI.page.set_viewport_size({"width": 500, "height": 900})
+            logger.debug(f"[{index}] [{channel_name}] Navigating to chat URL: {self.chat_url}")
             await SI.go_to_page(self.chat_url)
             
             self.ready_to_storm_instances += 1
             logger.info(f"[{index}] [{channel_name}] : Ready To Storm")
 
             if self.subscribe[1]:
+                logger.debug(f"[{index}] [{channel_name}] Waiting {self.subscribe_and_wait_time}s after subscription")
                 await sleep(self.subscribe_and_wait_time)
                  
                 
+            logger.debug(f"[{index}] [{channel_name}] Waiting for ready event...")
             await self.ready_event.wait() # Wait for the ready event to be set before starting the storming
 
+            logger.debug(f"[{index}] [{channel_name}] Starting storm loop with {wait_time}s initial delay")
             await sleep(wait_time)  # Wait for the initial delay before starting to storm
 
             while True:
                 await self.pause_event.wait()
         
                 # input()
+                selected_message = choice(self.messages)
+                logger.debug(f"[{index}] [{channel_name}] Sending message: '{selected_message}'")
+                
                 try:
-                    await SI.send_message(choice(self.messages))
+                    await SI.send_message(selected_message)
+                    logger.debug(f"[{index}] [{channel_name}] Message sent successfully")
                     
                 except (BrowserClosedError, ElementNotFound, TargetClosedError):
+                    logger.debug(f"[{index}] [{channel_name}] Browser/element error - cleaning up instance")
                     logger.error(f"[{index}] [{channel_name}] : Error in finding chat field")
 
                     self.assigned_profiles[profile_dir_name] = None
@@ -167,7 +200,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
                     logger.error(f"[{index}] [{channel_name}] : New Error ({type(e).__name__}): {e}")
                     break
                 
-
+                logger.debug(f"[{index}] [{channel_name}] Sleeping for {self.slow_mode}s before next message")
                 await sleep(self.slow_mode)
 
         except (

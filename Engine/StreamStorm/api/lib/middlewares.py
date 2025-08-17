@@ -15,6 +15,8 @@ repeated_paths: set[str] = {
 }
 
 class LogRequestMiddleware(BaseHTTPMiddleware):
+    __slots__: tuple[str, ...] = ()
+    
     async def dispatch(self, request: Request, call_next) -> Response:
         path: str = request.url.path
         
@@ -59,6 +61,7 @@ storm_controls_endpoints: set[str] = {
 }
 
 class RequestValidationMiddleware(BaseHTTPMiddleware):
+    __slots__: tuple[str, ...] = ()
     async def dispatch(self, request: Request, call_next) -> Response:
         path: str = request.url.path
         method: str = request.method

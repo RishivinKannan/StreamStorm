@@ -71,7 +71,7 @@ async def root() -> dict[str, str]:
 @app.post("/storm")
 async def storm(data: StormData):
     if StreamStorm.ss_instance is not None:
-        
+        logger.debug("Storm request rejected - instance already running")
         return {
             "success": False,
             "message": "A storm is already running. Stop the current storm before starting a new one.",
@@ -94,6 +94,7 @@ async def storm(data: StormData):
     StreamStormObj.pause_event.set()  # Set the pause event to allow storming to start immediately
 
     environ.update({"BUSY": "1", "BUSY_REASON": "Storming in progress"})
+    logger.debug("Environment updated to BUSY state")
 
     try:
         await StreamStormObj.start()

@@ -9,6 +9,8 @@ from atexit import register as atexit_register
 from .GetIstTime import get_ist_time
 
 class CustomLogger:
+    __slots__: tuple[str, ...] = ('logging_dir', 'logger')
+    
     log_queue: Queue = Queue(-1)
     listener: QueueListener | None = None
     

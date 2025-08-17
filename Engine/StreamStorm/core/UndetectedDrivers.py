@@ -16,6 +16,8 @@ from .Selenium import Selenium
 logger: Logger = getLogger("streamstorm." + __name__)
 
 class UndetectedDrivers(Selenium):
+    __slots__: tuple[str, ...] = ('base_profile_dir', 'youtube_login_url', 'config_json_path')
+    
     def __init__(self, base_profile_dir: str) -> None:
         self.base_profile_dir: str = base_profile_dir
         self.youtube_login_url: str = "https://accounts.google.com/ServiceLogin?service=youtube"

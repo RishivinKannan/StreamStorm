@@ -10,6 +10,8 @@ from .UndetectedDrivers import UndetectedDrivers
 logger: Logger = getLogger("streamstorm." + __name__)
 
 class Profiles:
+    __slots__: tuple[str, ...] = ('app_data_dir', 'profiles_dir', 'base_profile_dir')
+    
     def __init__(self) -> None:
         
         self.app_data_dir: str = user_data_dir("StreamStorm", "DarkGlance")

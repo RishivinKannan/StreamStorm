@@ -9,6 +9,8 @@ from .BrowserAutomator import BrowserAutomator
         
 
 class Selenium(BrowserAutomator):
+    __slots__: tuple[str, ...] = ('user_data_dir', 'background', 'driver')
+    
     def __init__(self, user_data_dir: str, background: bool) -> None:
         self.user_data_dir: str = user_data_dir
         self.background: bool = background

@@ -14,6 +14,11 @@ from ..utils.exceptions import BrowserClosedError, ElementNotFound
 logger: Logger = getLogger("streamstorm." + __name__)
 
 class Playwright(BrowserAutomator):
+    __slots__: tuple[str, ...] = (
+        'user_data_dir', 'background', '_Playwright__instance_alive', 
+        'playwright', 'browser', 'page', 'index', 'channel_name'
+    )
+    
     _chrome_version: str = None
     _version_lock: Lock = Lock()
 
@@ -93,9 +98,12 @@ class Playwright(BrowserAutomator):
     async def open_browser(self) -> None:
         self.playwright: AsyncPlaywright = await async_playwright().start()
 
+        browser_options = await self.__get_chromium_options()
+        logger.debug(f"[{self.index}] [{self.channel_name}] Browser options configured with {len(browser_options['args'])} arguments")
+        
         self.browser: BrowserContext = (
             await self.playwright.chromium.launch_persistent_context(
-                **await self.__get_chromium_options()
+                **browser_options
             )
         )
 
@@ -106,6 +114,7 @@ class Playwright(BrowserAutomator):
         self.page.set_default_timeout(15000)
         
         browser_version: str = await self.__get_browser_version(self.playwright)
+        logger.debug(f"[{self.index}] [{self.channel_name}] Browser version: {browser_version}")
         
         await self.page.set_extra_http_headers({
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -113,6 +122,7 @@ class Playwright(BrowserAutomator):
         })
 
         self._attach_error_listeners()
+        logger.debug(f"[{self.index}] [{self.channel_name}] Browser setup completed successfully")
 
     async def is_instance_alive(self) -> bool:
         try:
@@ -136,8 +146,11 @@ class Playwright(BrowserAutomator):
 
 
     async def go_to_page(self, url: str) -> None:
+        logger.debug(f"[{self.index}] [{self.channel_name}] Navigating to: {url}")
+        
         try:
             await self.page.goto(url)
+            logger.debug(f"[{self.index}] [{self.channel_name}] Successfully navigated to: {url}")
             
         except PlaywrightTimeoutError as e:
             logger.error(f"[{self.index}] [{self.channel_name}] : Timeout error occurred while navigating to {url}: {e}")
@@ -148,11 +161,14 @@ class Playwright(BrowserAutomator):
 
     async def find_element(self, selector: str) -> Locator:
         """Find an element on the page."""
+        logger.debug(f"[{self.index}] [{self.channel_name}] Looking for element: {selector}")
 
         element: Locator = self.page.locator(selector)
         try:
             await element.wait_for(state="visible")
+            logger.debug(f"[{self.index}] [{self.channel_name}] Element found: {selector}")
         except PlaywrightTimeoutError:
+            logger.debug(f"[{self.index}] [{self.channel_name}] Element not found: {selector}")
             raise ElementNotFound
 
         return element
@@ -178,9 +194,12 @@ class Playwright(BrowserAutomator):
 
     async def type_and_enter(self, text_field: Locator, message: str) -> None:
         """Type a message into a text field and press enter."""
+        logger.debug(f"[{self.index}] [{self.channel_name}] Typing message into field: '{message[:50]}{'...' if len(message) > 50 else ''}'")
 
         await text_field.fill(message)
         await text_field.press("Enter")
+        
+        logger.debug(f"[{self.index}] [{self.channel_name}] Message typed and Enter pressed")
 
 
 __all__: list[str] = ["Playwright"]
