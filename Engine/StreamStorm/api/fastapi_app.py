@@ -1,9 +1,10 @@
 from os import environ
 from os.path import join, exists
-from json import load
+from json import JSONDecodeError, loads
 from typing import Callable
 from psutil import virtual_memory
 from logging import getLogger, Logger
+from aiofiles import open as aio_open
 
 from platformdirs import user_data_dir
 
@@ -219,8 +220,19 @@ async def get_channels_data(data: GetChannelsData):
             "message": "Config file not found. Create profiles first.",
         }
 
-    with open(config_json_path, "r") as file:
-        config: dict = load(file)
+    try:
+        async with aio_open(config_json_path, "r", encoding="utf-8") as file:
+            config: dict = loads(await file.read())
+    except (FileNotFoundError, PermissionError, UnicodeDecodeError, JSONDecodeError) as e:
+        return {
+            "success": False,
+            "message": f"Error reading config file: {str(e)}",
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "message": f"Error parsing config file: {str(e)}",
+        }
 
     response_data: dict = {}
 

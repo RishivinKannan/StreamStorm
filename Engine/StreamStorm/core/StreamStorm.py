@@ -75,7 +75,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
         try:
             async with aio_open(self.profiles_dir + r"\config.json", "r", encoding="utf-8") as file:
                 data: dict = loads(await file.read()) # We are using loads instead of load to avoid blocking the event loop
-        except (FileNotFoundError, JSONDecodeError, ):
+        except (FileNotFoundError, PermissionError, UnicodeDecodeError, JSONDecodeError):
             raise SystemError("Create profiles first.")
             
         no_of_channels: int = data.get("no_of_channels", 0)
