@@ -3,6 +3,7 @@ from json import dump
 from time import sleep
 from warnings import deprecated
 from undetected_chromedriver import Chrome
+from logging import getLogger, Logger
 
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, NoSuchWindowException, ElementNotInteractableException
@@ -12,8 +13,11 @@ from selenium.webdriver.remote.webelement import WebElement
 
 from .Selenium import Selenium
 
+logger: Logger = getLogger("streamstorm." + __name__)
 
 class UndetectedDrivers(Selenium):
+    __slots__: tuple[str, ...] = ('base_profile_dir', 'youtube_login_url', 'config_json_path')
+    
     def __init__(self, base_profile_dir: str) -> None:
         self.base_profile_dir: str = base_profile_dir
         self.youtube_login_url: str = "https://accounts.google.com/ServiceLogin?service=youtube"
@@ -48,9 +52,9 @@ class UndetectedDrivers(Selenium):
         self.driver = Chrome(
             user_data_dir=self.base_profile_dir,
         )
-        
-        print(self.driver.browser_pid)
-        
+
+        logger.debug(f"Browser PID: {self.driver.browser_pid}")
+
     def get_total_channels(self) -> None:
         
         try:
@@ -115,8 +119,8 @@ class UndetectedDrivers(Selenium):
                         WebDriverWait(self.driver, 10).until(
                             EC.presence_of_element_located((By.ID, "avatar-btn"))
                         )
-                        print("Youtube login successful")
-                        
+                        logger.info("Youtube login successful")
+
                         self.get_total_channels()
                         
                         self.driver.close()

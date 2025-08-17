@@ -1,6 +1,9 @@
 from typing import Self, Optional
 from warnings import deprecated
 from pydantic import BaseModel, field_validator, model_validator
+from logging import getLogger, Logger
+
+logger: Logger = getLogger("streamstorm." + __name__)
 
 @deprecated("Not used anymore since migrated to FastAPI")
 def Validate(data: dict, validator: BaseModel) -> dict:
@@ -9,9 +12,8 @@ def Validate(data: dict, validator: BaseModel) -> dict:
         return validated_data.model_dump()
     
     except Exception as e:
-        print(e)
+        logger.error(f"Validation error: {e}")
         errors: list = e.errors()
-        print(errors)
         if "ctx" in errors[0]:
             del errors[0]["ctx"]
         raise Exception(f"Error in {errors[0]['loc'][0]} : {errors[0]['msg']}")

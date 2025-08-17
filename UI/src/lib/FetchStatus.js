@@ -4,9 +4,7 @@ const fetchStatus = async (formControls) => {
     })
     .then(response => response.json())
     .then(data => {
-        if (!data.storm_in_progress) {
-            formControls.setStormInProgress(false);
-        }
+        formControls.setStormInProgress(data.storm_in_progress);
     })
     .catch((error) => {
         console.error('Error:', error);

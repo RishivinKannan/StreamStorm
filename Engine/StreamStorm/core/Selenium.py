@@ -9,6 +9,8 @@ from .BrowserAutomator import BrowserAutomator
         
 
 class Selenium(BrowserAutomator):
+    __slots__: tuple[str, ...] = ('user_data_dir', 'background', 'driver')
+    
     def __init__(self, user_data_dir: str, background: bool) -> None:
         self.user_data_dir: str = user_data_dir
         self.background: bool = background
@@ -20,7 +22,6 @@ class Selenium(BrowserAutomator):
         try:
             element: WebElement = WebDriverWait(self.driver, wait_time).until(EC.element_to_be_clickable((by, value)))
         except TimeoutException as _:
-            # print(e)
             raise ElementNotFound
         
         return element
