@@ -188,11 +188,16 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
                     logger.debug(f"[{index}] [{channel_name}] Message sent successfully")
                     
                 except (BrowserClosedError, ElementNotFound, TargetClosedError):
-                    logger.debug(f"[{index}] [{channel_name}] Browser/element error - cleaning up instance")
+                    logger.debug(f"[{index}] [{channel_name}] : ##### Browser/element error - cleaning up instance")
                     logger.error(f"[{index}] [{channel_name}] : Error in finding chat field")
 
                     self.assigned_profiles[profile_dir_name] = None
                     
+                    try:
+                        await SI.page.close()
+                    except PlaywrightError as e:
+                        logger.error(f"[{index}] [{channel_name}] : Error closing page: {e}")
+
                     try:
                         StreamStorm.each_channel_instances.remove(SI)
                     except ValueError:
@@ -216,6 +221,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
             AsyncTimeoutError,
             PlaywrightError,
             PlaywrightTimeoutError,
+            BrowserClosedError
         ) as e:
             logger.error(f"[{index}] [{channel_name}] : Error: {e}")
             pass
@@ -268,6 +274,10 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
 
             await gather(*tasks)  # Wait for all tasks to complete
             environ.update({"BUSY": "0"})
+
+            self.run_stopper_event.clear()
+            StreamStorm.ss_instance = None
+            StreamStorm.each_channel_instances.clear()
             logger.info("All Coroutines completed")
 
         create_task(start_each_worker())

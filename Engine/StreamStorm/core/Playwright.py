@@ -85,7 +85,7 @@ class Playwright(BrowserAutomator):
     def _attach_error_listeners(self):
         def mark_dead(marker: str):
             self.__instance_alive = False
-            logger.info(f"[{self.index}] [{self.channel_name}] : StreamStorm instance marked as dead by: {marker}")
+            logger.info(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: {marker}")
 
         try:
             self.page.on("close", lambda _: mark_dead("page.on_close"))
@@ -94,6 +94,7 @@ class Playwright(BrowserAutomator):
             self.browser.browser.on("disconnected", lambda _: mark_dead("browser.browser.on_disconnected"))
         except Exception as _:
             self.__instance_alive = False
+            logger.info(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: Failure to attach error listeners")
 
     async def open_browser(self) -> None:
         self.playwright: AsyncPlaywright = await async_playwright().start()
@@ -129,18 +130,15 @@ class Playwright(BrowserAutomator):
         try:
             if not self.browser.browser.is_connected(): # test 1
                 self.__instance_alive = False
-                logger.info(f"[{self.index}] [{self.channel_name}] : StreamStorm instance marked as dead by: browser.browser.is_connected")
+                logger.info(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: browser.browser.is_connected")
 
-            await self.page.title() # test 2
-            _: str = self.page.url # test 3
-            await self.page.evaluate("() => 1") # test 4
         except TargetClosedError as _:
             self.__instance_alive = False
-            logger.info(f"[{self.index}] [{self.channel_name}] : StreamStorm instance marked as dead by: TargetClosedError")
+            logger.info(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: TargetClosedError")
 
         except Exception as e:
             logger.error(f"[{self.index}] [{self.channel_name}] : Error occurred while checking StreamStorm instance: {type(e).__name__}, {e}")
-            logger.info(f"[{self.index}] [{self.channel_name}] : StreamStorm instance marked as dead by: Exception")
+            logger.info(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: Exception")
             self.__instance_alive = False
         
         return self.__instance_alive
