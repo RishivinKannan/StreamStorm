@@ -1,12 +1,13 @@
 from os import environ
 from os.path import join, exists
 from json import load
+from typing import Callable
 from psutil import virtual_memory
+from logging import getLogger, Logger
 
 from platformdirs import user_data_dir
 
-from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
@@ -28,15 +29,11 @@ from .lib.exception_handlers import (
     validation_exception_handler,
 )
 from .lib.LifeSpan import lifespan
+from .lib.middlewares import LogRequestMiddleware, RequestValidationMiddleware
+
+logger: Logger = getLogger("streamstorm." + __name__)
 
 app: FastAPI = FastAPI(lifespan=lifespan)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 app.exception_handlers = {
     Exception: common_exception_handler,
@@ -46,70 +43,22 @@ app.exception_handlers = {
     RequestValidationError: validation_exception_handler,
 }
 
-storm_controls_endpoints: list[str] = [
-    "/pause",
-    "/resume",
-    "/change_messages",
-    "/start_storm_dont_wait",
-    "/change_slow_mode",
-    "/start_more_channels",
-]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+app.add_middleware(LogRequestMiddleware)
+app.add_middleware(RequestValidationMiddleware)
 
 @app.middleware("http")
-async def validate_request(request: Request, call_next) -> JSONResponse:
-    path: str = request.url.path
-    method: str = request.method
-    
-    cors_headers: dict[str, str] = {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "*",
-        "Access-Control-Allow-Headers": "*",
-    }
-
-    if method == "POST":
-        if path in (
-            "/storm",
-            "/create_profiles",
-            "/delete_all_profiles",
-        ):
-            if environ.get("BUSY") == "1":
-                return JSONResponse(
-                    status_code=429,
-                    content={
-                        "success": False,
-                        "message": f"Engine is Busy: {environ.get('BUSY_REASON')}",
-                    },
-                    headers=cors_headers,
-                )
-
-        if path in storm_controls_endpoints:
-            if StreamStorm.ss_instance is None:
-                return JSONResponse(
-                    status_code=409,
-                    content={
-                        "success": False,
-                        "message": "No storm is running. Start a storm first.",
-                    },
-                    headers=cors_headers,
-                )
-
-    if method == "GET":
-        if path in storm_controls_endpoints:
-            if StreamStorm.ss_instance is None:
-                return JSONResponse(
-                    status_code=409,
-                    content={
-                        "success": False,
-                        "message": "No storm is running. Start a storm first.",
-                    },
-                    headers=cors_headers,
-                )
-
-    response: JSONResponse = await call_next(request)
-
+async def add_cors_headers(request: Request, call_next: Callable):
+    response: Response = await call_next(request)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "*"
     return response
-
-
 
 @app.get("/")
 async def root() -> dict[str, str]:
