@@ -5,11 +5,13 @@ import { useLocalStorageState } from '@toolpad/core/useLocalStorageState';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { RefreshCw } from 'lucide-react';
 import { useDialogs } from '@toolpad/core/useDialogs';
+import { logEvent } from 'firebase/analytics';
 
 import "./Sections.css";
 import { CustomMUIPropsContext } from '../../../../lib/ContextAPI';
 import ErrorText from '../../../Elements/ErrorText';
 import AreYouSure from '../../../Dialogs/AreYouSure';
+import { analytics } from '../../../../config/firebase';
 
 const DeleteAllProfiles = () => {
 
@@ -36,6 +38,8 @@ const DeleteAllProfiles = () => {
         setErrorText("");
         setLoading(true);
 
+        logEvent(analytics, "delete_all_profiles");
+
         fetch(`${hostAddress}/delete_all_profiles`, {
             method: "POST",
             headers: {
@@ -49,11 +53,13 @@ const DeleteAllProfiles = () => {
                     notifications.show("All profiles deleted successfully!", {
                         severity: "success",
                     });
+                    logEvent(analytics, "delete_all_profiles_success");
                 } else {
                     setErrorText(data.message || "Failed to delete all profiles");
                     notifications.show("Failed to delete all profiles", {
                         severity: 'error',
                     });
+                    logEvent(analytics, "delete_all_profiles_failed");
                 }
             })
             .catch((error) => {
@@ -61,6 +67,7 @@ const DeleteAllProfiles = () => {
                 notifications.show("An error occurred while deleting all profiles", {
                     severity: 'error',
                 });
+                logEvent(analytics, "delete_all_profiles_error");
             })
             .finally(() => {
                 setLoading(false);

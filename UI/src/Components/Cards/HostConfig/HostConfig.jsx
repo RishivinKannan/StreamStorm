@@ -3,11 +3,13 @@ import { Button, Card, CardActions, CardContent, CardHeader, TextField } from "@
 import { useLocalStorageState } from "@toolpad/core/useLocalStorageState";
 import { useColorScheme } from '@mui/material/styles';
 import { Save, RotateCcw } from 'lucide-react';
+import { useNotifications } from "@toolpad/core/useNotifications";
+import { logEvent } from "firebase/analytics";
 
 import "./HostConfig.css";
 import { DEFAULT_HOST_ADDRESS } from "../../../lib/Constants";
 import { CustomMUIPropsContext } from "../../../lib/ContextAPI";
-import { useNotifications } from "@toolpad/core/useNotifications";
+import { analytics } from "../../../config/firebase";
 
 const HostConfig = () => {
     const { colorScheme } = useColorScheme();
@@ -34,6 +36,8 @@ const HostConfig = () => {
             setHostAddressHelperText("Invalid URL format.");
             return;
         }
+        logEvent(analytics, "host_address_change");
+
         setHostAddressError(false);
         setHostAddressHelperText("");
         setSavedHostAddress(hostAddress.trim());
@@ -50,6 +54,8 @@ const HostConfig = () => {
 
         setHostAddressError(false);
         setHostAddressHelperText("");
+
+        logEvent(analytics, "host_address_reset");
 
         notifications.show("Host address reset to default!", {
             severity: "info",

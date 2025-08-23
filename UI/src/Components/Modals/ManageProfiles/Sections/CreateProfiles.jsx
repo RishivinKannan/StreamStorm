@@ -4,10 +4,12 @@ import { Button, TextField, useColorScheme } from '@mui/material';
 import { useLocalStorageState } from '@toolpad/core/useLocalStorageState';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { RefreshCw } from 'lucide-react';
+import { logEvent } from 'firebase/analytics';
 
 import "./Sections.css";
 import { CustomMUIPropsContext } from '../../../../lib/ContextAPI';
 import ErrorText from '../../../Elements/ErrorText';
+import { analytics } from '../../../../config/firebase';
 
 const CreateProfiles = () => {
 
@@ -42,6 +44,8 @@ const CreateProfiles = () => {
         const data = {
             count: profiles,
         }
+        
+        logEvent(analytics, "create_profiles", { count: profiles });
 
         fetch(`${hostAddress}/create_profiles`, {
             method: "POST",
@@ -57,11 +61,13 @@ const CreateProfiles = () => {
                     notifications.show("Profiles created successfully!", {
                         severity: "success",
                     });
+                    logEvent(analytics, "create_profiles_success", { count: profiles });
                 } else {
                     setErrorText(data.message || "An error occurred while creating profiles.");
                     notifications.show("Failed to create profiles.", {
                         severity: "error",
                     });
+                    logEvent(analytics, "create_profiles_failed", { count: profiles });
                 }
             })
             .catch((error) => {
@@ -70,6 +76,7 @@ const CreateProfiles = () => {
                 notifications.show("Failed to create profiles.", {
                     severity: "error",
                 });
+                logEvent(analytics, "create_profiles_error", { count: profiles });
             })
             .finally(() => {
                 setLoading(false);
