@@ -36,7 +36,7 @@ const ChangeMessages = ({ payload, open, onClose }) => {
     const onSubmitHandler = () => {
         if (messages.length === 0) {
             setMessagesError(true);
-            setMessagesHelperText("Please enter at least one message.");
+            setMessagesHelperText("Enter at least one message.");
             return;
         }
 

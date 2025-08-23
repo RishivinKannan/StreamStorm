@@ -16,7 +16,7 @@ const PrivacyPolicy = () => {
     <div className="pp-page">
       <div className="pp-container">
         <h1>Privacy Policy</h1>
-        <p className="last-updated">Last Updated: July 12, 2025</p>
+        <p className="last-updated">Last Updated: August 23, 2025</p>
 
         <section>
           <h2>1. No Personal Data Collection</h2>
@@ -26,10 +26,15 @@ const PrivacyPolicy = () => {
         </section>
 
         <section>
-          <h2>2. Anonymous Analytics</h2>
+          <h2>2. Anonymous Analytics & Telemetry</h2>
           <p>
-            We use analytics to understand how users interact with the app. This includes page visits (like this privacy policy) and actions such as downloading the application or viewing the GitHub repository.
-            However, this data is completely anonymous. We do not know who you are and cannot identify you in any way. The information we collect is general and helps us improve the application experience.
+            We use analytics services (Atatus and Firebase Analytics) to understand how users interact with the app and to monitor application performance. 
+            This includes page visits (like this privacy policy), actions such as downloading the application or viewing the GitHub repository, 
+            and telemetry data such as application performance metrics, error tracking, and usage statistics.
+          </p>
+          <p>
+            However, all collected data is completely anonymous and does not contain any personal information. We do not know who you are and cannot identify you in any way. 
+            The information we collect is general and helps us improve the application experience and performance.
           </p>
         </section>
 
@@ -40,35 +45,44 @@ const PrivacyPolicy = () => {
             <ul>
               <li>Checking for software updates</li>
               <li>Downloading required browser webdrivers (chromedriver)</li>
-              <li>Sending analytics data</li>
+              <li>Sending anonymous telemetry and performance data to Atatus</li>
+              <li>Sending anonymous analytics data to Firebase Analytics</li>
             </ul>
             These operations are technical and do not involve any personal data.
           </p>
         </section>
 
         <section>
-          <h2>4. No Tracking</h2>
+          <h2>4. Anonymous Data Collection</h2>
           <p>
-            StreamStorm does not use cookies, telemetry, or any background tracking technologies. We do not monitor your behavior or usage patterns beyond general anonymous analytics.
+            StreamStorm collects anonymous telemetry and analytics data to improve application performance and user experience. 
+            This includes application usage patterns, performance metrics, and error tracking. However, we do not use cookies or any 
+            technologies that can personally identify you. All data collected is aggregated and anonymous.
           </p>
         </section>
 
         <section>
           <h2>5. Offline-Friendly</h2>
           <p>
-            Except for update checks and webdriver downloads, all core features of the app work entirely offline.
+            Except for update checks, webdriver downloads, and anonymous analytics/telemetry data transmission, 
+            all core features of the app work entirely offline.
           </p>
         </section>
 
         <section>
           <h2>6. Third-Party Services</h2>
           <p>
-            The app does not rely on third-party services that collect user data. StreamStorm is fully self-contained.
+            StreamStorm uses the following third-party services for analytics and performance monitoring:
+            <ul>
+              <li><strong>Atatus:</strong> For anonymous application performance monitoring and error tracking</li>
+              <li><strong>Firebase Analytics:</strong> For anonymous usage analytics and user interaction tracking</li>
+            </ul>
+            These services only receive anonymous, non-personal data. The core functionality of StreamStorm remains fully self-contained.
           </p>
         </section>
 
         <section>
-          <h2>7. Children’s Privacy</h2>
+          <h2>7. Children's Privacy</h2>
           <p>
             We do not collect any data from users, including those under the age of 13. The app is safe to use for all ages.
           </p>

@@ -1,29 +1,13 @@
-from os import environ
-from os.path import join, exists
-from json import JSONDecodeError, loads
 from typing import Callable
 from logging import DEBUG, getLogger, Logger
-from asyncio import gather
-
-from platformdirs import user_data_dir
-from aiofiles import open as aio_open
 from psutil import virtual_memory
+
 
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.exceptions import RequestValidationError
-from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
 
 from ..core.StreamStorm import StreamStorm
-from ..core.Profiles import Profiles
-from .validation import (
-    StormData,
-    ProfileData,
-    ChangeMessagesData,
-    ChangeSlowModeData,
-    StartMoreChannelsData,
-    GetChannelsData,
-)
 from .lib.exception_handlers import (
     common_exception_handler,
     validation_exception_handler,
@@ -31,12 +15,13 @@ from .lib.exception_handlers import (
 from .lib.LifeSpan import lifespan
 from .lib.middlewares import LogRequestMiddleware, RequestValidationMiddleware
 from ..utils.CustomLogger import CustomLogger
+from .routers.StormRouter import router as storm_router
+from .routers.ProfileRouter import router as profile_router
 
 CustomLogger().setup_fastapi_logging()
 
 logger: Logger = getLogger("fastapi." + __name__)
 logger.setLevel(DEBUG)
-
 
 app: FastAPI = FastAPI(lifespan=lifespan)
 
@@ -65,228 +50,15 @@ async def add_cors_headers(request: Request, call_next: Callable):
     response.headers["Access-Control-Allow-Headers"] = "*"
     return response
 
+app.include_router(storm_router)
+app.include_router(profile_router)
+
 @app.get("/")
 async def root() -> dict[str, str]:
     return {
-        "message": "Hello World"
-    }
-
-
-@app.post("/storm")
-async def storm(data: StormData):
-    if StreamStorm.ss_instance is not None:
-        logger.info("Storm request rejected - instance already running")
-        return {
-            "success": False,
-            "message": "A storm is already running. Stop the current storm before starting a new one.",
-        }
-
-    StreamStorm.each_channel_instances = []
-
-    StreamStormObj: StreamStorm = StreamStorm(
-        data.video_url,
-        data.chat_url,
-        data.messages,
-        (data.subscribe, data.subscribe_and_wait),
-        data.subscribe_and_wait_time,
-        data.slow_mode,
-        data.channels,
-        data.background,
-    )
-
-    StreamStormObj.ready_event.clear()  # Clear the ready event to ensure it will be only set when all instances are ready
-    StreamStormObj.pause_event.set()  # Set the pause event to allow storming to start immediately
-    StreamStormObj.run_stopper_event.clear()  # Clear the run stopper event to wait for instances to be ready before starting
-
-    environ.update({"BUSY": "1", "BUSY_REASON": "Storming in progress"})
-    logger.debug("Environment updated to BUSY state")
-
-    try:
-        await StreamStormObj.start()
-    except SystemError as e:
-        environ.update({"BUSY": "0", "BUSY_REASON": ""})
-        StreamStorm.ss_instance = None
-        raise e
-
-    return {
-        "success": True,
-        "message": "Storm started successfully"
-    }
-
-
-@app.post("/stop")
-async def stop():
-    async def close_browser(instance: StreamStorm) -> None:
-        try:
-            if instance.page:
-                await instance.page.close()
-        except Exception:
-            pass # log.warn
-
-    await gather(*(close_browser(i) for i in StreamStorm.each_channel_instances))
-
-    StreamStorm.ss_instance = None
-
-    environ.update({"BUSY": "0"})
-
-    return {
-        "success": True, 
-        "message": "Storm stopped successfully"
-    }
-
-
-@app.post("/pause")
-async def pause():
-    StreamStorm.ss_instance.pause_event.clear()
-
-    return {
-        "success": True,
-        "message": "Storm paused successfully"
-    }
-
-
-@app.post("/resume")
-async def resume():
-    StreamStorm.ss_instance.pause_event.set()
-
-    return {
-        "success": True,
-        "message": "Storm resumed successfully"
-    }
-
-
-@app.post("/change_messages")
-async def change_messages(data: ChangeMessagesData):
-    await StreamStorm.ss_instance.set_messages(data.messages)
-
-    return {
-        "success": True,
-        "message": "Messages changed successfully"
-    }
-
-
-@app.post("/start_storm_dont_wait")
-async def start_storm_dont_wait():
-    StreamStorm.ss_instance.ready_event.set()
-
-    return {
-        "success": True,
-        "message": "Storm started without waiting for all instances to be ready",
-    }
-
-
-@app.post("/change_slow_mode")
-async def change_slow_mode(data: ChangeSlowModeData):
-    if not StreamStorm.ss_instance.ready_event.is_set():
-        return {
-                "success": False,
-                "message": "Cannot change slow mode before the storm starts",
-            }
-
-    await StreamStorm.ss_instance.set_slow_mode(data.slow_mode)
-
-    return {
-        "success": True, 
-        "message": "Slow mode changed successfully"
-    }
-
-
-@app.post("/start_more_channels")
-async def start_more_channels(data: StartMoreChannelsData):
-    if not StreamStorm.ss_instance.ready_event.is_set():
-        return {
-            "success": False,
-            "message": "Cannot start more channels before the storm starts",
-        }
-
-    await StreamStorm.ss_instance.start_more_channels(data.channels)
-
-    return {
-        "success": True, 
-        "message": "More channels started successfully"
+        "message": "I am the StreamStorm Server"
     }
     
-    
-@app.post("/get_channels_data")
-async def get_channels_data(data: GetChannelsData):
-    mode: str = data.mode
-
-    if mode == "add" and StreamStorm.ss_instance is None:
-        return {
-            "success": False,
-            "message": "No storm is running. Start a storm first.",
-        }
-
-    app_data_dir: str = user_data_dir("StreamStorm", "DarkGlance")
-    config_json_path: str = join(app_data_dir, "ChromiumProfiles", "config.json")
-
-    if not exists(config_json_path):
-        return {
-            "success": False,
-            "message": "Config file not found. Create profiles first.",
-        }
-
-    try:
-        async with aio_open(config_json_path, "r", encoding="utf-8") as file:
-            config: dict = loads(await file.read())
-    except (FileNotFoundError, PermissionError, UnicodeDecodeError, JSONDecodeError) as e:
-        return {
-            "success": False,
-            "message": f"Error reading config file: {str(e)}",
-        }
-    except Exception as e:
-        return {
-            "success": False,
-            "message": f"Error parsing config file: {str(e)}",
-        }
-
-    response_data: dict = {}
-
-    if mode == "new":
-        response_data["channels"] = config["channels"]
-        response_data["activeChannels"] = []
-
-    elif mode == "add":
-        active_channels: list[str] = await StreamStorm.ss_instance.get_active_channels()
-
-        response_data["channels"] = config["channels"]
-        response_data["activeChannels"] = active_channels
-
-    response_data.update({"success": True})
-
-    return response_data
-
-
-@app.post("/create_profiles")
-async def create_profiles(data: ProfileData):
-    environ.update({"BUSY": "1", "BUSY_REASON": "Creating profiles"})
-
-    profiles: Profiles = Profiles()
-    try:
-        await run_in_threadpool(profiles.create_profiles, data.count)
-    finally:
-        environ.update({"BUSY": "0", "BUSY_REASON": ""})
-
-    return {
-        "success": True, 
-        "message": "Profiles created successfully"
-    }
-    
-@app.post("/delete_all_profiles")
-async def delete_all_profiles(data: ProfileData):
-    environ.update({"BUSY": "1", "BUSY_REASON": "Deleting profiles"})
-
-    profiles: Profiles = Profiles()
-
-    try:
-        await run_in_threadpool(profiles.delete_all_temp_profiles)
-    finally:
-        environ.update({"BUSY": "0", "BUSY_REASON": ""})
-
-    return {
-        "success": True,
-        "message": "Profiles deleted successfully"
-    }
     
 @app.get("/get_ram_info")
 async def get_ram_info():
@@ -294,6 +66,7 @@ async def get_ram_info():
         "free": virtual_memory().available / (1024**3),
         "total": virtual_memory().total / (1024**3),
     }
+    
     
 @app.get("/engine-status")
 async def status():

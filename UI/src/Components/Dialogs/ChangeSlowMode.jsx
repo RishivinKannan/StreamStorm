@@ -20,7 +20,7 @@ const ChangeSlowMode = ({ payload, open, onClose }) => {
 
         if (isNaN(slowModeValue) || slowModeValue < 0) {
             setSlowModeError(true);
-            setSlowModeHelperText("Please enter a valid slow mode time in seconds");
+            setSlowModeHelperText("Enter a valid slow mode time in seconds");
             return;
         }
         

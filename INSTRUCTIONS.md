@@ -12,7 +12,7 @@
 ## Requirements
 * You need to have a YouTube account (Google account) to use the application.
 * In your YouTube account, you need to have at least one channel created. More channels are recommended for better results.
-* You need to have a web browser, either Chrome, Edge, Firefox, or Safari  installed on your system. but currently the application only supports Chrome and Edge browsers.
+* You need to have Chrome browser installed on your system.
 * Stable internet connection to function properly.
 * To use one channel you need to have at least 300MB of free RAM available on your system. The more channels you use, the more RAM is required
 
@@ -22,7 +22,6 @@
 
 * Creating temp profiles is the first step to use the application.
     - In the application UI, click on the `Manage Profiles` button.
-    - Select the Browser profile you want to create. `(Chromium, Gecko, WebKit)`
     - Enter number of profiles you want to create.
     - Click on the `Create Profiles` button.
 * The application will open a browser window and it will prompt you to log in to your YouTube account
@@ -78,20 +77,13 @@ First Open the application and make sure you have created the temp profiles as m
        * Advanced
             * In advanced mode you can manually select the channels you want to use for the storm.
 
-    8. **Browser**
-       * In this section, you can select the browser you want to use for the storm.
-       * You can choose from the following browsers:
-           * Chrome
-           * Edge
-       * The application will use the selected browser to open the YouTube live video and send the messages.
-
-    9. **Load in Background**
+    8. **Load in Background**
        * If you don't want the browser ui to be visible while the storm is running, you can enable this switch.
        * This will load the browser in the background and the storm will run in the background.
 
        * **Note: ⚠ This feature is currently experimental and may not work as expected. We're actively working on fixing the bugs.**
 
-    10. **Start Storm**
+    9. **Start Storm**
         * After providing all the required information, you can click on the `Start Storm` button to start the storm.
         * The application will open the browser and start sending the messages in the chat.
         * You can see the progress of the storm in the application UI.

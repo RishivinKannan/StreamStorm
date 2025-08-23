@@ -12,7 +12,7 @@ class SeparateInstance(Playwright):
 
     def __init__(
         self,
-        index: int = 0,
+        index: int,
         user_data_dir: str = '',
         background: bool = True
     ) -> None:
@@ -70,6 +70,9 @@ class SeparateInstance(Playwright):
         chat_field: Locator = await self.__get_chat_field() # We get chat_field repeatedly to overcome potential stale element issues or DOM changes
         await self.type_and_enter(chat_field, message)
         logger.debug(f"[{self.index}] [{self.channel_name}] Message sent to chat field")
+        
+    async def start_instance(self):
+        ...
         
         
 

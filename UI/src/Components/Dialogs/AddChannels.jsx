@@ -30,7 +30,7 @@ const AddChannels = ({ payload, open, onClose }) => {
 
     const getChannelData = () => {
         setChannelsDataLoading(true);
-        fetch(`${hostAddress}/get_channels_data`, {
+        fetch(`${hostAddress}/storm/get_channels_data`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

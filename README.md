@@ -83,13 +83,13 @@ Just replace `https://streamstorm-ui.web.app/` with `http://localhost:5173/` to 
 # 🧠 **Troubleshooting & FAQ**
 
 *   **Error: "Engine is Busy"**
-    *   This means the backend is already performing a resource-intensive task (like creating profiles or running a storm). Please wait for the current task to complete.
+    *   This means the backend is already performing a resource-intensive task (like creating profiles or running a storm). Wait for the current task to complete.
 
 *   **Error: "No storm is running. Start a storm first."**
     *   You are trying to use a storm control feature (like Pause, Resume, etc.) when no storm is active. Click "Start Storm" first.
 
 *   **Issue: Browser window closes immediately after starting.**
-    *   This might happen if the ChromeDriver or EdgeDriver version is out of sync with your browser. The application attempts to manage this automatically, but a manual browser update might be needed.
+    *   This might happen if the ChromeDriver is out of sync with your Chrome browser. The application attempts to manage this automatically, but a manual Chrome browser update might be needed.
 
 # 📜 License
 

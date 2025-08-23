@@ -5,6 +5,7 @@
  - AI Used 
     - ChatGPT by OpenAI
     - Gemini by Google
+    - Claude by Anthropic
     - GitHub Copilot by GitHub
 
 - Referenced websites
@@ -15,6 +16,7 @@
     - [Python UV Documentation](https://docs.astral.sh/uv/getting-started/installation/)
     - [Lucide Icons](https://lucide.dev/)
     - [Selenium Documentation](https://selenium-python.readthedocs.io/)
+    - [Playwright Documentation](https://playwright.dev/)
     - [Undetected Chromedriver](https://pypi.org/project/undetected-chromedriver/)
     - [DGUpdater (My own library)](https://pypi.org/project/dgupdater/)
     - [PyWebView Documentation](https://pywebview.flowrl.com/)
@@ -22,6 +24,7 @@
     - [auto-py-to-exe Documentation](https://pypi.org/project/auto-py-to-exe/)
     - [Pydantic Documentation](https://docs.pydantic.dev/latest/)
     - [Firebase Documentation](https://firebase.google.com/docs)
+    - [Atatus Documentation](https://docs.atatus.com/)
 
 - Images and Icons
     - [Tornado - By Freepik](https://www.flaticon.com/free-icon/tornado_785130?term=tornado&related_id=785130)

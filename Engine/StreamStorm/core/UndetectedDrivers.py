@@ -131,7 +131,7 @@ class UndetectedDrivers(Selenium):
                         self.driver.get(self.youtube_login_url)
                         
         except (NoSuchWindowException, AttributeError):
-            raise RuntimeError("The Browser window was closed or not found. Please try again.")
+            raise RuntimeError("The Browser window was closed or not found. Try again.")
 
 
 __all__: list[str] = ["UndetectedDrivers"]

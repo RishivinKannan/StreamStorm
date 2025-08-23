@@ -1,5 +1,5 @@
 from os import makedirs, listdir
-from os.path import exists
+from os.path import exists, join
 from shutil import copytree, rmtree, Error
 from platformdirs import user_data_dir
 from concurrent.futures import ThreadPoolExecutor
@@ -20,13 +20,13 @@ class Profiles:
 
 
     def __get_profiles_dir(self) -> str:
-        return self.app_data_dir + r"\ChromiumProfiles"
-    
-    
+        return join(self.app_data_dir, "ChromiumProfiles")
+
+
     def __get_base_profile_dir(self) -> str:
-        return self.profiles_dir + r"\BaseProfile"
-            
-        
+        return join(self.profiles_dir, "BaseProfile")
+
+
     def get_available_temp_profiles(self, for_deletion: bool = False) -> list[str]:
         temp_profiles: list[str] = [
             profile for profile in listdir(self.profiles_dir) if profile.startswith("temp_profile_")
@@ -44,7 +44,7 @@ class Profiles:
     def get_profile_dir(self, index: int, profiles: list[str]) -> str:
 
         index = index % len(profiles)
-        tempdir: str = self.profiles_dir + f"\\{profiles[index]}"
+        tempdir: str = join(self.profiles_dir, profiles[index])
 
         return tempdir
     
@@ -67,7 +67,7 @@ class Profiles:
 
         logger.info(f"Creating {profile}")
 
-        tempdir: str = self.profiles_dir + f"\\{profile}"
+        tempdir: str = join(self.profiles_dir, profile)
 
         makedirs(tempdir, exist_ok=True)
         try:

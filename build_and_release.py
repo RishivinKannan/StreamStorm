@@ -6,11 +6,25 @@ from tomlkit import TOMLDocument, parse, dumps
 from json import dump, load
 from re import sub
 from logging import basicConfig, INFO, info as log_info
+from Engine.config.config import CONFIG
 
 basicConfig(level=INFO)
 
 ROOT: Path = Path(__file__).parent.resolve()
 log_info(f"Root directory: {ROOT}")
+
+def check_engine_env():
+    """Check if the Engine environment is set to production before building."""
+    
+    log_info("Checking environment configuration...")
+    
+    if CONFIG["ENV"] == "development":
+        raise ValueError(
+            "Environment is set to 'development' in Engine/config/config.py. "
+            "Change it to 'production' before building the release."
+        )
+    
+    log_info(f"Environment configuration check passed. ENV is set to '{CONFIG['ENV']}'.")
 
 def update_versions(new_version: str) -> None:
     
@@ -169,6 +183,9 @@ def main() -> None:
     
     new_version: str = input("Enter the new version: ")
     
+    # Step 0: Check environment configuration
+    check_engine_env()
+
     # Step 1
     update_versions(new_version)
 
