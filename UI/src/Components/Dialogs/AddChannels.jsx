@@ -1,16 +1,17 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Avatar, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, LinearProgress, List, ListItem, useColorScheme } from "@mui/material";
 
 import "./Dialogs.css";
-import { CustomMUIPropsContext, SystemInfoContext } from "../../lib/ContextAPI";
 import { useLocalStorageState } from "@toolpad/core/useLocalStorageState";
 import { useNotifications } from "@toolpad/core/useNotifications";
 import ErrorText from "../Elements/ErrorText";
+import { useCustomMUIProps } from "../../context/CustomMUIPropsContext";
+import { useSystemInfo } from "../../context/SystemInfoContext";
 
 const AddChannels = ({ payload, open, onClose }) => {
     const { mode, defaultSelectedChannels } = payload;
-    const { btnProps } = useContext(CustomMUIPropsContext);
-    const systemInfoControls = useContext(SystemInfoContext);
+    const { btnProps } = useCustomMUIProps();
+    const systemInfoControls = useSystemInfo();
 
     const { colorScheme } = useColorScheme();
     const [hostAddress] = useLocalStorageState('hostAddress');

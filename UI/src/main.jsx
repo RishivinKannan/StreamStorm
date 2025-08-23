@@ -8,12 +8,15 @@ import { ThemeProvider } from '@mui/material/styles';
 
 import App from './App.jsx'
 import { theme } from "./lib/theme.js"
+import AppProviders from './lib/AppProviders.jsx';
 
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
-      <App />
+      <AppProviders>
+        <App />
+      </AppProviders>
     </ThemeProvider>
   </StrictMode>
 )

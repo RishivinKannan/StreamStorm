@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { Trash2 } from 'lucide-react';
 import { Button, useColorScheme } from '@mui/material';
 import { useLocalStorageState } from '@toolpad/core/useLocalStorageState';
@@ -8,15 +8,15 @@ import { useDialogs } from '@toolpad/core/useDialogs';
 import { logEvent } from 'firebase/analytics';
 
 import "./Sections.css";
-import { CustomMUIPropsContext } from '../../../../lib/ContextAPI';
 import ErrorText from '../../../Elements/ErrorText';
 import AreYouSure from '../../../Dialogs/AreYouSure';
 import { analytics } from '../../../../config/firebase';
+import { useCustomMUIProps } from '../../../../context/CustomMUIPropsContext';
 
 const DeleteAllProfiles = () => {
 
     const { colorScheme } = useColorScheme();
-    const { btnProps } = useContext(CustomMUIPropsContext);
+    const { btnProps } = useCustomMUIProps();
     const dialogs = useDialogs();
 
     const [hostAddress] = useLocalStorageState("hostAddress");

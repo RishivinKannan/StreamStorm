@@ -1,13 +1,14 @@
 import { createContext, useState, useRef, useContext } from 'react';
 import { useNotifications } from "@toolpad/core/useNotifications";
 import { useLocalStorageState } from "@toolpad/core/useLocalStorageState";
+import { DEFAULT_HOST_ADDRESS } from '../lib/Constants';
 
 const StormDataContext = createContext();
 
 const StormDataProvider = ({ children }) => {
 
     const notifications = useNotifications();
-    const [hostAddress] = useLocalStorageState('hostAddress', "http://localhost:1919");
+    const [hostAddress] = useLocalStorageState('hostAddress', DEFAULT_HOST_ADDRESS);
 
 
     const SC = useRef(null);
@@ -29,7 +30,7 @@ const StormDataProvider = ({ children }) => {
     const [subscribe, setSubscribe] = useState(false);
     const [subscribeAndWait, setSubscribeAndWait] = useState(false);
 
-    const [subscribeWaitTime, setSubscribeWaitTime] = useState(0);
+    const [subscribeWaitTime, setSubscribeWaitTime] = useState(65);
     const [subscribeWaitTimeError, setSubscribeWaitTimeError] = useState(false);
     const [subscribeWaitTimeHelperText, setSubscribeWaitTimeHelperText] = useState("");
 

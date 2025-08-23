@@ -1,11 +1,10 @@
-import { useContext, useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Button, Tooltip } from "@mui/material";
 import { useColorScheme } from '@mui/material/styles';
 import { Ban, Pause, Play, Plus, RefreshCw, SquarePen, StopCircle, Zap } from 'lucide-react';
 import { useDialogs } from '@toolpad/core/useDialogs';
 
 import "./StormControls.css";
-import { CustomMUIPropsContext } from "../../../../../../lib/ContextAPI";
 import Ping from "../../../../../Elements/Ping/Ping";
 import StormControlsClass from "../../../../../../lib/StormControlsClass";
 import AreYouSure from "../../../../../Dialogs/AreYouSure";
@@ -13,10 +12,11 @@ import ChangeMessages from "../../../../../Dialogs/ChangeMessages";
 import ChangeSlowMode from "../../../../../Dialogs/ChangeSlowMode";
 import AddChannels from "../../../../../Dialogs/AddChannels";
 import { useStormData } from "../../../../../../context/StormDataContext";
+import { useCustomMUIProps } from "../../../../../../context/CustomMUIPropsContext";
 
 const StormControls = () => {
 
-    const { btnProps } = useContext(CustomMUIPropsContext);
+    const { btnProps } = useCustomMUIProps();
     const formControls = useStormData();
     const { colorScheme } = useColorScheme();
     const dialogs = useDialogs();

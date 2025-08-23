@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { UserPlus } from 'lucide-react';
 import { Button, TextField, useColorScheme } from '@mui/material';
 import { useLocalStorageState } from '@toolpad/core/useLocalStorageState';
@@ -7,13 +7,13 @@ import { RefreshCw } from 'lucide-react';
 import { logEvent } from 'firebase/analytics';
 
 import "./Sections.css";
-import { CustomMUIPropsContext } from '../../../../lib/ContextAPI';
 import ErrorText from '../../../Elements/ErrorText';
 import { analytics } from '../../../../config/firebase';
+import { useCustomMUIProps } from '../../../../context/CustomMUIPropsContext';
 
 const CreateProfiles = () => {
 
-    const { btnProps, inputProps } = useContext(CustomMUIPropsContext);
+    const { btnProps, inputProps } = useCustomMUIProps();
     const { colorScheme } = useColorScheme();
     const [hostAddress] = useLocalStorageState("hostAddress");
     const notifications = useNotifications();

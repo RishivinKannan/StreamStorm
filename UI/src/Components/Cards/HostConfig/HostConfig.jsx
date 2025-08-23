@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button, Card, CardActions, CardContent, CardHeader, TextField } from "@mui/material";
 import { useLocalStorageState } from "@toolpad/core/useLocalStorageState";
 import { useColorScheme } from '@mui/material/styles';
@@ -8,12 +8,12 @@ import { logEvent } from "firebase/analytics";
 
 import "./HostConfig.css";
 import { DEFAULT_HOST_ADDRESS } from "../../../lib/Constants";
-import { CustomMUIPropsContext } from "../../../lib/ContextAPI";
 import { analytics } from "../../../config/firebase";
+import { useCustomMUIProps } from "../../../context/CustomMUIPropsContext";
 
 const HostConfig = () => {
     const { colorScheme } = useColorScheme();
-    const { btnProps, inputProps } = useContext(CustomMUIPropsContext);
+    const { btnProps, inputProps } = useCustomMUIProps();
     const [savedHostAddress, setSavedHostAddress] = useLocalStorageState("hostAddress");
     const notifications = useNotifications();
 
