@@ -1,5 +1,3 @@
-import * as atatus from "atatus-spa"
-
 const fetchRAM = async (hostAddress, notifications, controls) => {
 
     try {
@@ -9,7 +7,10 @@ const fetchRAM = async (hostAddress, notifications, controls) => {
         controls.setAvailableRAM(Math.trunc(data.free * 1000));
 
     } catch (error) {
-        atatus.notify(error, {}, ['ram_info_fetch_error']);
+        console.error("Error fetching RAM data:", error);
+        // notifications.show("Failed to fetch RAM data", {
+        //     severity: 'error',
+        // });
     }
 }
 

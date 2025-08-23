@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { useColorScheme } from '@mui/material/styles';
 import { Switch, Button, Divider } from "@mui/material";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -5,18 +6,17 @@ import { RefreshCw, Users } from 'lucide-react';
 
 import "./RightPanel.css";
 import StormControls from './StormControls/StormControls';
+import { CustomMUIPropsContext, SystemInfoContext } from '../../../../../lib/ContextAPI';
 import ErrorText from '../../../../Elements/ErrorText';
 import { useStormData } from '../../../../../context/StormDataContext';
-import { useSystemInfo } from '../../../../../context/SystemInfoContext';
-import { useCustomMUIProps } from '../../../../../context/CustomMUIPropsContext';
 
 const RightPanel = (props) => {
 
     const { setManageProfilesOpen } = props;
     const { colorScheme } = useColorScheme();
-    const { btnProps } = useCustomMUIProps();
+    const { btnProps } = useContext(CustomMUIPropsContext);
     const formControls = useStormData();
-    const systemInfoControls = useSystemInfo();
+    const systemInfoControls = useContext(SystemInfoContext);
 
 
     const handleSubmit = () => {

@@ -1,3 +1,4 @@
+import { useContext, useState, useEffect } from 'react';
 import { useColorScheme } from '@mui/material/styles';
 import { Divider, Modal, Box } from '@mui/material';
 import { Users } from 'lucide-react';
@@ -5,13 +6,14 @@ import { Users } from 'lucide-react';
 import './ManageProfiles.css';
 import CreateProfiles from './Sections/CreateProfiles';
 import DeleteAllProfiles from './Sections/DeleteAllProfiles';
+import { CustomMUIPropsContext } from '../../../lib/ContextAPI';
 import CloseButton from '../../Elements/CloseButton';
-import { useCustomMUIProps } from '../../../context/CustomMUIPropsContext';
 
 const ManageProfiles = (props) => {
 
+    const { modalProps } = useContext(CustomMUIPropsContext);
+
     const { open, setOpen } = props;
-    const { modalProps } = useCustomMUIProps();
     const { colorScheme } = useColorScheme();
 
     const modalCloseHandler = () => {

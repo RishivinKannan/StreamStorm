@@ -4,25 +4,24 @@
 # See LICENSE file or visit: https://github.com/Ashif4354/StreamStorm
 # Unauthorized Redistribution or Commercial Use is Prohibited
 
+from dgupdater import check_update
 from os import kill, getpid, environ
 from signal import SIGTERM
 from os.path import dirname, abspath, join
-from threading import Thread
-from logging import Logger, getLogger
-
-from dgupdater import check_update
-from uvicorn import run as run_uvicorn
 from webview import create_window, start
+from threading import Thread
+from uvicorn import run as run_uvicorn
+from logging import Logger, getLogger
 
 from StreamStorm import app
 from StreamStorm.utils.CustomLogger import CustomLogger
 
-CustomLogger().setup_streamstorm_logging()
+
+CustomLogger().setup_logging()
 
 logger: Logger = getLogger("streamstorm." + __name__)
 
 def serve_api() -> None:
-    logger.debug("Starting API Server")
     run_uvicorn(
         app, 
         host="0.0.0.0", 

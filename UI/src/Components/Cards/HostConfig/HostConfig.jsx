@@ -1,19 +1,17 @@
-import { useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Button, Card, CardActions, CardContent, CardHeader, TextField } from "@mui/material";
 import { useLocalStorageState } from "@toolpad/core/useLocalStorageState";
 import { useColorScheme } from '@mui/material/styles';
 import { Save, RotateCcw } from 'lucide-react';
-import { useNotifications } from "@toolpad/core/useNotifications";
-import { logEvent } from "firebase/analytics";
 
 import "./HostConfig.css";
 import { DEFAULT_HOST_ADDRESS } from "../../../lib/Constants";
-import { analytics } from "../../../config/firebase";
-import { useCustomMUIProps } from "../../../context/CustomMUIPropsContext";
+import { CustomMUIPropsContext } from "../../../lib/ContextAPI";
+import { useNotifications } from "@toolpad/core/useNotifications";
 
 const HostConfig = () => {
     const { colorScheme } = useColorScheme();
-    const { btnProps, inputProps } = useCustomMUIProps();
+    const { btnProps, inputProps } = useContext(CustomMUIPropsContext);
     const [savedHostAddress, setSavedHostAddress] = useLocalStorageState("hostAddress");
     const notifications = useNotifications();
 
@@ -36,8 +34,6 @@ const HostConfig = () => {
             setHostAddressHelperText("Invalid URL format.");
             return;
         }
-        logEvent(analytics, "host_address_change");
-
         setHostAddressError(false);
         setHostAddressHelperText("");
         setSavedHostAddress(hostAddress.trim());
@@ -54,8 +50,6 @@ const HostConfig = () => {
 
         setHostAddressError(false);
         setHostAddressHelperText("");
-
-        logEvent(analytics, "host_address_reset");
 
         notifications.show("Host address reset to default!", {
             severity: "info",

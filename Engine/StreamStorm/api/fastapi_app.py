@@ -2,17 +2,18 @@ from os import environ
 from os.path import join, exists
 from json import JSONDecodeError, loads
 from typing import Callable
-from logging import DEBUG, getLogger, Logger
-from asyncio import gather
+from psutil import virtual_memory
+from logging import getLogger, Logger
+from aiofiles import open as aio_open
 
 from platformdirs import user_data_dir
-from aiofiles import open as aio_open
-from psutil import virtual_memory
 
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
+
+from asyncio import gather
 
 from ..core.StreamStorm import StreamStorm
 from ..core.Profiles import Profiles
@@ -30,13 +31,8 @@ from .lib.exception_handlers import (
 )
 from .lib.LifeSpan import lifespan
 from .lib.middlewares import LogRequestMiddleware, RequestValidationMiddleware
-from ..utils.CustomLogger import CustomLogger
 
-CustomLogger().setup_fastapi_logging()
-
-logger: Logger = getLogger("fastapi." + __name__)
-logger.setLevel(DEBUG)
-
+logger: Logger = getLogger("streamstorm." + __name__)
 
 app: FastAPI = FastAPI(lifespan=lifespan)
 

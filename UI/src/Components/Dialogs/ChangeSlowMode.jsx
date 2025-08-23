@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
 import { useColorScheme } from '@mui/material/styles';
-import { useCustomMUIProps } from '../../context/CustomMUIPropsContext';
+import { CustomMUIPropsContext } from '../../lib/ContextAPI';
+
+
 
 const ChangeSlowMode = ({ payload, open, onClose }) => {
-    const { btnProps, inputProps } = useCustomMUIProps();
+    const { btnProps, inputProps } = useContext(CustomMUIPropsContext);
     const { formControls } = payload;
     const { colorScheme } = useColorScheme();
     const [slowMode, setSlowMode] = useState(formControls.slowMode);

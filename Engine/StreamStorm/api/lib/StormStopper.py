@@ -4,7 +4,7 @@ from logging import getLogger, Logger
 
 from ...core.StreamStorm import StreamStorm
 
-logger: Logger = getLogger("fastapi." + __name__)
+logger: Logger = getLogger("streamstorm." + __name__)
 
 async def background_storm_stopper() -> NoReturn:
     while True:

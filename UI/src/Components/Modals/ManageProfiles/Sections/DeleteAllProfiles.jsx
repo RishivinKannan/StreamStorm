@@ -1,24 +1,20 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Trash2 } from 'lucide-react';
 import { Button, useColorScheme } from '@mui/material';
 import { useLocalStorageState } from '@toolpad/core/useLocalStorageState';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { RefreshCw } from 'lucide-react';
 import { useDialogs } from '@toolpad/core/useDialogs';
-import { logEvent } from 'firebase/analytics';
-
-import * as atatus from 'atatus-spa';
 
 import "./Sections.css";
+import { CustomMUIPropsContext } from '../../../../lib/ContextAPI';
 import ErrorText from '../../../Elements/ErrorText';
 import AreYouSure from '../../../Dialogs/AreYouSure';
-import { analytics } from '../../../../config/firebase';
-import { useCustomMUIProps } from '../../../../context/CustomMUIPropsContext';
 
 const DeleteAllProfiles = () => {
 
     const { colorScheme } = useColorScheme();
-    const { btnProps } = useCustomMUIProps();
+    const { btnProps } = useContext(CustomMUIPropsContext);
     const dialogs = useDialogs();
 
     const [hostAddress] = useLocalStorageState("hostAddress");
@@ -40,8 +36,6 @@ const DeleteAllProfiles = () => {
         setErrorText("");
         setLoading(true);
 
-        logEvent(analytics, "delete_all_profiles");
-
         fetch(`${hostAddress}/delete_all_profiles`, {
             method: "POST",
             headers: {
@@ -55,13 +49,11 @@ const DeleteAllProfiles = () => {
                     notifications.show("All profiles deleted successfully!", {
                         severity: "success",
                     });
-                    logEvent(analytics, "delete_all_profiles_success");
                 } else {
                     setErrorText(data.message || "Failed to delete all profiles");
                     notifications.show("Failed to delete all profiles", {
                         severity: 'error',
                     });
-                    logEvent(analytics, "delete_all_profiles_failed");
                 }
             })
             .catch((error) => {
@@ -69,8 +61,6 @@ const DeleteAllProfiles = () => {
                 notifications.show("An error occurred while deleting all profiles", {
                     severity: 'error',
                 });
-                atatus.notify(error, {}, ['delete_all_profiles_error']);
-                logEvent(analytics, "delete_all_profiles_error");
             })
             .finally(() => {
                 setLoading(false);

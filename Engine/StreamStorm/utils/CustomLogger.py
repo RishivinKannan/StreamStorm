@@ -1,6 +1,5 @@
-from logging import Formatter, Logger, getLogger, DEBUG, FileHandler, StreamHandler
+from logging import Formatter, Logger, getLogger, DEBUG, INFO, FileHandler
 from logging.handlers import QueueHandler, QueueListener
-from typing import Optional
 from platformdirs import user_data_dir
 from pathlib import Path
 from queue import Queue
@@ -8,7 +7,6 @@ from rich.logging import RichHandler
 from atexit import register as atexit_register
 
 from .GetIstTime import get_ist_time
-from config import CONFIG
 
 class CustomLogger:
     __slots__: tuple[str, ...] = ('logging_dir', 'logger')
@@ -20,31 +18,23 @@ class CustomLogger:
         self.logging_dir: Path = Path(user_data_dir("StreamStorm", "DarkGlance")) / "logs"
 
     def __get_console_handler(self) -> RichHandler:
-        
-        env: str = CONFIG.get("ENV")
-        handler: Optional[RichHandler | StreamHandler] = None
 
-        if env == "production":
-            formatter = Formatter(
-                "[%(asctime)s] [%(levelname)s] [%(name)s] %(message)s",
-                datefmt="%m/%d/%y %H:%M:%S"
-            )
-
-            handler: StreamHandler = StreamHandler()
-            handler.setFormatter(formatter)
-            
-        elif env == "development":           
-
-            handler: RichHandler = RichHandler(
-                rich_tracebacks=True,
-                markup=False,
-                show_time=True,
-                show_path=True,
-                show_level=True,
-                enable_link_path=True
-            )
+        handler: RichHandler = RichHandler(
+            rich_tracebacks=True,
+            markup=False,
+            show_time=True,
+            show_path=True,
+            show_level=True,
+            enable_link_path=True
+        )
         
-        
+        # formatter = Formatter(
+        #     "[%(asctime)s] [%(levelname)s] [%(name)s] %(message)s",
+        #     datefmt="%m/%d/%y %H:%M:%S"
+        # )
+
+        # handler: StreamHandler = StreamHandler()
+        # handler.setFormatter(formatter)
         
         return handler
     
@@ -52,7 +42,7 @@ class CustomLogger:
         
         self.logging_dir.mkdir(parents=True, exist_ok=True)
         
-        log_file: Path = self.logging_dir / f"log - {get_ist_time()}.log"
+        log_file: Path = self.logging_dir / f"StreamStorm_logs - {get_ist_time()}.log"
         log_file.touch(exist_ok=True)
 
         file_formatter: Formatter = Formatter(
@@ -69,7 +59,7 @@ class CustomLogger:
         
         return handler
 
-    def setup_streamstorm_logging(self) -> None:
+    def setup_logging(self) -> None:
         queue_handler = QueueHandler(self.log_queue)
         
         self.logger: Logger = getLogger("streamstorm")
@@ -81,16 +71,5 @@ class CustomLogger:
         CustomLogger.listener.start()
         
         atexit_register(CustomLogger.listener.stop)
-
-    def setup_fastapi_logging(self) -> None:
-        queue_handler = QueueHandler(self.log_queue)
-
-        self.logger: Logger = getLogger("fastapi")
-        self.logger.setLevel(DEBUG)
-        self.logger.addHandler(queue_handler)
-        self.logger.propagate = False
-
-        CustomLogger.listener = QueueListener(self.log_queue, self.__get_console_handler(), self.__get_file_handler())
-        CustomLogger.listener.start()
 
 
