@@ -89,7 +89,7 @@ Just replace `https://streamstorm-ui.web.app/` with `http://localhost:5173/` to 
     *   You are trying to use a storm control feature (like Pause, Resume, etc.) when no storm is active. Click "Start Storm" first.
 
 *   **Issue: Browser window closes immediately after starting.**
-    *   This might happen if the ChromeDriver or EdgeDriver version is out of sync with your browser. The application attempts to manage this automatically, but a manual browser update might be needed.
+    *   This might happen if the ChromeDriver is out of sync with your Chrome browser. The application attempts to manage this automatically, but a manual Chrome browser update might be needed.
 
 # 📜 License
 

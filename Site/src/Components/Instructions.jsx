@@ -70,7 +70,7 @@ const Instructions = () => {
           <ul className="instructions-list">
             <li className="instructions-list-item">You need to have a YouTube account (Google account) to use the application.</li>
             <li className="instructions-list-item">In your YouTube account, you need to have at least one channel created. More channels are recommended for better results.</li>
-            <li className="instructions-list-item">You need to have a Chrome installed on your system.</li>
+            <li className="instructions-list-item">You need to have Chrome browser installed on your system.</li>
             <li className="instructions-list-item">Stable internet connection to function properly.</li>
             <li className="instructions-list-item">To use one channel you need to have at least 300MB of free RAM available on your system. The more channels you use, the more RAM is required.</li>
           </ul>
@@ -83,7 +83,6 @@ const Instructions = () => {
               Creating temp profiles is the first step to use the application.
               <ul className="instructions-list">
                 <li className="instructions-list-item">In the application UI, click on the <code className="instructions-inline-code">Manage Profiles</code> button.</li>
-                <li className="instructions-list-item">Select the Browser profile you want to create. <code className="instructions-inline-code">(Chromium, Gecko, WebKit)</code></li>
                 <li className="instructions-list-item">Enter number of profiles you want to create.</li>
                 <li className="instructions-list-item">Click on the <code className="instructions-inline-code">Create Profiles</code> button.</li>
               </ul>
@@ -181,19 +180,7 @@ const Instructions = () => {
                     </li>
                   </ul>
                 </li>
-                <li className="instructions-list-item">
-                  <strong>Browser</strong>
-                  <ul className="instructions-list">
-                    <li className="instructions-list-item">In this section, you can select the browser you want to use for the storm.</li>
-                    <li className="instructions-list-item">You can choose from the following browsers:
-                      <ul className="instructions-list">
-                        <li className="instructions-list-item">Chrome</li>
-                        <li className="instructions-list-item">Edge</li>
-                      </ul>
-                    </li>
-                    <li className="instructions-list-item">The application will use the selected browser to open the YouTube live video and send the messages.</li>
-                  </ul>
-                </li>
+                
                 <li className="instructions-list-item">
                   <strong>Load in Background</strong>
                   <ul className="instructions-list">
