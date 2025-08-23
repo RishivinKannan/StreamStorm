@@ -13,6 +13,7 @@ import ChangeSlowMode from "../../../../../Dialogs/ChangeSlowMode";
 import AddChannels from "../../../../../Dialogs/AddChannels";
 import { useStormData } from "../../../../../../context/StormDataContext";
 import { useCustomMUIProps } from "../../../../../../context/CustomMUIPropsContext";
+import { useSystemInfo } from "../../../../../../context/SystemInfoContext";
 
 const StormControls = () => {
 
@@ -20,6 +21,7 @@ const StormControls = () => {
     const formControls = useStormData();
     const { colorScheme } = useColorScheme();
     const dialogs = useDialogs();
+    const systemInfoControls = useSystemInfo();
 
     const [pausing, setPausing] = useState(false);
     const [stopping, setStopping] = useState(false);
@@ -101,6 +103,7 @@ const StormControls = () => {
         const channels = await dialogs.open(AddChannels, {
             mode: "add",
             formControls: formControls,
+            systemInfoControls: systemInfoControls
         });
 
         if (!channels || channels.length === 0) return;

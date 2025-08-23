@@ -25,7 +25,7 @@ class StormControlsClass {
         if (stormData.slow_mode != 5) { logEvent(analytics, "slow_mode_change", { time: stormData.slow_mode }) }
         if (stormData.background) { logEvent(analytics, "background_load") }
         logEvent(analytics, "channel_count", { count: stormData.channels.length });
-        logEvent(analytics, "channel_selection_mode", { mode: formControls.channelSelection });
+        logEvent(analytics, "channel_selection_mode", { mode: stormData.channelSelection });
     }
 
     startStorm(formControls, systemInfoControls) {
