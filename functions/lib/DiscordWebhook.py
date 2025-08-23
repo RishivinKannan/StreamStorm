@@ -8,8 +8,8 @@ def send_discord_webhook(type_: str) -> None:
     """
     Sends a notification to a Discord webhook.
     """
-    content: str
-    url: str
+    content: str = ""
+    url: str = ""
     
     if type_ == "download":
         content = "Someone just downloaded StreamStorm!"

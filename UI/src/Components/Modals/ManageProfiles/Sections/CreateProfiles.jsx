@@ -1,17 +1,21 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { UserPlus } from 'lucide-react';
 import { Button, TextField, useColorScheme } from '@mui/material';
 import { useLocalStorageState } from '@toolpad/core/useLocalStorageState';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { RefreshCw } from 'lucide-react';
+import { logEvent } from 'firebase/analytics';
+
+import * as atatus from 'atatus-spa';
 
 import "./Sections.css";
-import { CustomMUIPropsContext } from '../../../../lib/ContextAPI';
 import ErrorText from '../../../Elements/ErrorText';
+import { analytics } from '../../../../config/firebase';
+import { useCustomMUIProps } from '../../../../context/CustomMUIPropsContext';
 
 const CreateProfiles = () => {
 
-    const { btnProps, inputProps } = useContext(CustomMUIPropsContext);
+    const { btnProps, inputProps } = useCustomMUIProps();
     const { colorScheme } = useColorScheme();
     const [hostAddress] = useLocalStorageState("hostAddress");
     const notifications = useNotifications();
@@ -42,6 +46,8 @@ const CreateProfiles = () => {
         const data = {
             count: profiles,
         }
+        
+        logEvent(analytics, "create_profiles", { count: profiles });
 
         fetch(`${hostAddress}/create_profiles`, {
             method: "POST",
@@ -57,19 +63,22 @@ const CreateProfiles = () => {
                     notifications.show("Profiles created successfully!", {
                         severity: "success",
                     });
+                    logEvent(analytics, "create_profiles_success", { count: profiles });
                 } else {
                     setErrorText(data.message || "An error occurred while creating profiles.");
                     notifications.show("Failed to create profiles.", {
                         severity: "error",
                     });
+                    logEvent(analytics, "create_profiles_failed", { count: profiles });
                 }
             })
             .catch((error) => {
-                console.error("Error creating profiles:", error);
                 setErrorText("An error occurred while creating profiles. Try again.");
                 notifications.show("Failed to create profiles.", {
                     severity: "error",
                 });
+                atatus.notify(error, {}, ['create_profiles_error']);
+                logEvent(analytics, "create_profiles_error", { count: profiles });
             })
             .finally(() => {
                 setLoading(false);
