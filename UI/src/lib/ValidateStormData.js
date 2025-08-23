@@ -1,4 +1,5 @@
-import * as atatus from "atatus-spa"
+import SystemInfo from "../Components/Cards/SystemInfo/SystemInfo";
+
 
 const ValidateStormData = (formControls, systemInfoControls) => {
     let isValid = true;
@@ -25,7 +26,7 @@ const ValidateStormData = (formControls, systemInfoControls) => {
                 formControls.setVideoURLHelperText("Invalid Youtube Video Link.");
             }
         } catch (e) {
-            atatus.notify(e, {}, ['video_url_validation_error']);
+            console.log(e);
             isValid = false;
             formControls.setVideoURLError(true);
             formControls.setVideoURLHelperText("Invalid Video URL.");

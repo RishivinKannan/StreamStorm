@@ -2,8 +2,6 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { httpsCallable } from 'firebase/functions';
 import { functions } from '../config/firebase';
 
-import * as atatus from 'atatus-spa';
-
 const VisitCountContext = createContext();
 
 const VisitCountProvider = ({ children }) => {
@@ -18,11 +16,11 @@ const VisitCountProvider = ({ children }) => {
                 if (result?.data?.success) {
                     setVisitCount(result.data.count);
                 } else {
-                    atatus.notify(new Error('Failed to fetch visit count'), {receivedData: result.data}, ['visit_count_fetch_error']);
+                    console.error('Failed to fetch visit count:', result.data);
                 }
             })
             .catch((error) => {
-                atatus.notify(error, {}, ['visit_count_fetch_error']);
+                console.error('Error fetching visit count:', error);
             });
     };
 

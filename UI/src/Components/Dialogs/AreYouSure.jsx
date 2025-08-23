@@ -1,8 +1,10 @@
+import { useContext } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, useColorScheme } from "@mui/material";
-import { useCustomMUIProps } from "../../context/CustomMUIPropsContext";
+
+import { CustomMUIPropsContext } from "../../lib/ContextAPI";
 
 const AreYouSure = ({ payload, open, onClose }) => {
-    const { btnProps } = useCustomMUIProps();
+    const { btnProps } = useContext(CustomMUIPropsContext);
     const { colorScheme } = useColorScheme();
 
     return (

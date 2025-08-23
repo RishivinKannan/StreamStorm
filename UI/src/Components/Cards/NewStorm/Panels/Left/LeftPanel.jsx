@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import { useColorScheme } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Switch from '@mui/material/Switch';
@@ -5,15 +6,15 @@ import { Button, Radio, RadioGroup } from "@mui/material";
 import { useDialogs } from "@toolpad/core/useDialogs";
 
 import "./LeftPanel.css";
+import { CustomMUIPropsContext } from "../../../../../lib/ContextAPI";
 import AddChannels from "../../../../Dialogs/AddChannels";
 import ErrorText from "../../../../Elements/ErrorText";
 import { useStormData } from "../../../../../context/StormDataContext";
-import { useCustomMUIProps } from "../../../../../context/CustomMUIPropsContext";
 
 const LeftPanel = () => {
 
     const { colorScheme } = useColorScheme();
-    const { inputProps, btnProps } = useCustomMUIProps();
+    const { inputProps, btnProps } = useContext(CustomMUIPropsContext);
     const formControls = useStormData();
     const dialogs = useDialogs();
 
@@ -134,6 +135,7 @@ const LeftPanel = () => {
                     }}
                     error={formControls.slowModeError}
                     helperText={formControls.slowModeHelperText}
+                    defaultValue={5}
                     disabled={formControls.stormInProgress || formControls.loading}
                 />
 
@@ -143,6 +145,7 @@ const LeftPanel = () => {
                             type="number"
                             variant="outlined"
                             label="Subscribe & Wait Time (s)"
+                            defaultValue={65}
                             sx={inputProps}
                             value={formControls.subscribeWaitTime}
                             onChange={(e) => {

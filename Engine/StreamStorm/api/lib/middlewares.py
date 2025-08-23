@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 
 from ...core.StreamStorm import StreamStorm
 
-logger: Logger = getLogger("fastapi." + __name__)
+logger: Logger = getLogger("streamstorm." + __name__)
 
 repeated_paths: set[str] = {
     "/engine-status",
