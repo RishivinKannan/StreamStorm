@@ -23,8 +23,6 @@ CustomLogger().setup_fastapi_logging()
 logger: Logger = getLogger("fastapi." + __name__)
 logger.setLevel(DEBUG)
 
-logger: Logger = getLogger("fastapi." + __name__)
-
 app: FastAPI = FastAPI(lifespan=lifespan)
 
 app.exception_handlers = {

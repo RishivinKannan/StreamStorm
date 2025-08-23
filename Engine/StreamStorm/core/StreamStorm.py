@@ -1,6 +1,7 @@
 from asyncio import Task, sleep, Event, create_task, gather, TimeoutError as AsyncTimeoutError
 from random import choice
 from os import environ
+from os.path import join
 from typing import Optional
 from json import loads, JSONDecodeError
 from http.client import RemoteDisconnected
@@ -87,7 +88,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
         logger.debug(f"Checking channel availability for profiles in: {self.profiles_dir}")
         
         try:
-            async with aio_open(self.profiles_dir + r"\config.json", "r", encoding="utf-8") as file:
+            async with aio_open(join(self.profiles_dir, "config.json"), "r", encoding="utf-8") as file:
                 data: dict = loads(await file.read()) # We are using loads instead of load to avoid blocking the event loop
         except (FileNotFoundError, PermissionError, UnicodeDecodeError, JSONDecodeError):
             logger.debug("Failed to read config.json - profiles not created yet")
@@ -264,7 +265,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
             
             tasks: list[Task] = []
             for index in range(len(self.channels)):
-                profile_dir: str = self.profiles_dir + f"\\{temp_profiles[index]}"
+                profile_dir: str = join(self.profiles_dir, temp_profiles[index])
                 wait_time: float = self.get_start_storm_wait_time(index, no_of_temp_profiles, self.slow_mode)
 
                 # executor.submit(self.EachChannel, self.channels[index], profile_dir, wait_time)
@@ -308,7 +309,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
             
             tasks: list[Task] = []   
             for index in range(len(channels)):
-                profile_dir: str = self.profiles_dir + f"\\{available_profiles[index]}"
+                profile_dir: str = join(self.profiles_dir, available_profiles[index])
                 wait_time: float = self.get_start_storm_wait_time(index, len(available_profiles), self.slow_mode)
 
                 task: Task = create_task(self.EachChannel(channels[index], profile_dir, wait_time))
