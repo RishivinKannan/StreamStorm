@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { Button, Tooltip } from "@mui/material";
 import { useColorScheme } from '@mui/material/styles';
 import { Ban, Pause, Play, Plus, RefreshCw, SquarePen, StopCircle, Zap } from 'lucide-react';
@@ -170,20 +170,22 @@ const StormControls = () => {
                     </Button>
 
                     <Tooltip title="Change Slow Mode" placement="right">
-                        <Button
-                            variant="contained"
-                            startIcon={changeSlowModeLoading ? <RefreshCw size={18} className="spin" /> : <SquarePen size={18} />}
-                            sx={{
-                                ...btnProps,
-                                height: "40px",
-                            }}
-                            onClick={handleChangeSlowMode}
-                            disabled={controlsDisabled || !formControls.stormInProgress}
-                        >
-                            {
-                                changeSlowModeLoading ? "Processing..." : "Slow Mode"
-                            }
-                        </Button>
+                        <Fragment>
+                            <Button
+                                variant="contained"
+                                startIcon={changeSlowModeLoading ? <RefreshCw size={18} className="spin" /> : <SquarePen size={18} />}
+                                sx={{
+                                    ...btnProps,
+                                    height: "40px",
+                                }}
+                                onClick={handleChangeSlowMode}
+                                disabled={controlsDisabled || !formControls.stormInProgress}
+                            >
+                                {
+                                    changeSlowModeLoading ? "Processing..." : "Slow Mode"
+                                }
+                            </Button>
+                        </Fragment>
                     </Tooltip>
 
                 </div>
@@ -191,55 +193,60 @@ const StormControls = () => {
                 <div className="row">
 
                     <Tooltip title="Change existing Messages" placement="right">
-
-                        <Button
-                            variant="contained"
-                            startIcon={dontWaitLoading ? <RefreshCw size={18} className="spin" /> : <Ban size={18} />}
-                            sx={{
-                                ...btnProps,
-                                height: "40px",
-                            }}
-                            onClick={handleDontWait}
-                            disabled={controlsDisabled || !formControls.stormInProgress}
-                        >
-                            {
-                                dontWaitLoading ? "Processing..." : "Don't Wait"
-                            }
-                        </Button>
+                        <Fragment>
+                            <Button
+                                variant="contained"
+                                startIcon={dontWaitLoading ? <RefreshCw size={18} className="spin" /> : <Ban size={18} />}
+                                sx={{
+                                    ...btnProps,
+                                    height: "40px",
+                                }}
+                                onClick={handleDontWait}
+                                disabled={controlsDisabled || !formControls.stormInProgress}
+                            >
+                                {
+                                    dontWaitLoading ? "Processing..." : "Don't Wait"
+                                }
+                            </Button>
+                        </Fragment>
                     </Tooltip>
 
                     <Tooltip title="Start storming on more channels" placement="right">
-                        <Button
-                            variant="contained"
-                            startIcon={moreChannelsLoading ? <RefreshCw size={18} className="spin" /> : <Plus size={18} />}
-                            sx={{
-                                ...btnProps,
-                                height: "40px",
-                            }}
-                            onClick={handleAddMoreChannels}
-                            disabled={controlsDisabled || !formControls.stormInProgress}
-                        >
-                            Channels
-                        </Button>
+                        <Fragment>
+                            <Button
+                                variant="contained"
+                                startIcon={moreChannelsLoading ? <RefreshCw size={18} className="spin" /> : <Plus size={18} />}
+                                sx={{
+                                    ...btnProps,
+                                    height: "40px",
+                                }}
+                                onClick={handleAddMoreChannels}
+                                disabled={controlsDisabled || !formControls.stormInProgress}
+                            >
+                                Channels
+                            </Button>
+                        </Fragment>
                     </Tooltip>
 
                 </div>
                 <Tooltip title="Stop the Storm" placement="right">
-                    <Button
-                        variant="contained"
-                        startIcon={stopping ? <RefreshCw size={18} className="spin" /> : <StopCircle size={18} />}
-                        onClick={onStopHandler}
-                        sx={{
-                            ...btnProps,
-                            backgroundColor: colorScheme === 'light' ? "var(--bright-red-2)" : "var(--input-active-red-dark)",
-                            color: "var(--light-text)",
-                        }}
-                        disabled={controlsDisabled}
-                    >
-                        {
-                            stopping ? "Stopping Storm..." : "Stop"
-                        }
-                    </Button>
+                    <Fragment>
+                        <Button
+                            variant="contained"
+                            startIcon={stopping ? <RefreshCw size={18} className="spin" /> : <StopCircle size={18} />}
+                            onClick={onStopHandler}
+                            sx={{
+                                ...btnProps,
+                                backgroundColor: colorScheme === 'light' ? "var(--bright-red-2)" : "var(--input-active-red-dark)",
+                                color: "var(--light-text)",
+                            }}
+                            disabled={controlsDisabled}
+                        >
+                            {
+                                stopping ? "Stopping Storm..." : "Stop"
+                            }
+                        </Button>
+                    </Fragment>
                 </Tooltip>
             </div>
         </div>
