@@ -76,7 +76,7 @@ const TermsAndConditions = () => {
         <section>
           <h2>7. Contact</h2>
           <p>
-            For collaborations, extended licenses, or clarifications, please contact:<br />
+            For collaborations, extended licenses, or clarifications, contact:<br />
             📧 <a href="mailto:darkglance.developer@gmail.com">darkglance.developer@gmail.com</a>
           </p>
         </section>
