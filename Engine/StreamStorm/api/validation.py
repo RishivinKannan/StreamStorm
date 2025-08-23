@@ -3,7 +3,7 @@ from warnings import deprecated
 from pydantic import BaseModel, field_validator, model_validator
 from logging import getLogger, Logger
 
-logger: Logger = getLogger("streamstorm." + __name__)
+logger: Logger = getLogger("fastapi." + __name__)
 
 @deprecated("Not used anymore since migrated to FastAPI")
 def Validate(data: dict, validator: BaseModel) -> dict:

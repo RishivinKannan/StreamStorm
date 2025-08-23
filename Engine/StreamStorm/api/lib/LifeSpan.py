@@ -6,7 +6,7 @@ from logging import Logger, getLogger
 
 from .StormStopper import background_storm_stopper
 
-logger: Logger = getLogger("streamstorm." + __name__)
+logger: Logger = getLogger("fastapi." + __name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, Any]:
