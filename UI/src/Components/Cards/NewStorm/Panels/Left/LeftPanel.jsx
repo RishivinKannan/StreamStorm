@@ -9,12 +9,14 @@ import AddChannels from "../../../../Dialogs/AddChannels";
 import ErrorText from "../../../../Elements/ErrorText";
 import { useStormData } from "../../../../../context/StormDataContext";
 import { useCustomMUIProps } from "../../../../../context/CustomMUIPropsContext";
+import { useSystemInfo } from '../../../../../context/SystemInfoContext';
 
 const LeftPanel = () => {
 
     const { colorScheme } = useColorScheme();
     const { inputProps, btnProps } = useCustomMUIProps();
     const formControls = useStormData();
+    const systemInfoControls = useSystemInfo();
     const dialogs = useDialogs();
 
     const messagesChangeHandler = (e) => {
@@ -51,6 +53,7 @@ const LeftPanel = () => {
             mode: "new",
             formControls,
             defaultSelectedChannels: formControls.advancedSelectedChannels.map((channel) => channel.toString()),
+            systemInfoControls
         });
 
         if (!selectedChannels || selectedChannels.length === 0) {

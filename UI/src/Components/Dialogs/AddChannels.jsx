@@ -9,13 +9,11 @@ import { useLocalStorageState } from "@toolpad/core/useLocalStorageState";
 import { useNotifications } from "@toolpad/core/useNotifications";
 import ErrorText from "../Elements/ErrorText";
 import { useCustomMUIProps } from "../../context/CustomMUIPropsContext";
-import { useSystemInfo } from "../../context/SystemInfoContext";
 import { analytics } from "../../config/firebase";
 
 const AddChannels = ({ payload, open, onClose }) => {
-    const { mode, defaultSelectedChannels } = payload;
+    const { mode, defaultSelectedChannels, systemInfoControls } = payload;
     const { btnProps } = useCustomMUIProps();
-    const systemInfoControls = useSystemInfo();
 
     const { colorScheme } = useColorScheme();
     const [hostAddress] = useLocalStorageState('hostAddress');
