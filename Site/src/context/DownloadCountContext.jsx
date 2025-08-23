@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { httpsCallable } from 'firebase/functions';
 import { functions } from '../config/firebase';
 
+import * as atatus from 'atatus-spa';
+
 
 const DownloadCountContext = createContext();
 
@@ -16,11 +18,11 @@ const DownloadCountProvider = ({ children }) => {
                 if (result?.data?.success) {
                     setDownloadCount(result.data.count);
                 } else {
-                    console.error('Failed to fetch download count:', result.data);
+                    atatus.notify(new Error('Failed to fetch download count'), {receivedData: result.data}, ['download_count_fetch_error']);
                 }
             })
             .catch((error) => {
-                console.error('Error fetching download count:', error);
+                atatus.notify(error, {}, ['download_count_fetch_error']);
             });
     };
 
@@ -30,11 +32,11 @@ const DownloadCountProvider = ({ children }) => {
                 if (result?.data?.success) {
                     setDownloadCount(result.data.count);
                 } else {
-                    console.error('Failed to update download count:', result.data);
+                    atatus.notify(new Error('Failed to update download count'), {receivedData: result.data}, ['download_count_update_error']);
                 }
             })
             .catch((error) => {
-                console.error('Error updating download count:', error);
+                atatus.notify(error, {}, ['download_count_update_error']);
             });
     };
 

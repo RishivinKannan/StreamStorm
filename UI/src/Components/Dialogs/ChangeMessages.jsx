@@ -1,10 +1,10 @@
-import { useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, useColorScheme } from "@mui/material";
 
-import { CustomMUIPropsContext } from "../../lib/ContextAPI";
+import { useCustomMUIProps } from "../../context/CustomMUIPropsContext";
 
 const ChangeMessages = ({ payload, open, onClose }) => {
-    const { btnProps, inputProps } = useContext(CustomMUIPropsContext);
+    const { btnProps, inputProps } = useCustomMUIProps();
     const { formControls } = payload;
     const { colorScheme } = useColorScheme();
 

@@ -1,16 +1,21 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Avatar, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, LinearProgress, List, ListItem, useColorScheme } from "@mui/material";
+import { logEvent } from "firebase/analytics";
+
+import * as atatus from "atatus-spa";
 
 import "./Dialogs.css";
-import { CustomMUIPropsContext, SystemInfoContext } from "../../lib/ContextAPI";
 import { useLocalStorageState } from "@toolpad/core/useLocalStorageState";
 import { useNotifications } from "@toolpad/core/useNotifications";
 import ErrorText from "../Elements/ErrorText";
+import { useCustomMUIProps } from "../../context/CustomMUIPropsContext";
+import { useSystemInfo } from "../../context/SystemInfoContext";
+import { analytics } from "../../config/firebase";
 
 const AddChannels = ({ payload, open, onClose }) => {
     const { mode, defaultSelectedChannels } = payload;
-    const { btnProps } = useContext(CustomMUIPropsContext);
-    const systemInfoControls = useContext(SystemInfoContext);
+    const { btnProps } = useCustomMUIProps();
+    const systemInfoControls = useSystemInfo();
 
     const { colorScheme } = useColorScheme();
     const [hostAddress] = useLocalStorageState('hostAddress');
@@ -43,7 +48,8 @@ const AddChannels = ({ payload, open, onClose }) => {
             })
             .catch((error) => {
                 setErrorText("Failed to fetch channel data.");
-                console.error("Error fetching channel data:", error);
+                atatus.notify(error, {}, ['channel_data_fetch_error']);
+                logEvent(analytics, "channel_data_fetch_error");
             })
             .finally(() => {
                 setChannelsDataLoading(false);

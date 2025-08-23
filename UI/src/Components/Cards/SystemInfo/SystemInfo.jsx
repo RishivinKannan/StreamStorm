@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useColorScheme } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import { CardHeader, CardContent, Button } from "@mui/material";
@@ -7,12 +7,12 @@ import { useLocalStorageState } from '@toolpad/core/useLocalStorageState';
 import { useNotifications } from '@toolpad/core/useNotifications';
 
 import "./SystemInfo.css"
-import { CustomMUIPropsContext, SystemInfoContext } from '../../../lib/ContextAPI';
-import { RAM_PER_PROFILE } from '../../../lib/Constants';
+import { useSystemInfo } from '../../../context/SystemInfoContext';
+import { useCustomMUIProps } from '../../../context/CustomMUIPropsContext';
 
 const SystemInfo = () => {
-    const {btnProps, cardProps} = useContext(CustomMUIPropsContext);
-    const systemInfoControls = useContext(SystemInfoContext);
+    const {btnProps, cardProps} = useCustomMUIProps();
+    const systemInfoControls = useSystemInfo();
     const { colorScheme } = useColorScheme();
     const notifications = useNotifications();
 
@@ -76,13 +76,13 @@ const SystemInfo = () => {
                             Refresh RAM
                         </Button>
                         <span className='ram-note'>
-                            To operate one channel you need approximately {RAM_PER_PROFILE}MB of Free RAM.
+                            To operate one channel you need approximately {systemInfoControls.RAM_PER_PROFILE}MB of Free RAM.
                             
                         </span>
                         <span className='ram-note'>
                             {
                                 systemInfoControls.availableRAM ? (
-                                    `Since you have ${systemInfoControls.availableRAM} MB of RAM available, you can run approximately ${Math.floor(systemInfoControls.availableRAM / RAM_PER_PROFILE)} channels.`
+                                    `Since you have ${systemInfoControls.availableRAM} MB of RAM available, you can run approximately ${Math.floor(systemInfoControls.availableRAM / systemInfoControls.RAM_PER_PROFILE)} channels.`
                                 ) : (
                                     "RAM information is currently unavailable."
                                 )
