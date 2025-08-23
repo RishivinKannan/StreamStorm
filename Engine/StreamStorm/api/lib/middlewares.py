@@ -32,7 +32,7 @@ class LogRequestMiddleware(BaseHTTPMiddleware):
                 body_str: str = body.decode("utf-8", errors="replace")
                 
             except Exception:
-                body_str = "<unable to decode>"
+                body_str: str = "<unable to decode>"
                 
             logger.info(
                 "[REQUEST RECEIVED]\n"

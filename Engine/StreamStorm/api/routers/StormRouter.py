@@ -5,6 +5,7 @@ from json import JSONDecodeError, loads
 from asyncio import gather
 
 from fastapi import APIRouter
+from fastapi.responses import JSONResponse
 from platformdirs import user_data_dir
 from aiofiles import open as aio_open
 
@@ -22,13 +23,16 @@ logger: Logger = getLogger("fastapi." + __name__)
 router: APIRouter = APIRouter(prefix="/storm")
 
 @router.post("/start")
-async def start(data: StormData):
+async def start(data: StormData) -> JSONResponse:
     if StreamStorm.ss_instance is not None:
         logger.info("Storm request rejected - instance already running")
-        return {
-            "success": False,
-            "message": "A storm is already running. Stop the current storm before starting a new one.",
-        }
+        return JSONResponse(
+            status_code=409,
+            content={
+                "success": False,
+                "message": "A storm is already running. Stop the current storm before starting a new one.",
+            }
+        )
 
     StreamStorm.each_channel_instances = []
 
@@ -57,14 +61,17 @@ async def start(data: StormData):
         StreamStorm.ss_instance = None
         raise e
 
-    return {
-        "success": True,
-        "message": "Storm started successfully"
-    }
+    return JSONResponse(
+        status_code=200,
+        content={
+            "success": True,
+            "message": "Storm started successfully"
+        }
+    )
 
 
 @router.post("/stop")
-async def stop():
+async def stop() -> JSONResponse:
     async def close_browser(instance: StreamStorm) -> None:
         try:
             if instance.page:
@@ -78,115 +85,154 @@ async def stop():
 
     environ.update({"BUSY": "0"})
 
-    return {
-        "success": True, 
-        "message": "Storm stopped successfully"
-    }
+    return JSONResponse(
+        status_code=200,
+        content={
+            "success": True, 
+            "message": "Storm stopped successfully"
+        }
+    )
 
 
 @router.post("/pause")
-async def pause():
+async def pause() -> JSONResponse:
     StreamStorm.ss_instance.pause_event.clear()
 
-    return {
-        "success": True,
-        "message": "Storm paused successfully"
-    }
+    return JSONResponse(
+        status_code=200,
+        content={
+            "success": True,
+            "message": "Storm paused successfully"
+        }
+    )
 
 
 @router.post("/resume")
-async def resume():
+async def resume() -> JSONResponse:
     StreamStorm.ss_instance.pause_event.set()
 
-    return {
-        "success": True,
-        "message": "Storm resumed successfully"
-    }
+    return JSONResponse(
+        status_code=200,
+        content={
+            "success": True,
+            "message": "Storm resumed successfully"
+        }
+    )
 
 
 @router.post("/change_messages")
-async def change_messages(data: ChangeMessagesData):
+async def change_messages(data: ChangeMessagesData) -> JSONResponse:
     await StreamStorm.ss_instance.set_messages(data.messages)
 
-    return {
-        "success": True,
-        "message": "Messages changed successfully"
-    }
+    return JSONResponse(
+        status_code=200,
+        content={
+            "success": True,
+            "message": "Messages changed successfully"
+        }
+    )
 
 
 @router.post("/start_storm_dont_wait")
-async def start_storm_dont_wait():
+async def start_storm_dont_wait() -> JSONResponse:
     StreamStorm.ss_instance.ready_event.set()
 
-    return {
-        "success": True,
-        "message": "Storm started without waiting for all instances to be ready",
-    }
+    return JSONResponse(
+        status_code=200,
+        content={
+            "success": True,
+            "message": "Storm started without waiting for all instances to be ready",
+        }
+    )
 
 
 @router.post("/change_slow_mode")
-async def change_slow_mode(data: ChangeSlowModeData):
+async def change_slow_mode(data: ChangeSlowModeData) -> JSONResponse:
     if not StreamStorm.ss_instance.ready_event.is_set():
-        return {
+        return JSONResponse(
+            status_code=400,
+            content={
                 "success": False,
                 "message": "Cannot change slow mode before the storm starts",
             }
+        )
 
     await StreamStorm.ss_instance.set_slow_mode(data.slow_mode)
 
-    return {
-        "success": True, 
-        "message": "Slow mode changed successfully"
-    }
+    return JSONResponse(
+        status_code=200,
+        content={
+            "success": True, 
+            "message": "Slow mode changed successfully"
+        }
+    )
 
 
 @router.post("/start_more_channels")
-async def start_more_channels(data: StartMoreChannelsData):
+async def start_more_channels(data: StartMoreChannelsData) -> JSONResponse:
     if not StreamStorm.ss_instance.ready_event.is_set():
-        return {
-            "success": False,
-            "message": "Cannot start more channels before the storm starts",
-        }
+        return JSONResponse(
+            status_code=400,
+            content={
+                "success": False,
+                "message": "Cannot start more channels before the storm starts",
+            }
+        )
 
     await StreamStorm.ss_instance.start_more_channels(data.channels)
 
-    return {
-        "success": True, 
-        "message": "More channels started successfully"
-    }
+    return JSONResponse(
+        status_code=200,
+        content={
+            "success": True, 
+            "message": "More channels started successfully"
+        }
+    )
     
 @router.post("/get_channels_data")
-async def get_channels_data(data: GetChannelsData):
+async def get_channels_data(data: GetChannelsData) -> JSONResponse:
     mode: str = data.mode
 
     if mode == "add" and StreamStorm.ss_instance is None:
-        return {
-            "success": False,
-            "message": "No storm is running. Start a storm first.",
-        }
+        return JSONResponse(
+            status_code=400,
+            content={
+                "success": False,
+                "message": "No storm is running. Start a storm first.",
+            }
+        )
 
     app_data_dir: str = user_data_dir("StreamStorm", "DarkGlance")
     config_json_path: str = join(app_data_dir, "ChromiumProfiles", "config.json")
 
     if not exists(config_json_path):
-        return {
-            "success": False,
-            "message": "Config file not found. Create profiles first.",
-        }
+        return JSONResponse(
+            status_code=404,
+            content={
+                "success": False,
+                "message": "Config file not found. Create profiles first.",
+            }
+        )
 
     try:
         async with aio_open(config_json_path, "r", encoding="utf-8") as file:
             config: dict = loads(await file.read())
     except (FileNotFoundError, PermissionError, UnicodeDecodeError, JSONDecodeError) as e:
-        return {
-            "success": False,
-            "message": f"Error reading config file: {str(e)}",
-        }
+        return JSONResponse(
+            status_code=500,
+            content={
+                "success": False,
+                "message": f"Error reading config file: {str(e)}",
+            }
+        )
     except Exception as e:
-        return {
-            "success": False,
-            "message": f"Error parsing config file: {str(e)}",
-        }
+        return JSONResponse(
+            status_code=500,
+            content={
+                "success": False,
+                "message": f"Error parsing config file: {str(e)}",
+            }
+        )
 
     response_data: dict = {}
 
@@ -202,4 +248,7 @@ async def get_channels_data(data: GetChannelsData):
 
     response_data.update({"success": True})
 
-    return response_data
+    return JSONResponse(
+        status_code=200,
+        content=response_data
+    )
