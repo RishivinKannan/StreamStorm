@@ -42,7 +42,9 @@ const DeleteAllProfiles = () => {
 
         logEvent(analytics, "delete_all_profiles");
 
-        fetch(`${hostAddress}/delete_all_profiles`, {
+        logEvent(analytics, "delete_all_profiles");
+
+        fetch(`${hostAddress}/profiles/delete_all_profiles`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -42,7 +42,7 @@ class StormControlsClass {
         formControls.setLoading(true);
         this.setControlsDisabled(true);
 
-        fetch(`${this.hostAddress}/storm`, {
+        fetch(`${this.hostAddress}/storm/start`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ class StormControlsClass {
         this.setStopping(true);
         this.setControlsDisabled(true);
 
-        fetch(`${this.hostAddress}/stop`, {
+        fetch(`${this.hostAddress}/storm/stop`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -119,7 +119,7 @@ class StormControlsClass {
         this.setPausing(true);
         this.setControlsDisabled(true);
 
-        fetch(`${this.hostAddress}/pause`, {
+        fetch(`${this.hostAddress}/storm/pause`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -153,7 +153,7 @@ class StormControlsClass {
         this.setResuming(true);
         this.setControlsDisabled(true);
 
-        fetch(`${this.hostAddress}/resume`, {
+        fetch(`${this.hostAddress}/storm/resume`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -186,7 +186,7 @@ class StormControlsClass {
         this.setDontWaitLoading(true);
         this.setControlsDisabled(true);
 
-        fetch(`${this.hostAddress}/start_storm_dont_wait`, {
+        fetch(`${this.hostAddress}/storm/start_storm_dont_wait`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -225,7 +225,7 @@ class StormControlsClass {
         this.setChangeMessagesLoading(true);
         this.setControlsDisabled(true);
 
-        fetch(`${this.hostAddress}/change_messages`, {
+        fetch(`${this.hostAddress}/storm/change_messages`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -265,7 +265,7 @@ class StormControlsClass {
         this.setChangeSlowModeLoading(true);
         this.setControlsDisabled(true);
 
-        fetch(`${this.hostAddress}/change_slow_mode`, {
+        fetch(`${this.hostAddress}/storm/change_slow_mode`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -304,7 +304,7 @@ class StormControlsClass {
         this.setMoreChannelsLoading(true);
         this.setControlsDisabled(true);
 
-        fetch(`${this.hostAddress}/start_more_channels`, {
+        fetch(`${this.hostAddress}/storm/start_more_channels`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

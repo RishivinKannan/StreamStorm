@@ -49,7 +49,7 @@ const CreateProfiles = () => {
         
         logEvent(analytics, "create_profiles", { count: profiles });
 
-        fetch(`${hostAddress}/create_profiles`, {
+        fetch(`${hostAddress}/profiles/create_profiles`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
