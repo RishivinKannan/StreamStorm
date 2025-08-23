@@ -6,6 +6,8 @@ import { useNotifications } from '@toolpad/core/useNotifications';
 import { RefreshCw } from 'lucide-react';
 import { logEvent } from 'firebase/analytics';
 
+import * as atatus from 'atatus-spa';
+
 import "./Sections.css";
 import ErrorText from '../../../Elements/ErrorText';
 import { analytics } from '../../../../config/firebase';
@@ -71,11 +73,11 @@ const CreateProfiles = () => {
                 }
             })
             .catch((error) => {
-                console.error("Error creating profiles:", error);
                 setErrorText("An error occurred while creating profiles. Try again.");
                 notifications.show("Failed to create profiles.", {
                     severity: "error",
                 });
+                atatus.notify(error, {}, ['create_profiles_error']);
                 logEvent(analytics, "create_profiles_error", { count: profiles });
             })
             .finally(() => {

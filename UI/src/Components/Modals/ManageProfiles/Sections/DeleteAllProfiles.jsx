@@ -7,6 +7,8 @@ import { RefreshCw } from 'lucide-react';
 import { useDialogs } from '@toolpad/core/useDialogs';
 import { logEvent } from 'firebase/analytics';
 
+import * as atatus from 'atatus-spa';
+
 import "./Sections.css";
 import ErrorText from '../../../Elements/ErrorText';
 import AreYouSure from '../../../Dialogs/AreYouSure';
@@ -67,6 +69,7 @@ const DeleteAllProfiles = () => {
                 notifications.show("An error occurred while deleting all profiles", {
                     severity: 'error',
                 });
+                atatus.notify(error, {}, ['delete_all_profiles_error']);
                 logEvent(analytics, "delete_all_profiles_error");
             })
             .finally(() => {

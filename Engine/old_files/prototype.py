@@ -23,7 +23,6 @@ class StreamStorm:
         start: float = time()
         self.driver = Edge(options=options)
         self.driver.get(self.url)
-        print('Time taken to open browser: ', time() - start)
         # input()
         sleep(2)
         
@@ -45,7 +44,6 @@ class StreamStorm:
         video_url: str = 'https://www.youtube.com/live_chat?is_popout=1&v=UTMF2u9K5dg'
         # video_url: str = 'https://www.youtube.com/watch?v=UTMF2u9K5dg'
         self.driver.get(video_url)
-        # print('Navigated to video chat')
         
         # sleep(15)
         
@@ -58,19 +56,16 @@ class StreamStorm:
         # input_field: WebElement = self.driver.find_element(By.XPATH, "//yt-live-chat-text-input-field-renderer[@id='input']//div[@id='input']")
         # input_field.click()
         
-        # print('Found input field')
         
         sleep(1)
         input_field.send_keys('Hello')
         # self.driver.execute_script("arguments[0].innerText = 'Hello'", input_field)
         
-        # print('Message typed')
         
         sleep(2)
         
         input_field.send_keys(Keys.ENTER)
         
-        # print('Enter pressed')
         
         
         
@@ -83,7 +78,8 @@ if __name__ == '__main__':
     try:
         StreamStorm()
     except Exception as e:
-        print(e)
+        from logging import error as log_error
+        log_error(e)
     finally:
         sleep(1000)
         

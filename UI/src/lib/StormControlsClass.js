@@ -2,6 +2,8 @@ import { logEvent } from "firebase/analytics";
 import ValidateStormData from "./ValidateStormData";
 import { analytics } from "../config/firebase";
 
+import * as atatus from "atatus-spa"
+
 class StormControlsClass {
     constructor(hostAddress) {
         this.hostAddress = hostAddress;
@@ -65,10 +67,10 @@ class StormControlsClass {
                 }
             })
             .catch(error => {
-                console.error('Error starting storm:', error);
                 this.notifications.show(error.message || 'An error occurred while starting the storm', {
                     severity: 'error',
                 });
+                atatus.notify(error, {}, ['storm_start_error']);
                 logEvent(analytics, "storm_start_error");
             })
             .finally(() => {
@@ -100,10 +102,10 @@ class StormControlsClass {
 
             })
             .catch(error => {
-                console.error('Error stopping storm:', error);
                 this.notifications.show('An error occurred while stopping the storm', {
                     severity: 'error',
                 });
+                atatus.notify(error, {}, ['storm_stop_error']);
                 logEvent(analytics, "storm_stop_error");
             })
             .finally(() => {
@@ -134,10 +136,10 @@ class StormControlsClass {
                 }
             })
             .catch(error => {
-                console.error('Error pausing storm:', error);
                 this.notifications.show('An error occurred while pausing the storm', {
                     severity: 'error',
                 });
+                atatus.notify(error, {}, ['storm_pause_error']);
                 logEvent(analytics, "storm_pause_error");
             })
             .finally(() => {
@@ -168,10 +170,10 @@ class StormControlsClass {
                 }
             })
             .catch(error => {
-                console.error('Error resuming storm:', error.name);
                 this.notifications.show('An error occurred while resuming the storm', {
                     severity: 'error',
                 });
+                atatus.notify(error, {}, ['storm_resume_error']);
                 logEvent(analytics, "storm_resume_error");
             })
             .finally(() => {
@@ -206,10 +208,10 @@ class StormControlsClass {
                 }
             })
             .catch(error => {
-                console.error('Error setting dont-wait:', error);
                 this.notifications.show('An error occurred while setting dont-wait', {
                     severity: 'error',
                 });
+                atatus.notify(error, {}, ['storm_dont_wait_error']);
                 logEvent(analytics, "dont_wait_error");
             })
             .finally(() => {
@@ -247,10 +249,10 @@ class StormControlsClass {
                 }
             })
             .catch(error => {
-                console.error('Error changing messages:', error);
                 this.notifications.show('An error occurred while changing messages', {
                     severity: 'error',
                 });
+                atatus.notify(error, {}, ['storm_change_messages_error']);
                 logEvent(analytics, "change_messages_error");
             })
             .finally(() => {
@@ -286,17 +288,16 @@ class StormControlsClass {
                 }
             })
             .catch(error => {
-                console.error('Error changing slow mode:', error);
                 this.notifications.show('An error occurred while changing slow mode', {
                     severity: 'error',
                 });
+                atatus.notify(error, {}, ['storm_change_slow_mode_error']);
                 logEvent(analytics, "change_slow_mode_error");
             })
             .finally(() => {
                 this.setChangeSlowModeLoading(false);
                 this.setControlsDisabled(false);
             });
-
     }
 
     startMoreChannels(channels) {
@@ -325,10 +326,10 @@ class StormControlsClass {
                 }
             })
             .catch(error => {
-                console.error('Error starting more channels:', error);
                 this.notifications.show('An error occurred while starting more channels', {
                     severity: 'error',
                 });
+                atatus.notify(error, {}, ['storm_start_more_channels_error']);
                 logEvent(analytics, "start_more_channels_error");
             })
             .finally(() => {
