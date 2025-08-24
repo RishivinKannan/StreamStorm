@@ -1,9 +1,8 @@
-"use client";
 import { useState } from 'react';
 import LaunchIcon from '@mui/icons-material/Launch';
-import { analytics } from '@/config/firebase';
+import { analytics } from '../config/firebase';
 import { logEvent } from 'firebase/analytics';
-import { useDownloadCount } from '@/context/DownloadCountContext';
+import { useDownloadCount } from '../context/DownloadCountContext';
 
 const OverView = () => {
 
