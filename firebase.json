@@ -1,21 +1,6 @@
 {
   "hosting": [
     {
-      "site": "streamstorm-1919",
-      "public": "Site/dist",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ]
-    },
-    {
       "site": "streamstorm-ui",
       "public": "UI/dist",
       "ignore": [
