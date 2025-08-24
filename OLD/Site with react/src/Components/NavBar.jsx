@@ -1,12 +1,12 @@
 import { useMediaQuery } from '@mui/material';
-import { analytics } from '@/config/firebase';
+import { analytics } from '../config/firebase';
 import { logEvent } from 'firebase/analytics';
-import { usePathname } from 'next/navigation';
+import { useLocation } from 'react-router-dom';
 
 const NavBar = ({ orientation, onClose }) => {
 
     const isSmallScreen = useMediaQuery('(max-width: 700px)')
-    const pathname = usePathname();
+    const location = useLocation();
 
     const handleLinkClick = (name) => {
         onClose();
@@ -18,7 +18,7 @@ const NavBar = ({ orientation, onClose }) => {
 
     return (
         <>
-            {pathname === '/' ? (
+            {location.pathname === '/' ? (
                 <nav className={`navbar navbar-${orientation}`}>
 
                     <a href="/#overview" onClick={() => handleLinkClick('overview')} className={`navbar-item navbar-item-${isSmallScreen ? 'small' : 'large'}`}>Overview</a>

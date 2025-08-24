@@ -1,5 +1,4 @@
-"use client"
-import { useVisitCount } from "@/context/VisitCountContext";
+import { useVisitCount } from "../context/VisitCountContext";
 
 const Footer = () => {
     const visitCount = useVisitCount();

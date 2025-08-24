@@ -140,15 +140,6 @@ def generate_setup_file() -> None:
     
     log_info("Running 'ISCC create_setup.iss'")
     call("ISCC create_setup.iss", shell=True)
-    
-def build_SITE() -> None:
-    log_info("Building Site...")
-    
-    chdir(ROOT / "Site")
-    
-    log_info("Running 'vite build' in Site directory")    
-    call("vite build", shell=True)
-    chdir(ROOT)
 
 def build_UI() -> None:
     log_info("Building UI...")
@@ -196,15 +187,12 @@ def main() -> None:
     generate_setup_file()
     
     # Step 4
-    build_SITE()
-    
-    # Step 5
     build_UI()
     
-    # Step 6
+    # Step 5
     firebase_deploy()
 
-    # Step 7
+    # Step 6
     dgupdater_commit_and_publish(new_version)
     
     log_info("Build and release process completed.")
