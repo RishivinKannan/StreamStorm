@@ -1,7 +1,9 @@
+import Script from "next/script";
 import { DownloadCountProvider } from "@/context/DownloadCountContext";
 import { VisitCountProvider } from "@/context/VisitCountContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { atatusScript } from "@/config/atatus";
 import "./globals.css";
 
 export const metadata = {
@@ -43,6 +45,9 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en">
             <head>
+                <Script>
+                    {atatusScript}
+                </Script>
                 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
                 <link rel="author" href="https://github.com/Ashif4354" />
             </head>

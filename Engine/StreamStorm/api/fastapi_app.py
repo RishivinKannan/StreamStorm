@@ -2,6 +2,9 @@ from typing import Callable
 from logging import DEBUG, getLogger, Logger
 from psutil import virtual_memory
 
+from sys import path
+path.append(".")
+from config import CONFIG
 
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.exceptions import RequestValidationError
@@ -18,10 +21,36 @@ from ..utils.CustomLogger import CustomLogger
 from .routers.StormRouter import router as storm_router
 from .routers.ProfileRouter import router as profile_router
 
+
 CustomLogger().setup_fastapi_logging()
 
 logger: Logger = getLogger("fastapi." + __name__)
 logger.setLevel(DEBUG)
+
+if CONFIG["ENV"] == "development":
+    logger.debug("Instrumenting atatus")
+    from atatus import Client, get_client
+    from atatus.contrib.starlette import create_client, Atatus
+    
+    atatus_client: Client = get_client()
+    
+    if atatus_client is None:
+        atatus_client = create_client(
+            {
+                'APP_NAME': 'StreamStormEngine',
+                'LICENSE_KEY': 'lic_apm_e9f8c52cb4b2439593c0ede154a933be',
+                'TRACING': True,
+                'ANALYTICS': True,
+                'ANALYTICS_CAPTURE_OUTGOING': True,
+                'LOG_BODY': 'all',
+                'LOG_LEVEL': 'debug',
+                'LOG_FILE': 'streamstorm.log'
+            }
+        )
+    logger.debug("Atatus client created")
+    
+else:
+    logger.debug("Skipping atatus instrumentation in production")
 
 app: FastAPI = FastAPI(lifespan=lifespan)
 
@@ -49,6 +78,10 @@ async def add_cors_headers(request: Request, call_next: Callable):
     response.headers["Access-Control-Allow-Methods"] = "*"
     response.headers["Access-Control-Allow-Headers"] = "*"
     return response
+
+if CONFIG["ENV"] == "development":
+    app.add_middleware(Atatus, client=atatus_client)
+    logger.debug("Atatus middleware added to FastAPI app")
 
 app.include_router(storm_router)
 app.include_router(profile_router)
