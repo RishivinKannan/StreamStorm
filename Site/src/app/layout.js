@@ -45,7 +45,7 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en">
             <head>
-                <Script>
+                <Script id="atatus-init">
                     {atatusScript}
                 </Script>
                 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
