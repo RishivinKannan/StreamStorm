@@ -12,6 +12,8 @@ from google.cloud.firestore import (
 
 from lib.DiscordWebhook import send_discord_webhook
 
+ALLOWED_HOSTS: list[str] = getenv("ALLOWED_HOSTS").split(",")
+
 initialize_app()
 
 options.set_global_options(
@@ -23,7 +25,7 @@ def get_doc_ref(collection: str, document: str) -> DocumentReference:
     db: FireStoreClient = firestore.client()
     return db.collection(collection).document(document)
 
-@https_fn.on_call(cors=options.CorsOptions(cors_origins=["*"], cors_methods=["*"]))
+@https_fn.on_call(cors=options.CorsOptions(cors_origins=ALLOWED_HOSTS, cors_methods=["POST", "OPTIONS"]))
 def visit_count(req: https_fn.Request) -> https_fn.Response:
     logger.info("Visit count function triggered...")
 
@@ -38,7 +40,7 @@ def visit_count(req: https_fn.Request) -> https_fn.Response:
     return {"success": True, "count": count}
 
 
-@https_fn.on_call(cors=options.CorsOptions(cors_origins=["*"], cors_methods=["*"]))
+@https_fn.on_call(cors=options.CorsOptions(cors_origins=ALLOWED_HOSTS, cors_methods=["POST", "OPTIONS"]))
 def downloads_count(req: https_fn.Request) -> https_fn.Response:
     logger.info("Downloads count function triggered...")
 
@@ -57,7 +59,7 @@ def downloads_count(req: https_fn.Request) -> https_fn.Response:
     logger.info(f"New downloads count: {count}")
     return {"success": True, "count": count}
 
-@scheduler_fn.on_schedule(schedule="0 0 * * *") # Daily at midnight
+@scheduler_fn.on_schedule(schedule="0 0 * * *") # Daily at midnight UTC
 def ping_mongodb_cluster(event: scheduler_fn.ScheduledEvent) -> None:
     """
     Function to ping the MongoDB cluster to ensure it doesn't go idle.
