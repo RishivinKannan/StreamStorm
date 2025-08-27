@@ -1,6 +1,7 @@
-from typing import Callable
+from typing import Callable, Optional
 from logging import DEBUG, getLogger, Logger
 from psutil import virtual_memory
+from os import environ
 
 from sys import path
 path.append(".")
@@ -29,16 +30,20 @@ logger.setLevel(DEBUG)
 
 if CONFIG["ENV"] == "development":
     logger.debug("Instrumenting atatus")
+    
+    from dotenv import load_dotenv
+    load_dotenv()
+    
     from atatus import Client, get_client
     from atatus.contrib.starlette import create_client, Atatus
     
-    atatus_client: Client = get_client()
+    atatus_client: Optional[Client] = get_client()
     
     if atatus_client is None:
         atatus_client = create_client(
             {
-                'APP_NAME': 'StreamStormEngine',
-                'LICENSE_KEY': 'lic_apm_e9f8c52cb4b2439593c0ede154a933be',
+                'APP_NAME': environ.get('ATATUS_APP_NAME'),
+                'LICENSE_KEY': environ.get('ATATUS_LICENSE_KEY'),
                 'TRACING': True,
                 'ANALYTICS': True,
                 'ANALYTICS_CAPTURE_OUTGOING': True,
@@ -47,6 +52,7 @@ if CONFIG["ENV"] == "development":
                 'LOG_FILE': 'streamstorm.log'
             }
         )
+        
     logger.debug("Atatus client created")
     
 else:
