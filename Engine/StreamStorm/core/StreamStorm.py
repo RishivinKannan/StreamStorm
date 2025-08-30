@@ -71,9 +71,8 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
         
         logger.debug(f"StreamStorm initialized with url: {self.url}, channels: {self.channels}, "
                     f"messages count: {len(self.messages)}, slow_mode: {self.slow_mode}s, "
-                    f"background: {self.background}")
+                    f"background: {self.background}")        
         
-        clear_ram()
         
     async def set_slow_mode(self, slow_mode: int) -> None:
         self.slow_mode = slow_mode
@@ -230,8 +229,9 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
     def get_start_storm_wait_time(self, index, no_of_profiles, slow_mode) -> float:
         return index * (slow_mode / no_of_profiles)
 
-    async def start(self) -> None:       
+    async def start(self) -> None:  
         
+        clear_ram()       
 
         self.ready_event.clear()  # Wait for the ready event to be set before starting the storming
         self.ready_to_storm_instances = 0
