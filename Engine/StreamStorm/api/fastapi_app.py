@@ -95,7 +95,8 @@ app.include_router(profile_router)
 @app.get("/")
 async def root() -> dict[str, str]:
     return {
-        "message": "I am the StreamStorm Server"
+        "success": True,
+        "message": "I am the StreamStorm Engine"
     }
     
     
