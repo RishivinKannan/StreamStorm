@@ -9,7 +9,7 @@ from ...core.StreamStorm import StreamStorm
 
 logger: Logger = getLogger("fastapi." + __name__)
 
-repeated_paths: set[str] = {
+polling_paths: set[str] = {
     "/engine-status",
     "/get_ram_info"
 }
@@ -20,7 +20,7 @@ class LogRequestMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next) -> Response:
         path: str = request.url.path
         
-        if path not in repeated_paths:
+        if path not in polling_paths:
             
             client_ip: str = request.client.host if request.client else "unknown"
             url: str = str(request.url)
@@ -52,12 +52,12 @@ class LogRequestMiddleware(BaseHTTPMiddleware):
 
 
 storm_controls_endpoints: set[str] = {
-    "/pause",
-    "/resume",
-    "/change_messages",
-    "/start_storm_dont_wait",
-    "/change_slow_mode",
-    "/start_more_channels",
+    "/storm/pause",
+    "/storm/resume",
+    "/storm/change_messages",
+    "/storm/start_storm_dont_wait",
+    "/storm/change_slow_mode",
+    "/storm/start_more_channels",
 }
 
 class RequestValidationMiddleware(BaseHTTPMiddleware):
@@ -74,9 +74,9 @@ class RequestValidationMiddleware(BaseHTTPMiddleware):
 
         if method == "POST":
             if path in (
-                "/storm",
-                "/create_profiles",
-                "/delete_all_profiles",
+                "/storm/storm",
+                "/profiles/create_profiles",
+                "/profiles/delete_all_profiles",
             ):
                 if environ.get("BUSY") == "1":
                     return JSONResponse(
