@@ -74,7 +74,7 @@ class RequestValidationMiddleware(BaseHTTPMiddleware):
 
         if method == "POST":
             if path in (
-                "/storm/storm",
+                "/storm/start",
                 "/profiles/create_profiles",
                 "/profiles/delete_all_profiles",
             ):
