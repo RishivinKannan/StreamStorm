@@ -16,7 +16,7 @@ from webview import create_window, start
 
 from StreamStorm import app
 from StreamStorm.utils.CustomLogger import CustomLogger
-from config.config import CONFIG
+from config.config import CONFIG 
 
 CustomLogger().setup_streamstorm_logging()
 
