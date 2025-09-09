@@ -1,1 +1,1 @@
-# here add the models like groq, openai, ollama .
+# here add the models like groq, openai, ollama
