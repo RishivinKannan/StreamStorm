@@ -20,10 +20,10 @@ from config.config import CONFIG
 
 CustomLogger().setup_streamstorm_logging()
 
-logger: Logger = getLogger("streamstorm." + __name__)
+logger: Logger = getLogger("streamstorm." + __name__) 
 
 def serve_api() -> None:
-    logger.debug("Starting API Server")
+    logger.debug("Starting API Server") 
     run_uvicorn(
         app, 
         host="0.0.0.0", 
