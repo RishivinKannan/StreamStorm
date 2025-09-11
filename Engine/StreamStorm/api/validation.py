@@ -20,7 +20,7 @@ def Validate(data: dict, validator: BaseModel) -> dict:
 
 class StormData(BaseModel):
     
-    model_config = ConfigDict(strict=True)
+    model_config = ConfigDict(strict=True) 
     
     video_url: str = Field(..., description="Video url", validation_alias=AliasChoices("video_url","videoUrl"))
     chat_url: str = Field(... , description="Chat url", validation_alias=AliasChoices("chat_url","chatUrl"))
