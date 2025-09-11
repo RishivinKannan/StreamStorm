@@ -34,6 +34,22 @@
                     45
                 ],
                 "background": false
+            },
+            {
+                "id": "valid_data_3",
+                "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "chatUrl": "https://www.youtube.com/live_chat?v=dQw4w9WgXcQ",
+                "messages": [
+                    "Hi"
+                ],
+                "subscribe": true,
+                "subscribeAndWait": true,
+                "subscribeAndWaitTime": 25,
+                "slowMode": 10,
+                "channels": [
+                    45
+                ],
+                "background": false
             }
         ],
         "missing_data": [

@@ -1,6 +1,6 @@
 from typing import Self, Optional
 from warnings import deprecated
-from pydantic import BaseModel, ConfigDict, field_validator, model_validator, StrictInt, Field
+from pydantic import BaseModel, ConfigDict, field_validator, model_validator, StrictInt, Field, AliasChoices
 from logging import getLogger, Logger
 
 logger: Logger = getLogger("fastapi." + __name__)
@@ -22,13 +22,13 @@ class StormData(BaseModel):
     
     model_config = ConfigDict(strict=True)
     
-    video_url: str = Field(..., description="Video url must start with 'https://www.youtube.com/watch?v=' and end with the video id")
-    chat_url: str = Field(... , description="Chat url must start with 'https://www.youtube.com/live_chat?v=' and end with the video id")
+    video_url: str = Field(..., description="Video url must start with 'https://www.youtube.com/watch?v=' and end with the video id", validation_alias=AliasChoices("video_url","videoUrl"))
+    chat_url: str = Field(... , description="Chat url must start with 'https://www.youtube.com/live_chat?v=' and end with the video id", validation_alias=AliasChoices("chat_url","chatUrl"))
     messages: list[str] = Field(..., description="Messages cannot be empty and messages must be list of strings")
     subscribe: bool = Field(... , description="Subscribe must be a boolean")
-    subscribe_and_wait: bool = Field(..., description="Subscribe and wait must be a boolean")
-    subscribe_and_wait_time: StrictInt = Field(... , ge=0, description="Subscribe and wait time must be an integer and at least 0")
-    slow_mode: int = Field(... , ge=1, description="Slow mode must be an integer and at least 1")
+    subscribe_and_wait: bool = Field(..., description="Subscribe and wait must be a boolean", validation_alias=AliasChoices("subscribe_and_wait","subscribeAndWait"))
+    subscribe_and_wait_time: StrictInt = Field(... , ge=0, description="Subscribe and wait time must be an integer and at least 0", validation_alias=AliasChoices("subscribe_and_wait_time","subscribeAndWaitTime"))
+    slow_mode: int = Field(... , ge=1, description="Slow mode must be an integer and at least 1", validation_alias=AliasChoices("slow_mode","slowMode"))
     channels: list[int] = Field(... , description="Channels cannot be empty and channels must be integers")
     background: bool = Field(... , description="Background must be a boolean")
 
@@ -114,7 +114,7 @@ class ChangeMessagesData(BaseModel):
     
 class ChangeSlowModeData(BaseModel):
     # slow_mode: int = Field(... , ge=1, description="Slow mode must be an integer and at least 1")
-    slow_mode: int
+    slow_mode: int = Field(..., description="Slow mode must be an integer and at least 1", ge=1, validation_alias=AliasChoices("slow_mode","slowMode"))
     @field_validator("slow_mode")
     def validate_slow_mode(cls, value: int) -> int:
         if not isinstance(value, int):
