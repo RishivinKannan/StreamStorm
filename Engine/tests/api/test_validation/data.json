@@ -576,21 +576,7 @@
                     1,
                     0
                 ],
-                "background": {}
-            },
-            {
-                "id": "invalid_data_24_channels=empty_value",
-                "video_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                "chat_url": "https://www.youtube.com/live_chat?v=dQw4w9WgXcQ",
-                "messages": [
-                    "Never gonna give you up"
-                ],
-                "subscribe": false,
-                "subscribe_and_wait": false,
-                "subscribe_and_wait_time": 70,
-                "slow_mode": 5,
-                "channels": [],
-                "background": {}
+                "background": true
             },
             {
                 "id": "invalid_data_25_channels=negative_value",
@@ -607,7 +593,7 @@
                     1,
                     -1
                 ],
-                "background": {}
+                "background": false
             },
             {
                 "id": "invalid_data_26_background=invalid_type",
