@@ -611,6 +611,23 @@
                     2
                 ],
                 "background": {}
+            },
+            {
+                "id": "invalid_data_27_slow_mode=zero_value",
+                "video_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "chat_url": "https://www.youtube.com/live_chat?v=dQw4w9WgXcQ",
+                "messages": [
+                    "Never gonna give you up"
+                ],
+                "subscribe": false,
+                "subscribe_and_wait": false,
+                "subscribe_and_wait_time": 70,
+                "slow_mode": 0,
+                "channels": [
+                    1,
+                    2
+                ],
+                "background": true
             }
         ]
     }

@@ -1,6 +1,6 @@
 from typing import Self, Optional
 from warnings import deprecated
-from pydantic import BaseModel, ConfigDict, field_validator, model_validator, StrictInt
+from pydantic import BaseModel, ConfigDict, field_validator, model_validator, StrictInt, Field
 from logging import getLogger, Logger
 
 logger: Logger = getLogger("fastapi." + __name__)
@@ -22,15 +22,15 @@ class StormData(BaseModel):
     
     model_config = ConfigDict(strict=True)
     
-    video_url: str
-    chat_url: str
-    messages: list[str]
-    subscribe: bool
-    subscribe_and_wait: bool
-    subscribe_and_wait_time: StrictInt
-    slow_mode: int
-    channels: list[int]
-    background: bool
+    video_url: str = Field(..., description="Video url must start with 'https://www.youtube.com/watch?v=' and end with the video id")
+    chat_url: str = Field(... , description="Chat url must start with 'https://www.youtube.com/live_chat?v=' and end with the video id")
+    messages: list[str] = Field(..., description="Messages cannot be empty and messages must be list of strings")
+    subscribe: bool = Field(... , description="Subscribe must be a boolean")
+    subscribe_and_wait: bool = Field(..., description="Subscribe and wait must be a boolean")
+    subscribe_and_wait_time: StrictInt = Field(... , ge=0, description="Subscribe and wait time must be an integer and at least 0")
+    slow_mode: int = Field(... , ge=1, description="Slow mode must be an integer and at least 1")
+    channels: list[int] = Field(... , description="Channels cannot be empty and channels must be integers")
+    background: bool = Field(... , description="Background must be a boolean")
 
     @field_validator("video_url")
     def validate_video_url(cls, value: str) -> str:
@@ -69,21 +69,7 @@ class StormData(BaseModel):
         
         return value
 
-    @field_validator("subscribe_and_wait_time")
-    def validate_subscribe_and_wait_time(cls, value: int) -> int:
-        
-        if value < 0:
-            raise ValueError("Subscribe and wait time cannot be negative")
-        
-        return value
 
-    @field_validator("slow_mode")
-    def validate_slow_mode(cls, value: int) -> int:
-        
-        if value < 0:
-            raise ValueError("Slow mode cannot be negative")
-        
-        return value
     
     @field_validator("channels")
     def validate_channels(cls, value: list[int]) -> list[int]:
@@ -98,10 +84,6 @@ class StormData(BaseModel):
 
         return value
     
-    @model_validator(mode = 'before')
-    def before_validator(self) -> Self:
-        return self
-    
     
     @model_validator(mode = 'after')
     def validate_data(self) -> Self:
@@ -114,14 +96,8 @@ class StormData(BaseModel):
 
 
 class ProfileData(BaseModel):
-    count: StrictInt = 1
+    count: StrictInt = Field(... , ge=1, description="Count must be an integer and at least 1")
     
-    @field_validator("count")
-    def validate_count(cls, value: Optional[int]) -> Optional[int]:
-        if value is not None and value <= 0:
-            raise ValueError("count cannot be negative")
-        
-        return value
     
     
 class ChangeMessagesData(BaseModel):
@@ -137,8 +113,8 @@ class ChangeMessagesData(BaseModel):
         return value
     
 class ChangeSlowModeData(BaseModel):
+    # slow_mode: int = Field(... , ge=1, description="Slow mode must be an integer and at least 1")
     slow_mode: int
-    
     @field_validator("slow_mode")
     def validate_slow_mode(cls, value: int) -> int:
         if not isinstance(value, int):
