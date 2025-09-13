@@ -1,4 +1,4 @@
-from asyncio import Lock
+from asyncio import Lock, create_task
 from logging import getLogger, Logger
 from playwright.async_api import (
     async_playwright,
@@ -6,7 +6,6 @@ from playwright.async_api import (
     TimeoutError as PlaywrightTimeoutError,
 )
 from playwright.async_api._generated import Browser, BrowserContext, Locator, Page
-from playwright._impl._errors import TargetClosedError
 
 from .BrowserAutomator import BrowserAutomator
 from ..utils.exceptions import BrowserClosedError, ElementNotFound
@@ -25,7 +24,6 @@ class Playwright(BrowserAutomator):
     def __init__(self, user_data_dir: str, background: bool) -> None:
         self.user_data_dir: str = user_data_dir
         self.background: bool = background
-        self.__instance_alive: bool = True
 
     async def __get_chromium_options(self) -> dict[str, str | bool | list[str]]:
         options: dict[str, str | bool | list[str]] = {
@@ -110,10 +108,10 @@ class Playwright(BrowserAutomator):
         )
 
         self.page: Page = await self.browser.new_page()
-        await self.__close_about_blank_page()
+        create_task(self.__close_about_blank_page())
 
-        self.page.set_default_navigation_timeout(15000)
-        self.page.set_default_timeout(15000)
+        self.page.set_default_navigation_timeout(45000)
+        self.page.set_default_timeout(45000)
         
         browser_version: str = await self.__get_browser_version(self.playwright)
         logger.debug(f"[{self.index}] [{self.channel_name}] Browser version: {browser_version}")
@@ -125,23 +123,6 @@ class Playwright(BrowserAutomator):
 
         self._attach_error_listeners()
         logger.debug(f"[{self.index}] [{self.channel_name}] Browser setup completed")
-
-    async def is_instance_alive(self) -> bool:
-        try:
-            if not self.browser.browser.is_connected(): # test 1
-                self.__instance_alive = False
-                logger.info(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: browser.browser.is_connected")
-
-        except TargetClosedError as _:
-            self.__instance_alive = False
-            logger.info(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: TargetClosedError")
-
-        except Exception as e:
-            logger.error(f"[{self.index}] [{self.channel_name}] : Error occurred while checking StreamStorm instance: {type(e).__name__}, {e}")
-            logger.info(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: Exception")
-            self.__instance_alive = False
-        
-        return self.__instance_alive
 
 
     async def go_to_page(self, url: str) -> None:

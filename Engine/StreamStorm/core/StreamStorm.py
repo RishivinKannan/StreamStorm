@@ -142,23 +142,29 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
             logger.debug(f"[{index}] [{channel_name}] Attempting login...")
             logged_in: bool = await SI.login()
             
-            self.run_stopper_event.set()  # Set the event to signal that the run stopper can for instance errors
+            self.run_stopper_event.set()  # Set the event to signal that stopper can check for instance errors
             logger.debug(f"[{index}] [{channel_name}] Run stopper event set")
             
             if not logged_in:
                 logger.debug(f"[{index}] [{channel_name}] Login failed - removing from instances")
+                
                 self.total_instances -= 1
                 self.assigned_profiles[profile_dir_name] = None
+                
                 StreamStorm.each_channel_instances.remove(SI)
+                
                 logger.error(f"[{index}] [{channel_name}] : Login failed")
+                
                 return
 
             logger.debug(f"[{index}] [{channel_name}] Login successful")
 
             if self.subscribe[0]:
                 logger.debug(f"[{index}] [{channel_name}] Navigating to subscribe URL: {self.url}")
+                
                 await SI.go_to_page(self.url)
                 await SI.subscribe_to_channel()
+                
                 logger.debug(f"[{index}] [{channel_name}] Subscription attempt completed")
 
             await SI.page.set_viewport_size({"width": 500, "height": 900})

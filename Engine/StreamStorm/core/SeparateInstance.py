@@ -1,6 +1,8 @@
 from asyncio import sleep
 from logging import getLogger, Logger
+from typing import Optional
 from playwright.async_api._generated import Locator
+from playwright._impl._errors import TargetClosedError
 
 from ..utils.exceptions import BrowserClosedError
 from .Playwright import Playwright
@@ -19,6 +21,8 @@ class SeparateInstance(Playwright):
         super().__init__(user_data_dir, background)
         
         self.index: int = index
+        self.__instance_alive: bool = True
+        self.__logged_in: Optional[bool] = None
 
 
     async def login(self) -> bool:        
@@ -39,11 +43,36 @@ class SeparateInstance(Playwright):
             await self.__click_channel(self.index)
 
             logger.debug(f"[{self.index}] [{self.channel_name}] Login completed successfully")
+            
+            self.__logged_in = True
             return True
         
         except BrowserClosedError as _:  
             logger.error(f"[{self.index}] [{self.channel_name}] Login failed due to browser closure")
+            
+            self.__logged_in = False
             return False
+        
+    async def is_instance_alive(self) -> bool:
+        
+        if self.__logged_in is None:
+            return True
+        
+        try:
+            if not self.browser.browser.is_connected(): # test 1
+                self.__instance_alive = False
+                logger.info(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: browser.browser.is_connected")
+
+        except TargetClosedError as _:
+            self.__instance_alive = False
+            logger.info(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: TargetClosedError")
+
+        except Exception as e:
+            logger.error(f"[{self.index}] [{self.channel_name}] : Error occurred while checking StreamStorm instance: {type(e).__name__}, {e}")
+            logger.info(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: Exception")
+            self.__instance_alive = False
+        
+        return self.__instance_alive
 
 
     async def __click_channel(self, index: int) -> None:
