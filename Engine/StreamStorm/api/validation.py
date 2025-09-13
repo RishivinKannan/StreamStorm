@@ -41,8 +41,8 @@ class StormData(BaseModel):
             raise ValueError("Invalid video url")
                 
         video_id: str = value.split("https://www.youtube.com/watch?v=")[1]
-        video_id = id.split("&")[0]
-        video_id = id.strip("/")
+        video_id = video_id.split("&")[0]
+        video_id = video_id.strip("/")
         
         if video_id == "":
             raise ValueError("Invalid video url")
