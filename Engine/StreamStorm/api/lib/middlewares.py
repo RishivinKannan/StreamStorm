@@ -7,33 +7,30 @@ from fastapi.responses import JSONResponse
 
 from ...core.StreamStorm import StreamStorm
 
-logger: Logger = getLogger("fastapi." + __name__)
+logger: Logger = getLogger(f"fastapi.{__name__}")
 
-polling_paths: set[str] = {
-    "/engine-status",
-    "/get_ram_info"
-}
+polling_paths: set[str] = {"/engine-status", "/get_ram_info"}
+
 
 class LogRequestMiddleware(BaseHTTPMiddleware):
     __slots__: tuple[str, ...] = ()
-    
+
     async def dispatch(self, request: Request, call_next) -> Response:
         path: str = request.url.path
-        
+
         if path not in polling_paths:
-            
             client_ip: str = request.client.host if request.client else "unknown"
             url: str = str(request.url)
             method: str = request.method
             headers: dict = dict(request.headers)
-            
+
             try:
                 body: bytes = await request.body()
                 body_str: str = body.decode("utf-8", errors="replace")
-                
+
             except Exception:
                 body_str: str = "<unable to decode>"
-                
+
             logger.info(
                 "[REQUEST RECEIVED]\n"
                 f"IP: {client_ip}\n"
@@ -41,13 +38,14 @@ class LogRequestMiddleware(BaseHTTPMiddleware):
                 f"Path: {path}\n"
                 f"Method: {method}\n"
                 "Headers:\n"
-                + "\n".join([f"  {k}: {v}" for k, v in headers.items()]) + "\n"
+                + "\n".join([f"  {k}: {v}" for k, v in headers.items()])
+                + "\n"
                 "Body:\n"
                 f"{body_str if body_str.strip() else '  <empty>'}\n"
             )
-            
+
         response: Response = await call_next(request)
-        
+
         return response
 
 
@@ -60,12 +58,14 @@ storm_controls_endpoints: set[str] = {
     "/storm/start_more_channels",
 }
 
+
 class RequestValidationMiddleware(BaseHTTPMiddleware):
     __slots__: tuple[str, ...] = ()
+
     async def dispatch(self, request: Request, call_next) -> Response:
         path: str = request.url.path
         method: str = request.method
-        
+
         cors_headers: dict[str, str] = {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "*",
@@ -88,7 +88,7 @@ class RequestValidationMiddleware(BaseHTTPMiddleware):
                         headers=cors_headers,
                     )
 
-            if path in storm_controls_endpoints:
+            elif path in storm_controls_endpoints:
                 if StreamStorm.ss_instance is None:
                     return JSONResponse(
                         status_code=409,
@@ -99,17 +99,19 @@ class RequestValidationMiddleware(BaseHTTPMiddleware):
                         headers=cors_headers,
                     )
 
-        if method == "GET":
-            if path in storm_controls_endpoints:
-                if StreamStorm.ss_instance is None:
-                    return JSONResponse(
-                        status_code=409,
-                        content={
-                            "success": False,
-                            "message": "No storm is running. Start a storm first.",
-                        },
-                        headers=cors_headers,
-                    )
+        if (
+            method == "GET"
+            and path in storm_controls_endpoints
+            and StreamStorm.ss_instance is None
+        ):
+            return JSONResponse(
+                status_code=409,
+                content={
+                    "success": False,
+                    "message": "No storm is running. Start a storm first.",
+                },
+                headers=cors_headers,
+            )
 
         response: JSONResponse = await call_next(request)
 

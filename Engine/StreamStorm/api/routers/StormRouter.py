@@ -1,4 +1,4 @@
-from logging import getLogger, Logger
+from logging import getLogger, Logger, warn
 from os import environ
 from os.path import join, exists
 from json import JSONDecodeError, loads
@@ -18,7 +18,7 @@ from ..validation import (
     GetChannelsData
 )
 
-logger: Logger = getLogger("fastapi." + __name__)
+logger: Logger = getLogger(f"fastapi.{__name__}")
 
 router: APIRouter = APIRouter(prefix="/storm")
 
@@ -40,10 +40,10 @@ async def start(data: StormData) -> JSONResponse:
         data.video_url,
         data.chat_url,
         data.messages,
+        data.channels,
         (data.subscribe, data.subscribe_and_wait),
         data.subscribe_and_wait_time,
         data.slow_mode,
-        data.channels,
         data.background
     )
 
@@ -76,8 +76,8 @@ async def stop() -> JSONResponse:
         try:
             if instance.page:
                 await instance.page.close()
-        except Exception:
-            pass # log.warn
+        except Exception as e:
+            logger.warning(f"Error occurred while closing browser: {e}")
 
     await gather(*(close_browser(i) for i in StreamStorm.each_channel_instances))
 
@@ -246,7 +246,7 @@ async def get_channels_data(data: GetChannelsData) -> JSONResponse:
         response_data["channels"] = config["channels"]
         response_data["activeChannels"] = active_channels
 
-    response_data.update({"success": True})
+    response_data["success"] = True
 
     return JSONResponse(
         status_code=200,

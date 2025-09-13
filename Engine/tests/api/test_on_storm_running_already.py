@@ -6,7 +6,7 @@ from pytest_mock import MockerFixture
 
 from fastapi.testclient import TestClient
 
-logger: Logger = getLogger("tests." + __name__)
+logger: Logger = getLogger(f"tests.{__name__}")
 
 @fixture(autouse=True)
 def set_ss_instance(mocker: MockerFixture, monkeypatch: MonkeyPatch):

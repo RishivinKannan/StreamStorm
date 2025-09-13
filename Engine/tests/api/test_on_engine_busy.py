@@ -5,7 +5,7 @@ from pytest import MonkeyPatch, fixture
 from fastapi.testclient import TestClient
 from fastapi.responses import Response
 
-logger: Logger = getLogger("tests." + __name__)
+logger: Logger = getLogger(f"tests.{__name__}")
 
 @fixture(autouse=True)
 def set_engine_busy(monkeypatch: MonkeyPatch) -> None:

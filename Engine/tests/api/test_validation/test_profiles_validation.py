@@ -8,7 +8,8 @@ from pytest_mock import MockerFixture
 from fastapi import Response
 from fastapi.testclient import TestClient
 
-logger: Logger = getLogger("tests." + __name__)
+logger: Logger = getLogger(f"tests.{__name__}")
+
 
 COUNT_VALUES: tuple[tuple[int, int], ...] = (
     (-1, 422),

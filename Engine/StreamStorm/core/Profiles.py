@@ -7,7 +7,7 @@ from logging import Logger, getLogger
 
 from .UndetectedDrivers import UndetectedDrivers
 
-logger: Logger = getLogger("streamstorm." + __name__)
+logger: Logger = getLogger(f"streamstorm.{__name__}")
 
 class Profiles:
     __slots__: tuple[str, ...] = ('app_data_dir', 'profiles_dir', 'base_profile_dir')
@@ -43,7 +43,7 @@ class Profiles:
 
     def get_profile_dir(self, index: int, profiles: list[str]) -> str:
 
-        index = index % len(profiles)
+        index %= len(profiles)
         tempdir: str = join(self.profiles_dir, profiles[index])
 
         return tempdir

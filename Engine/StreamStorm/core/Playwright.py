@@ -11,7 +11,7 @@ from playwright._impl._errors import TargetClosedError
 from .BrowserAutomator import BrowserAutomator
 from ..utils.exceptions import BrowserClosedError, ElementNotFound
 
-logger: Logger = getLogger("streamstorm." + __name__)
+logger: Logger = getLogger(f"streamstorm.{__name__}")
 
 class Playwright(BrowserAutomator):
     __slots__: tuple[str, ...] = (
@@ -155,7 +155,7 @@ class Playwright(BrowserAutomator):
             await self.page.close(
                 reason="Browser closed due to timeout error"
             )
-            raise BrowserClosedError
+            raise BrowserClosedError from e
 
     async def find_element(self, selector: str, selector_name: str) -> Locator:
         """Find an element on the page."""
@@ -165,9 +165,9 @@ class Playwright(BrowserAutomator):
         try:
             await element.wait_for(state="visible")
             logger.debug(f"[{self.index}] [{self.channel_name}] Element found: {selector_name} : {selector}")
-        except PlaywrightTimeoutError:
+        except PlaywrightTimeoutError as e:
             logger.debug(f"[{self.index}] [{self.channel_name}] Element not found: {selector_name} : {selector}")
-            raise ElementNotFound
+            raise ElementNotFound from e
 
         return element
 
@@ -179,16 +179,13 @@ class Playwright(BrowserAutomator):
         try:
             element: Locator = await self.find_element(selector, selector_name)
             await element.click()
-        except ElementNotFound:
-            if for_subscribe:
-                # Already Subscribed, thats why the element is not found
-                pass
-            else:
+        except ElementNotFound as e:
+            if not for_subscribe:
                 await self.page.close(
                     reason="Browser closed due to element not found. Element: "
                     + selector
                 )
-                raise BrowserClosedError
+                raise BrowserClosedError from e
 
     async def type_and_enter(self, text_field: Locator, message: str) -> None:
         """Type a message into a text field and press enter."""

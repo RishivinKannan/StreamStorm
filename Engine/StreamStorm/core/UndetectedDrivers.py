@@ -4,6 +4,7 @@ from time import sleep
 from warnings import deprecated
 from undetected_chromedriver import Chrome
 from logging import getLogger, Logger
+from contextlib import suppress
 
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, NoSuchWindowException, ElementNotInteractableException
@@ -13,7 +14,7 @@ from selenium.webdriver.remote.webelement import WebElement
 
 from .Selenium import Selenium
 
-logger: Logger = getLogger("streamstorm." + __name__)
+logger: Logger = getLogger(f"streamstorm.{__name__}")
 
 class UndetectedDrivers(Selenium):
     __slots__: tuple[str, ...] = ('base_profile_dir', 'youtube_login_url', 'config_json_path')
@@ -25,18 +26,18 @@ class UndetectedDrivers(Selenium):
         
         super().__init__(base_profile_dir, background=False)
 
-    def initiate_config_json(self, no_of_channels: int = 0, channels: dict[int, dict[str, str]] = {}) -> None:
+    def initiate_config_json(self, no_of_channels: int = 0, channels: dict[int, dict[str, str]] = None) -> None:
 
         data: dict = {
             "no_of_channels": no_of_channels,
-            "channels": channels
+            "channels": channels or {}
         }
         
         try:
             with open(self.config_json_path, "w", encoding="utf-8") as file:
                 dump(data, file, indent=4)
         except Exception as e:
-            raise RuntimeError(f"Failed to create config.json: {e}")  
+            raise RuntimeError(f"Failed to create config.json: {e}") from e
          
     @deprecated("Using user installed Chrome now.")
     def get_browser_path(self) -> str:
@@ -57,11 +58,9 @@ class UndetectedDrivers(Selenium):
 
     def get_total_channels(self) -> None:
         
-        try:
+        with suppress(NoSuchElementException, ElementNotInteractableException):
             # select first channel if popup appears
             self.find_and_click_element(By.XPATH, "//ytd-popup-container//*[@id='contents']/ytd-account-item-renderer[1]", for_profiles_init=True)
-        except (NoSuchElementException, ElementNotInteractableException):
-            pass
         
         self.find_and_click_element(By.XPATH, '//*[@id="avatar-btn"]')
         self.find_and_click_element(By.XPATH, "//*[text()='Switch account']")
@@ -130,8 +129,10 @@ class UndetectedDrivers(Selenium):
                     except NoSuchElementException:
                         self.driver.get(self.youtube_login_url)
                         
-        except (NoSuchWindowException, AttributeError):
-            raise RuntimeError("The Browser window was closed or not found. Try again.")
+        except (NoSuchWindowException, AttributeError) as e:
+            raise RuntimeError("The Browser window was closed or not found. Try again.") from e
+        
+
 
 
 __all__: list[str] = ["UndetectedDrivers"]

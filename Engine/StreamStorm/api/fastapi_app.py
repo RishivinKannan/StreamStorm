@@ -26,20 +26,20 @@ from .routers.ProfileRouter import router as profile_router
 
 CustomLogger().setup_fastapi_logging()
 
-logger: Logger = getLogger("fastapi." + __name__)
+logger: Logger = getLogger(f"fastapi.{__name__}")
 logger.setLevel(DEBUG)
 
 if CONFIG["ENV"] == "development":
     logger.debug("Instrumenting atatus")
-    
+
     from dotenv import load_dotenv
     load_dotenv()
-    
+
     from atatus import Client, get_client
     from atatus.contrib.starlette import create_client, Atatus
-    
+
     atatus_client: Optional[Client] = get_client()
-    
+
     if atatus_client is None:
         atatus_client = create_client(
             {
@@ -53,9 +53,9 @@ if CONFIG["ENV"] == "development":
                 'LOG_FILE': 'streamstorm.log'
             }
         )
-        
+
     logger.debug("Atatus client created")
-    
+
 else:
     logger.debug("Skipping atatus instrumentation in production")
 
@@ -117,12 +117,12 @@ async def get_ram_info() -> JSONResponse:
     
 @app.get("/engine-status")
 async def status() -> JSONResponse:
-    response: dict = {}
+    response: dict = {
+        "storm_in_progress": False
+    }
 
     if StreamStorm.ss_instance is not None:
         response["storm_in_progress"] = True
-    else:
-        response["storm_in_progress"] = False
 
     return JSONResponse(
         status_code=200, 

@@ -4,7 +4,7 @@ from logging import getLogger, Logger
 
 from ...core.StreamStorm import StreamStorm
 
-logger: Logger = getLogger("fastapi." + __name__)
+logger: Logger = getLogger(f"fastapi.{__name__}")
 
 async def background_storm_stopper() -> NoReturn:
     while True:
@@ -17,7 +17,7 @@ async def background_storm_stopper() -> NoReturn:
             
             statuses: list[bool] = [await instance.is_instance_alive() for instance in StreamStorm.each_channel_instances.copy()]
             
-            if len(statuses) == 0:
+            if not len(statuses):
                 logger.info("StreamStorm instance is marked dead by: Status length checker")
 
             if not any(statuses):
