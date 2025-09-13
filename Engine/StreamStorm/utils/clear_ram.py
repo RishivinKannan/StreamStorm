@@ -3,7 +3,7 @@ from subprocess import Popen
 
 from logging import getLogger, Logger
 
-logger: Logger = getLogger("streamstorm." + __name__)
+logger: Logger = getLogger(f"streamstorm.{__name__}")
 
 def clear_ram() -> None:
     rammap_path: str = environ.get("rammap_path")

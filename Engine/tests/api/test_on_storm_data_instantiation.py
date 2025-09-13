@@ -1,4 +1,3 @@
-from re import S
 from unittest.mock import AsyncMock
 from pytest import fixture
 from pytest_mock import MockerFixture

@@ -7,7 +7,7 @@ from pytest_mock import MockerFixture
 from fastapi.testclient import TestClient
 from fastapi.responses import Response
 
-logger: Logger = getLogger("tests." + __name__)
+logger: Logger = getLogger(f"tests.{__name__}")
 
 def test_root(client: TestClient) -> NoReturn:
 

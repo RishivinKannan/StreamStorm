@@ -5,7 +5,7 @@ from playwright.async_api._generated import Locator
 from ..utils.exceptions import BrowserClosedError
 from .Playwright import Playwright
 
-logger: Logger = getLogger("streamstorm." + __name__)
+logger: Logger = getLogger(f"streamstorm.{__name__}")
 
 class SeparateInstance(Playwright):
     __slots__: tuple[str, ...] = ('channel_name', 'index')

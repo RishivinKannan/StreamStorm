@@ -28,21 +28,8 @@ class CustomLogger:
         env: str = CONFIG.get("ENV")
         handler: Handler = NullHandler()
 
-        if env == "production":
-            
-            # formatter: Formatter = Formatter(
-            #     "[%(asctime)s] [%(levelname)s] [%(name)s] %(message)s",
-            #     datefmt="%m/%d/%y %H:%M:%S"
-            # )
-
-            # handler: Handler = StreamHandler()
-            # handler.setFormatter(formatter)
-            
-            pass # No console handler is required in production
-            
-        elif env == "development":           
-
-            handler: Handler = RichHandler(
+        if env == "development":
+            handler = RichHandler(
                 rich_tracebacks=True,
                 markup=False,
                 show_time=True,
@@ -50,12 +37,7 @@ class CustomLogger:
                 show_level=True,
                 enable_link_path=True
             )
-        
-        else: 
-            pass
-        
-        
-        
+
         return handler
     
     def __get_file_handler(self) -> FileHandler:

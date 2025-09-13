@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 from ..validation import ProfileData
 from ...core.Profiles import Profiles
 
-logger: Logger = getLogger("fastapi." + __name__)
+logger: Logger = getLogger(f"fastapi.{__name__}")
 
 router: APIRouter = APIRouter(prefix="/profiles")
 

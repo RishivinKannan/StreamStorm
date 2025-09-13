@@ -8,6 +8,8 @@ from http.client import RemoteDisconnected
 from urllib3.exceptions import ProtocolError, ReadTimeoutError
 from aiofiles import open as aio_open
 from logging import getLogger, Logger
+from contextlib import suppress
+
 
 from playwright.async_api import (
     Error as PlaywrightError, 
@@ -20,7 +22,7 @@ from .SeparateInstance import SeparateInstance
 from .Profiles import Profiles
 from ..utils.clear_ram import clear_ram
 
-logger: Logger = getLogger("streamstorm." + __name__)
+logger: Logger = getLogger(f"streamstorm.{__name__}")
 
 class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothing
     __slots__: tuple[str, ...] = (
@@ -37,11 +39,11 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
         self,
         url: str,
         chat_url: str,
-        messages: list[str] = ["Hello", "Hi"],
+        messages: list[str],
+        channels: list[int],
         subscribe: tuple[bool, bool] = (False, False),
         subscribe_and_wait_time: int = 70,
         slow_mode: int = 0,
-        channels: list[int] = [],
         background: bool = True
     ) -> None:
         
@@ -89,9 +91,9 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
         try:
             async with aio_open(join(self.profiles_dir, "config.json"), "r", encoding="utf-8") as file:
                 data: dict = loads(await file.read()) # We are using loads instead of load to avoid blocking the event loop
-        except (FileNotFoundError, PermissionError, UnicodeDecodeError, JSONDecodeError):
+        except (FileNotFoundError, PermissionError, UnicodeDecodeError, JSONDecodeError) as e:
             logger.debug("Failed to read config.json - profiles not created yet")
-            raise SystemError("Create profiles first.")
+            raise SystemError("Create profiles first.") from e
             
         no_of_channels: int = data.get("no_of_channels", 0)
 
@@ -106,11 +108,12 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
     
     async def get_active_channels(self) -> list[int]:
         active_channels: list[int] = []
-        
-        for channel_index in self.assigned_profiles.values():
-            if channel_index is not None:
-                active_channels.append(channel_index)
-                
+
+        active_channels.extend(
+            channel_index
+            for channel_index in self.assigned_profiles.values()
+            if channel_index is not None
+        )
         return active_channels
         
     async def EachChannel(self, index: int, profile_dir: str, wait_time: float = 0) -> None:
@@ -198,10 +201,15 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
                     except PlaywrightError as e:
                         logger.error(f"[{index}] [{channel_name}] : Error closing page: {e}")
 
-                    try:
+                    # try:
+                    #     StreamStorm.each_channel_instances.remove(SI)
+                    # except ValueError:
+                    #     pass
+                    
+                    with suppress(ValueError):
                         StreamStorm.each_channel_instances.remove(SI)
-                    except ValueError:
-                        pass
+                        logger.debug(f"[{index}] [{channel_name}] : Removed from instances")
+                        
                     
                     break
                     
@@ -224,7 +232,6 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
             BrowserClosedError
         ) as e:
             logger.error(f"[{index}] [{channel_name}] : Error: {e}")
-            pass
         
     def get_start_storm_wait_time(self, index, no_of_profiles, slow_mode) -> float:
         return index * (slow_mode / no_of_profiles)

@@ -1,9 +1,9 @@
-from typing import Self, Optional
+from typing import Self
 from warnings import deprecated
 from pydantic import BaseModel, ConfigDict, field_validator, model_validator, StrictInt, Field, AliasChoices
 from logging import getLogger, Logger
 
-logger: Logger = getLogger("fastapi." + __name__)
+logger: Logger = getLogger(f"fastapi.{__name__}")
 
 @deprecated("Not used anymore since migrated to FastAPI")
 def Validate(data: dict, validator: BaseModel) -> dict:
@@ -16,7 +16,7 @@ def Validate(data: dict, validator: BaseModel) -> dict:
         errors: list = e.errors()
         if "ctx" in errors[0]:
             del errors[0]["ctx"]
-        raise Exception(f"Error in {errors[0]['loc'][0]} : {errors[0]['msg']}")
+        raise ValueError(f"Error in {errors[0]['loc'][0]} : {errors[0]['msg']}") from e
 
 class StormData(BaseModel):
     
@@ -40,14 +40,14 @@ class StormData(BaseModel):
         if " " in value:
             raise ValueError("Invalid video url")
                 
-        id: str = value.split("https://www.youtube.com/watch?v=")[1]
-        id = id.split("&")[0]
-        id = id.strip("/")
+        video_id: str = value.split("https://www.youtube.com/watch?v=")[1]
+        video_id = video_id.split("&")[0]
+        video_id = video_id.strip("/")
         
-        if id == "":
+        if video_id == "":
             raise ValueError("Invalid video url")
         
-        if len(id) != 11:
+        if len(video_id) != 11:
             raise ValueError("Invalid video url")
         
         return value
@@ -113,11 +113,10 @@ class ChangeMessagesData(BaseModel):
         return value
     
 class ChangeSlowModeData(BaseModel):
-    slow_mode: int = Field(..., description="Slow mode must be an integer and at least 1", ge=1, validation_alias=AliasChoices("slow_mode","slowMode"))
+    slow_mode: int = Field(..., description="New slow mode value", ge=1, validation_alias=AliasChoices("slow_mode","slowMode"))
+    
     @field_validator("slow_mode")
     def validate_slow_mode(cls, value: int) -> int:
-        if not isinstance(value, int):
-            raise ValueError("Slow mode must be an integer")
         
         if value < 1:
             raise ValueError("Slow mode must be at least 1")
@@ -125,7 +124,7 @@ class ChangeSlowModeData(BaseModel):
         return value
 
 class StartMoreChannelsData(BaseModel):
-    channels: list[int]
+    channels: list[StrictInt]
 
     @field_validator("channels")
     def validate_channels(cls, value: list[int]) -> list[int]:
@@ -152,7 +151,7 @@ class GetChannelsData(BaseModel):
 
     @field_validator("mode")
     def validate_mode(cls, value: str) -> str:
-        if value not in ["new", "add"]:
+        if value not in {"new", "add"}:
             raise ValueError("Invalid mode")
         
         return value
