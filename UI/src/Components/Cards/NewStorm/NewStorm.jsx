@@ -13,12 +13,14 @@ import fetchStatus from "../../../lib/FetchStatus";
 import { useStormData } from "../../../context/StormDataContext";
 import { analytics } from "../../../config/firebase";
 import { useCustomMUIProps } from "../../../context/CustomMUIPropsContext";
+import { useSystemInfo } from "../../../context/SystemInfoContext";
 
 const NewStorm = () => {
     const { cardProps } = useCustomMUIProps();
     const { colorScheme } = useColorScheme();
     const [manageProfilesOpen, setManageProfilesOpen] = useState(false);
     const formControls = useStormData();
+    const systemInfoControls = useSystemInfo();
 
     // setInterval(() => {
     //     const interval = fetchStatus(formControls);
@@ -29,6 +31,9 @@ const NewStorm = () => {
         const interval = setInterval(() => {
             fetchStatus(formControls);
         }, 2000);
+
+        systemInfoControls.setPollingIntervals(prev => [...prev, interval]);
+
         return () => clearInterval(interval);
     }, []);
 
