@@ -1,21 +1,22 @@
+from os.path import join, abspath
 from typing import NoReturn
 from json import load
 from fastapi.testclient import TestClient
 from logging import Logger, getLogger
 
 from unittest.mock import AsyncMock
-from pytest import mark
+from pytest import MonkeyPatch, mark
 from pytest_mock import MockerFixture
 
 from fastapi.responses import Response
 from StreamStorm.core.StreamStorm import StreamStorm
 
 
-logger: Logger = getLogger("tests." + __name__)
+logger: Logger = getLogger(f"tests.{__name__}")
 
 with open("tests/api/test_validation/data.json", "r") as f:
     data: dict = load(f)
-    
+
     valid_data: list = data["storm_data"]["valid_data"]
     invalid_data: list = data["storm_data"]["invalid_data"]
     missing_data: list = data["storm_data"]["missing_data"]
@@ -109,13 +110,19 @@ def test_start_more_channels(mocker: MockerFixture, ss_instance: StreamStorm, cl
     
     
 @mark.parametrize("data", get_channels_data)
-def test_get_channels_data(ss_instance: StreamStorm, client: TestClient, data: dict) -> NoReturn:
+def test_get_channels_data(monkeypatch: MonkeyPatch, ss_instance: StreamStorm, client: TestClient, data: dict) -> NoReturn:
     
     logger.debug("DATA ID: %s", data["id"])
     del data["id"]
     
     result: int = data["result"]
     del data["result"]    
+    
+    if result == 200:
+        from StreamStorm.api.routers import StormRouter
+        assets_dir: str = join(abspath("."), "tests", "assets_for_tests")
+        
+        monkeypatch.setattr(StormRouter, "user_data_dir", lambda *args, **kwargs: assets_dir)
     
     response: Response = client.post("/storm/get_channels_data", json=data)
     logger.debug(response.json())
