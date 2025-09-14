@@ -21,7 +21,9 @@ let analytics;
 
 if (typeof window !== 'undefined') {
   analytics = getAnalytics(app);
+  
   self.FIREBASE_APPCHECK_DEBUG_TOKEN = process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN === 'true';
+
   initializeAppCheck(app, {
       provider: new ReCaptchaV3Provider(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY),
       isTokenAutoRefreshEnabled: true // Automatically refreshes the token

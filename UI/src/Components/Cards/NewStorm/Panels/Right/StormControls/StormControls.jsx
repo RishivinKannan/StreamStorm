@@ -72,7 +72,9 @@ const StormControls = () => {
             formControls: formControls,
         });
 
-        if (!messages) return;
+        if (!messages) {
+          return;
+        }
 
         formControls.SC.current.changeMessages(messages, formControls.setMessages, formControls.setMessagesString);
     }
@@ -93,7 +95,9 @@ const StormControls = () => {
             formControls: formControls
         });
 
-        if (!slowModeValue) return;
+        if (!slowModeValue) {
+          return;
+        }
 
         formControls.SC.current.changeSlowMode(slowModeValue, formControls.setSlowMode);
     }
@@ -106,7 +110,9 @@ const StormControls = () => {
             systemInfoControls: systemInfoControls
         });
 
-        if (!channels || channels.length === 0) return;
+        if (!channels || channels.length === 0) {
+          return;
+        }
 
         formControls.SC.current.startMoreChannels(channels);
     }

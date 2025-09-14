@@ -11,7 +11,6 @@ const OverView = () => {
 
     const {downloadCount, updateDownloadCount} = useDownloadCount();
 
-
     const handleDownload = () => {
         setDownloadButtonDisabled(true);
         logEvent(analytics, 'download_count');

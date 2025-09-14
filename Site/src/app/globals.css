@@ -562,9 +562,6 @@ button {
     text-decoration: underline;
 }
 
-.instructions-page {
-}
-
 .instructions-page-body {
     background-color: var(--dark-gray);
     color: var(--light-white);

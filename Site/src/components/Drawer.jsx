@@ -1,6 +1,5 @@
 import Drawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
-import AppTitle from './AppTitle';
 import NavBar from './NavBar';
 import CloseButton from './CloseButton';
 

@@ -19,7 +19,7 @@ const ChangeMessages = ({ payload, open, onClose }) => {
     const [messagesHelperText, setMessagesHelperText] = useState("");
 
     const messagesChangeHandler = (e) => {
-        const value = e.target.value;
+        const { value } = e.target.value;
         setMessagesString(value);
 
         let allMessages = value.split('\n').filter((message) => {

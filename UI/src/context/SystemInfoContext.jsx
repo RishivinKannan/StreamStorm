@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { createContext, useState, useContext } from 'react';
+import { useNotifications } from '@toolpad/core/useNotifications';
+
 import { RAM_PER_PROFILE } from "../lib/Constants";
 import fetchRAM from "../lib/FetchRAM"
-import { useNotifications } from '@toolpad/core/useNotifications';
 
 const SystemInfoContext = createContext();
 
@@ -27,7 +28,7 @@ const SystemInfoProvider = ({children}) => {
     }
      
     useEffect(() => { 
-        if (debugList.length >= 10) {            
+        if (debugList.length == 10) {            
             setDebugMode(true);
             stopPolling();
 
@@ -41,7 +42,6 @@ const SystemInfoProvider = ({children}) => {
             stopPolling();
 
             notifications.show('Debug mode enabled!', { severity: 'info' });
-
         }
     }, []);
 
