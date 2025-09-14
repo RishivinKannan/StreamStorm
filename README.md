@@ -77,8 +77,8 @@ vite --host
 ```
 
 * The frontend will run on `http://localhost:5173` by default. You can now open this URL in your browser and interact with the application.
-* By default, the Engine will load the UI from `https://streamstorm-ui.web.app/` in a separate window, but you can change this in the `main.py` file if needed. 
-Just replace `https://streamstorm-ui.web.app/` with `http://localhost:5173/` to load the local UI instead.
+* By default, the Engine will load the UI from `https://streamstorm.pages.dev/` in a separate window, but you can change this in the `main.py` file if needed. 
+Just replace `https://streamstorm.pages.dev/` with `http://localhost:5173/` to load the local UI instead.
 
 # 🧠 **Troubleshooting & FAQ**
 

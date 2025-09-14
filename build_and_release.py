@@ -6,7 +6,7 @@ from tomlkit import TOMLDocument, parse, dumps
 from json import dump, load
 from re import sub
 from logging import basicConfig, INFO, info as log_info
-from Engine.config.config import CONFIG
+from Engine.StreamStorm.config.config import CONFIG
 
 basicConfig(level=INFO)
 
