@@ -46,8 +46,8 @@ def main() -> None:
 
     try:
 
-        ui_url: str = "https://streamstorm.pages.dev/" if CONFIG["ENV"] == "production" else "http://localhost:5173"
-        # ui_url = "https://streamstorm.pages.dev/" 
+        ui_url: str = "https://streamstorm-ui.darkglance.in/" if CONFIG["ENV"] == "production" else "http://localhost:5173"
+        # ui_url = "https://streamstorm-ui.darkglance.in/" 
         
         logger.debug(f"UI URL: {ui_url}")
 
