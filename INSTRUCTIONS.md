@@ -123,7 +123,7 @@ We have Provisions to access the application from another device on the same net
 The another device can be a mobile phone, tablet, or another computer.
 First you need to make sure that the application is running on your machine, The UI will boot up, but don't close the UI, otherwise the local server will shut down.
 
-#### First you need to open https://streamstorm-ui.web.app in your web browser.
+#### First you need to open https://streamstorm.pages.dev in your web browser.
 
 * **Same Network**
     * If you want to access the application from another device on the same network, you need to provide the IP address of your machine running the application.

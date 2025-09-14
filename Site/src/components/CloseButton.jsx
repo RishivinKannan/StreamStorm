@@ -5,8 +5,6 @@ import { Fragment } from 'react';
 
 const CloseButton = ({ onClick }) => {
 
-    const { colorScheme } = useColorScheme();
-
     return (
         <Tooltip title="Close" placement="bottom">
             <Fragment>

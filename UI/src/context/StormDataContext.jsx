@@ -10,7 +10,6 @@ const StormDataProvider = ({ children }) => {
     const notifications = useNotifications();
     const [hostAddress] = useLocalStorageState('hostAddress', DEFAULT_HOST_ADDRESS);
 
-
     const SC = useRef(null);
 
     const [loading, setLoading] = useState(false);

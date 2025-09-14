@@ -13,8 +13,7 @@ const NavBar = ({ orientation, onClose }) => {
         logEvent(analytics, 'nav_link_click', {
             link_name: name,
         });
-    }
-    
+    }    
 
     return (
         <>

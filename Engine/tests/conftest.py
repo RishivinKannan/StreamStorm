@@ -4,8 +4,8 @@ from pathlib import Path
 path.insert(0, str(Path(__file__).parent.parent.resolve()))
 
 from pytest import TempPathFactory, fixture
-
 from fastapi.testclient import TestClient
+
 
 from StreamStorm.api.fastapi_app import app
 

@@ -3,9 +3,7 @@ from logging import DEBUG, getLogger, Logger
 from psutil import virtual_memory
 from os import environ
 
-from sys import path
-path.append(".")
-from config import CONFIG
+from ..config import CONFIG
 
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.responses import JSONResponse

@@ -24,11 +24,17 @@ const SystemInfo = () => {
         await systemInfoControls.fetchRAM(hostAddress, notifications, systemInfoControls);
         setFetchingRAM(false);
     }
+
+    const onIconClick = () => {
+        systemInfoControls.setDebugList(prev => [...prev, 0])
+    }
     
     useEffect(() => {
         const interval = setInterval(async () => {
             await systemInfoControls.fetchRAM(hostAddress, notifications, systemInfoControls);
         }, 1000);
+
+        systemInfoControls.setPollingIntervals(prev => [...prev, interval]);
 
         return () => clearInterval(interval);
     }, [hostAddress]);
@@ -43,7 +49,7 @@ const SystemInfo = () => {
         >
             <div className="card-header-container">
                 <CardHeader
-                    avatar={<HardDrive />}
+                    avatar={<HardDrive onClick={onIconClick} />}
                     title="System Information"
                     className={`card-header card-header-${colorScheme}`}
                     sx={{

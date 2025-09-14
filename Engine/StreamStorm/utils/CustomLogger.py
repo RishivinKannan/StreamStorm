@@ -7,7 +7,7 @@ from rich.logging import RichHandler
 from atexit import register as atexit_register
 
 from .GetIstTime import get_ist_time
-from config import CONFIG
+from ..config import CONFIG
 
 class CustomLogger:
     __slots__: tuple[str, ...] = ('logging_dir', 'logger')

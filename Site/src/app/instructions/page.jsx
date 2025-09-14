@@ -26,17 +26,18 @@ const Instructions = () => {
               <li>
                 <a href="#using-the-app" className="instructions-index-link">Using The Application</a>
                 <ul className="instructions-index-list">
-                    <li><a href="#step1" className="instructions-index-link">Step 1. Create Temp Profiles</a></li>
-                    <li><a href="#step2" className="instructions-index-link">Step 2. Starting The Storm</a></li>
-                    <li><a href="#storm-controls" className="instructions-index-link">Storm Controls</a></li>
+                  <li><a href="#step1" className="instructions-index-link">Step 1. Create Temp Profiles</a></li>
+                  <li><a href="#step2" className="instructions-index-link">Step 2. Starting The Storm</a></li>
+                  <li><a href="#storm-controls" className="instructions-index-link">Storm Controls</a></li>
                 </ul>
               </li>
               <li>
                 <a href="#host-config" className="instructions-index-link">Host Configuration</a>
-                 <ul className="instructions-index-list">
-                    <li><a href="#access-from-device" className="instructions-index-link">Accessing From Another Device</a></li>
+                <ul className="instructions-index-list">
+                  <li><a href="#access-from-device" className="instructions-index-link">Accessing From Another Device</a></li>
                 </ul>
               </li>
+              <li><a href="#precautions" className="instructions-index-link">Precautions</a></li>
             </ul>
           </nav>
 
@@ -181,7 +182,7 @@ const Instructions = () => {
                     </li>
                   </ul>
                 </li>
-                
+
                 <li className="instructions-list-item">
                   <strong>Load in Background</strong>
                   <ul className="instructions-list">
@@ -266,11 +267,12 @@ const Instructions = () => {
             <li className="instructions-list-item">The Server is configured to run on port <code className="instructions-inline-code">1919</code>.</li>
           </ul>
 
+
           <h3 id="access-from-device" className="instructions-step-heading">Accessing The application from another device</h3>
           <p className="instructions-paragraph">We have Provisions to access the application from another device on the same network or a different network. The another device can be a mobile phone, tablet, or another computer. First you need to make sure that the application is running on your machine, The UI will boot up, but don't close the UI, otherwise the local server will shut down.</p>
-          
+
           <div className="instructions-highlight">
-            First you need to open <a href="https://streamstorm-ui.web.app" target="_blank" rel="noopener noreferrer" className="instructions-link">https://streamstorm-ui.web.app</a> in your web browser.
+            First you need to open <a href="https://streamstorm.pages.dev" target="_blank" rel="noopener noreferrer" className="instructions-link">https://streamstorm.pages.dev</a> in your web browser.
           </div>
 
           <ul className="instructions-list">
@@ -292,6 +294,10 @@ const Instructions = () => {
                 <li className="instructions-list-item">If you didn't understand how to configure port forwarding, you can search in Google for "How to configure port forwarding" for your router model. There will be many tutorials available online.</li>
               </ul>
             </li>
+          </ul>
+          <h2 id="precautions" className="instructions-section-heading">Precautions</h2>
+          <ul className="instructions-list">
+            <li className="instructions-list-item">The less free RAM you have after clicking <code className="instructions-inline-code">Start Storm</code>, the more likely the storming process will be slower, and the more likely it is to fail. So choose the number of accounts responsibly. For example, if you have 10 GB of free RAM, use only 6-7 GB for storm and keep the rest free, for a smooth flow.</li>
           </ul>
         </div>
       </div>

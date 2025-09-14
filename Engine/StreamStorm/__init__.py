@@ -1,3 +1,8 @@
+from sys import path
+from pathlib import Path
+path.insert(0, str(Path(__file__).parent.parent.parent.resolve()))
+
+
 from os import environ
 
 from .api.fastapi_app import app

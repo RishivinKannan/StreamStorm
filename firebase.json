@@ -1,21 +1,4 @@
 {
-  "hosting": [
-    {
-      "site": "streamstorm-ui",
-      "public": "UI/dist",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ]
-    }
-  ],
   "functions": [
     {
       "runtime": "python313",

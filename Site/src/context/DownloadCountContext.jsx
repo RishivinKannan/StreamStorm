@@ -5,7 +5,6 @@ import { functions } from '../config/firebase';
 
 import * as atatus from 'atatus-spa';
 
-
 const DownloadCountContext = createContext();
 
 const DownloadCountProvider = ({ children }) => {

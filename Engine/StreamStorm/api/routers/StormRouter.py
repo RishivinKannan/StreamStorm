@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse
 from platformdirs import user_data_dir
 from aiofiles import open as aio_open
 
+
 from ...core.StreamStorm import StreamStorm
 from ..validation import (
     StormData,
@@ -60,6 +61,10 @@ async def start(data: StormData) -> JSONResponse:
         environ.update({"BUSY": "0", "BUSY_REASON": ""})
         StreamStorm.ss_instance = None
         raise e
+    except Exception as e:
+        environ.update({"BUSY": "0", "BUSY_REASON": ""})
+        raise e
+
 
     return JSONResponse(
         status_code=200,
@@ -217,20 +222,23 @@ async def get_channels_data(data: GetChannelsData) -> JSONResponse:
     try:
         async with aio_open(config_json_path, "r", encoding="utf-8") as file:
             config: dict = loads(await file.read())
+            
     except (FileNotFoundError, PermissionError, UnicodeDecodeError, JSONDecodeError) as e:
+        
         return JSONResponse(
             status_code=500,
             content={
                 "success": False,
-                "message": f"Error reading config file: {str(e)}",
+                "message": f"Error reading config file, Try creating profiles again: {str(e)}",
             }
         )
     except Exception as e:
+        
         return JSONResponse(
             status_code=500,
             content={
                 "success": False,
-                "message": f"Error parsing config file: {str(e)}",
+                "message": f"Error parsing config file, Try creating profiles again: {str(e)}",
             }
         )
 
