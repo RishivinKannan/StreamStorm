@@ -20,7 +20,8 @@ const LeftPanel = () => {
     const dialogs = useDialogs();
 
     const messagesChangeHandler = (e) => {
-        const { value } = e.target.value;
+        // sourcery skip: use-object-destructuring
+        const value = e.target.value;
         formControls.setMessagesString(value);
 
         let allMessages = value.split('\n').filter((message) => {

@@ -1044,7 +1044,7 @@ wheels = [
 
 [[package]]
 name = "streamstorm"
-version = "3.4.2"
+version = "3.4.3"
 source = { virtual = "." }
 dependencies = [
     { name = "aiofiles" },
@@ -1058,7 +1058,6 @@ dependencies = [
     { name = "selenium" },
     { name = "setuptools" },
     { name = "undetected-chromedriver" },
-    { name = "undetected-geckodriver" },
     { name = "uvicorn" },
 ]
 
@@ -1086,7 +1085,6 @@ requires-dist = [
     { name = "selenium", specifier = ">=4.27.1" },
     { name = "setuptools", specifier = ">=80.9.0" },
     { name = "undetected-chromedriver", specifier = ">=3.5.5" },
-    { name = "undetected-geckodriver", specifier = ">=1.0.7" },
     { name = "uvicorn", specifier = ">=0.35.0" },
 ]
 
@@ -1186,19 +1184,6 @@ dependencies = [
     { name = "websockets" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/1f/98/7ab46625ce2317756e4e857fe6ac24b6378c3e8f477da26c95226ed8ccb7/undetected-chromedriver-3.5.5.tar.gz", hash = "sha256:9f945e1435005247abe17de316bcfda85b284a4177fd5f25167c78ced33b65ec", size = 65409, upload-time = "2024-02-17T17:18:36.855Z" }
-
-[[package]]
-name = "undetected-geckodriver"
-version = "1.0.7"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "psutil" },
-    { name = "selenium" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/d8/66/08dc41358d129adb2cc8cd97a8704da4c5e239aa551e7597912d7b52829a/undetected_geckodriver-1.0.7.tar.gz", hash = "sha256:4b68d63ecf227dc1ec9223a3eaff386a7aefee88934ee88f96e5bbb520512614", size = 11033, upload-time = "2024-11-20T19:39:27.758Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/fe/24/7a03507674a1da8b8216df88fb46be492b79237761104c10c78f4fe8a9b3/undetected_geckodriver-1.0.7-py3-none-any.whl", hash = "sha256:1f082c733990701d4527cf6998e27916d306fa892051bb9fe4149680f6367d65", size = 9174, upload-time = "2024-11-20T19:39:25.668Z" },
-]
 
 [[package]]
 name = "urllib3"
