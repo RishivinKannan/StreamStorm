@@ -18,8 +18,9 @@ const ChangeMessages = ({ payload, open, onClose }) => {
     const [messagesError, setMessagesError] = useState(false);
     const [messagesHelperText, setMessagesHelperText] = useState("");
 
-    const messagesChangeHandler = (e) => {
-        const { value } = e.target.value;
+    const messagesChangeHandler = (e) => { 
+        // sourcery skip: use-object-destructuring
+        const value = e.target.value;
         setMessagesString(value);
 
         let allMessages = value.split('\n').filter((message) => {
