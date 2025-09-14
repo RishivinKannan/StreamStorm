@@ -272,7 +272,7 @@ const Instructions = () => {
           <p className="instructions-paragraph">We have Provisions to access the application from another device on the same network or a different network. The another device can be a mobile phone, tablet, or another computer. First you need to make sure that the application is running on your machine, The UI will boot up, but don't close the UI, otherwise the local server will shut down.</p>
 
           <div className="instructions-highlight">
-            First you need to open <a href="https://streamstorm.pages.dev" target="_blank" rel="noopener noreferrer" className="instructions-link">https://streamstorm.pages.dev</a> in your web browser.
+            First you need to open <a href="https://streamstorm-ui.darkglance.in" target="_blank" rel="noopener noreferrer" className="instructions-link">https://streamstorm-ui.darkglance.in</a> in your web browser.
           </div>
 
           <ul className="instructions-list">
