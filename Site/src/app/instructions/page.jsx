@@ -68,6 +68,12 @@ const Instructions = () => {
             </li>
           </ul>
 
+          <div className="instructions-warning">
+            <p className="instructions-warning-text">
+              <strong>Disclaimer:</strong> You may get your channels <strong>Deleted</strong>  or <strong>Banned</strong>, and you may not be able to use Youtube with the account you used for StreamStorm, because we are violating Youtube Terms and Conditions. So use a temp/fake gmail account for creating channels for the spam. Never use your Real/Personal Account.
+            </p>
+          </div>
+
           <h2 id="requirements" className="instructions-section-heading">Requirements</h2>
           <ul className="instructions-list">
             <li className="instructions-list-item">You need to have a YouTube account (Google account) to use the application.</li>
