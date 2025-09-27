@@ -13,6 +13,7 @@ basicConfig(level=INFO)
 ROOT: Path = Path(__file__).parent.resolve()
 log_info(f"Root directory: {ROOT}")
 
+
 def check_engine_env():
     """Check if the Engine environment is set to production before building."""
     
@@ -25,6 +26,7 @@ def check_engine_env():
         )
     
     log_info(f"Environment configuration check passed. ENV is set to '{CONFIG['ENV']}'.")
+    
 
 def update_versions(new_version: str) -> None:
     
@@ -127,6 +129,7 @@ def generate_exe() -> None:
     log_info(f"Cleaning up {dist_dir} and {build_dir}")
     rmtree(dist_dir, ignore_errors=True)
     rmtree(build_dir, ignore_errors=True)
+   
     
 def generate_setup_file() -> None:
     log_info("Generating setup file using Inno Setup...")
@@ -140,15 +143,7 @@ def generate_setup_file() -> None:
     
     log_info("Running 'ISCC create_setup.iss'")
     call("ISCC create_setup.iss", shell=True)
-
-def build_UI() -> None:
-    log_info("Building UI...")
     
-    chdir(ROOT / "UI")
-    
-    log_info("Running 'vite build' in UI directory")
-    call("vite build", shell=True)
-    chdir(ROOT)
 
 def firebase_deploy() -> None:
     log_info("Deploying to Firebase...")
@@ -157,6 +152,7 @@ def firebase_deploy() -> None:
     
     log_info("Running 'firebase deploy'")
     call("firebase deploy", shell=True)
+    
 
 def dgupdater_commit_and_publish(new_version: str) -> None:
     log_info(f"Committing and publishing with dgupdater for version {new_version}")
@@ -168,6 +164,7 @@ def dgupdater_commit_and_publish(new_version: str) -> None:
     
     log_info("Running 'dgupdater publish'")
     call("dgupdater publish", shell=True)
+    
     
 def main() -> None:
     log_info("Starting build and release process...")
@@ -184,15 +181,12 @@ def main() -> None:
     generate_exe()
 
     # Step 3
-    generate_setup_file()
+    generate_setup_file()  
     
     # Step 4
-    build_UI()
-    
-    # Step 5
     firebase_deploy()
 
-    # Step 6
+    # Step 5
     dgupdater_commit_and_publish(new_version)
     
     log_info("Build and release process completed.")

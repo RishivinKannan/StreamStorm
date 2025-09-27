@@ -5,3 +5,8 @@ output
 .env.production
 *.log
 diff.txt
+build
+dist
+.pytest_cache
+.vite
+.vscode

@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "StreamStorm"
-#define MyAppVersion "3.4.4"
+#define MyAppVersion "3.4.5"
 #define MyAppPublisher "DarkGlance"
 #define MyAppURL "https://streamstorm.darkglance.in"
 #define MyAppExeName "StreamStorm.exe"
@@ -10,7 +10,7 @@
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{CD151C6F-8FF9-4102-9BE4-3ADD4247788B}
+AppId={{DA64CE17-DCE7-4004-8EDF-C6AE9FBE5D57}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
@@ -33,6 +33,7 @@ LicenseFile=D:\PROGRAMMING\PROJECTS\StreamStorm\INNO Setup\License.txt
 InfoAfterFile=D:\PROGRAMMING\PROJECTS\StreamStorm\INNO Setup\AfterText.txt
 ; Remove the following line to run in administrative install mode (install for all users).
 PrivilegesRequired=lowest
+PrivilegesRequiredOverridesAllowed=dialog
 OutputDir=D:\PROGRAMMING\PROJECTS\StreamStorm\INNO Setup\Output
 OutputBaseFilename=StreamStorm Setup
 SetupIconFile=D:\PROGRAMMING\PROJECTS\StreamStorm\UI\public\favicon.ico
@@ -47,8 +48,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "D:\PROGRAMMING\PROJECTS\StreamStorm\output\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROGRAMMING\PROJECTS\StreamStorm\output\dgupdaterupdate\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "D:\PROGRAMMING\PROJECTS\StreamStorm\output\dgupdaterconf.json"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\PROGRAMMING\PROJECTS\StreamStorm\output\dgupdaterupdate.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\PROGRAMMING\PROJECTS\StreamStorm\output\RAMMap.exe"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
