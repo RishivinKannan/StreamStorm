@@ -37,7 +37,7 @@ def set_rammap_path() -> None:
 
 def main() -> None:
     
-    check_update()   
+    check_update(parallel=True)   
 
     set_rammap_path()
 
