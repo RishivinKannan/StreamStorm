@@ -9,7 +9,6 @@ from fastapi.responses import JSONResponse
 from platformdirs import user_data_dir
 from aiofiles import open as aio_open
 
-
 from ...core.StreamStorm import StreamStorm
 from ..validation import (
     StormData,
@@ -18,6 +17,10 @@ from ..validation import (
     StartMoreChannelsData,
     GetChannelsData
 )
+from ...utils.CustomLogger import CustomLogger
+
+cl: CustomLogger = CustomLogger(for_history=True)
+cl.setup_history_logger()
 
 logger: Logger = getLogger(f"fastapi.{__name__}")
 
@@ -27,6 +30,8 @@ router: APIRouter = APIRouter(prefix="/storm")
 async def start(data: StormData) -> JSONResponse:
     if StreamStorm.ss_instance is not None:
         logger.info("Storm request rejected - instance already running")
+        cl.log_to_history(data, "Storm request rejected - instance already running")
+        
         return JSONResponse(
             status_code=409,
             content={
@@ -57,13 +62,18 @@ async def start(data: StormData) -> JSONResponse:
 
     try:
         await StreamStormObj.start()
+        cl.log_to_history(data, "Storm started successfully")
+        
     except SystemError as e:
         environ.update({"BUSY": "0", "BUSY_REASON": ""})
         StreamStorm.ss_instance = None
+        cl.log_to_history(data, "Storm failed to start")
         raise e
+    
     except Exception as e:
         environ.update({"BUSY": "0", "BUSY_REASON": ""})
-        raise e
+        cl.log_to_history(data, "Storm failed to start")
+        raise e   
 
 
     return JSONResponse(

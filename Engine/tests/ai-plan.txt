@@ -205,8 +205,8 @@ Storm Management Endpoints (10 cases)
 /start_storm_dont_wait - Immediate start
 Profile Endpoints (4 cases)
 
-/create_profiles - Profile creation
-/delete_all_profiles - Cleanup
+/create - Profile creation
+/delete - Cleanup
 Profile count validation
 Concurrent operation blocking
 System Endpoints (6 cases)

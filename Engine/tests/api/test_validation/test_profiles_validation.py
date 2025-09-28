@@ -32,7 +32,7 @@ def test_data_validation_create_profiles(mocker: MockerFixture, client: TestClie
     
     new_run_in_threadpool: AsyncMock = mocker.patch("StreamStorm.api.routers.ProfileRouter.run_in_threadpool", new=AsyncMock())
     
-    response: Response = client.post("/profiles/create_profiles", json={"count": count})
+    response: Response = client.post("/environment/profiles/create", json={"count": count})
     logger.debug(response.json())
     
     assert response.status_code == expected

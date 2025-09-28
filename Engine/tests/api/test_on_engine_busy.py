@@ -25,14 +25,14 @@ def test_create_profiles(client: TestClient):
     
     data: dict = {"count": 1}
 
-    response: Response = client.post("/profiles/create_profiles", json=data)
+    response: Response = client.post("/environment/profiles/create", json=data)
     logger.debug(response.json())
 
     assert response.status_code == 429
     
 def test_delete_all_profiles(client: TestClient):
     
-    response: Response = client.post("/profiles/delete_all_profiles")
+    response: Response = client.post("/environment/profiles/delete")
     logger.debug(response.json())
 
     assert response.status_code == 429
