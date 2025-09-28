@@ -118,7 +118,7 @@ def test_create_profiles(mocker: MockerFixture, client: TestClient) -> NoReturn:
     
     data: dict = {"count": 1}
 
-    response: Response = client.post("/profiles/create_profiles", json=data)
+    response: Response = client.post("/environment/profiles/create", json=data)
     logger.debug(response.json())
 
     assert response.status_code == 200    
@@ -129,7 +129,7 @@ def test_delete_all_profiles(mocker: MockerFixture, client: TestClient) -> NoRet
     
     new_run_in_threadpool: AsyncMock = mocker.patch("StreamStorm.api.routers.ProfileRouter.run_in_threadpool", new = AsyncMock())
     
-    response: Response = client.post("/profiles/delete_all_profiles")
+    response: Response = client.post("/environment/profiles/delete")
     logger.debug(response.json())
 
     assert response.status_code == 200    

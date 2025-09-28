@@ -176,7 +176,7 @@ wheels = [
 
 [[package]]
 name = "dgupdater"
-version = "1.2.0"
+version = "1.2.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
@@ -185,9 +185,9 @@ dependencies = [
     { name = "rich" },
     { name = "tqdm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/fb/3b/d1f1dd16fc55b67fc871b7ce1e8b6bc5456e993bedf4a0a5d021c188ba64/dgupdater-1.2.0.tar.gz", hash = "sha256:a27653af92fcfb714fdfebe31abe45947b162fd4f7a89365bbbcc6ab082af1a9", size = 50980563, upload-time = "2025-09-27T13:26:25.463Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f6/88/a85ef881ef71b43a91732cc20d96d881ec369fb8b0ed29ef7a8b2ec88556/dgupdater-1.2.1.tar.gz", hash = "sha256:96cf622375f121e625be02a50c9e6a9acadc09c74bc17756775fc339850224d5", size = 50980588, upload-time = "2025-09-27T15:38:17.193Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/59/5c/16434ce593a12852c7207b0fa5687edd65a14996e7d2b2bccb1fc96f77cb/dgupdater-1.2.0-py3-none-any.whl", hash = "sha256:70fdebf5016016388b1df122016706fb29cf88df8c8856a52e4a7bef988d6070", size = 50985436, upload-time = "2025-09-27T13:26:21.799Z" },
+    { url = "https://files.pythonhosted.org/packages/81/3b/9d455bcd3f1c1063f47f6db5a285a5b23dc45d258cec1b6d403c72861bac/dgupdater-1.2.1-py3-none-any.whl", hash = "sha256:aa68db9d577fab610ee1fba8a555e6cf42a80eb66c0f0cc841e3bce899ece0a5", size = 50985496, upload-time = "2025-09-27T15:38:13.112Z" },
 ]
 
 [[package]]
@@ -1077,7 +1077,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "aiofiles", specifier = ">=24.1.0" },
-    { name = "dgupdater", specifier = ">=1.2.0" },
+    { name = "dgupdater", specifier = ">=1.2.1" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.14" },
     { name = "platformdirs", specifier = ">=4.3.8" },
     { name = "playwright", specifier = ">=1.53.0" },

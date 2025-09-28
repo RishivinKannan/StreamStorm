@@ -75,8 +75,8 @@ class RequestValidationMiddleware(BaseHTTPMiddleware):
         if method == "POST":
             if path in (
                 "/storm/start",
-                "/profiles/create_profiles",
-                "/profiles/delete_all_profiles",
+                "/environment/profiles/create",
+                "/environment/profiles/delete",
             ):
                 if environ.get("BUSY") == "1":
                     return JSONResponse(
