@@ -107,7 +107,7 @@ class CustomLogger:
         logger.addHandler(handler)
         logger.propagate = False
         
-    def log_to_history(self, data: StormData, success: bool) -> None:
+    def log_to_history(self, data: StormData, remarks: str = "No remarks") -> None:
         if CONFIG.get("ENV") == "test":
             return
         
@@ -115,9 +115,8 @@ class CustomLogger:
         
         date_time: str = get_ist_time()
         
-        message_str: str = "\n".join([
-            f"{k}: {v}" for k, v in data.__dict__.items()
-        ]) + ("\n\nRemarks: Storm Started Successfully" if success else "\n\nRemarks: Storm Already Running, No Action Taken")
+        message_str: str = "\n".join([f"{k}: {v}" for k, v in data.__dict__.items()]) + f"\n\nRemarks: {remarks}\n"
               
         message_str = f"Date Time: {date_time}\n\n{message_str}\n"
+        
         logger.info(message_str)
