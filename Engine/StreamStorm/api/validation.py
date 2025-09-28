@@ -65,7 +65,7 @@ class StormData(BaseModel):
         if not value:
             raise ValueError("Messages cannot be empty")
         
-        value = [ msg.strip('"[],') for msg in value ]
+        value = [ msg.strip('"\'[],') for msg in value ]
         
         return value
 

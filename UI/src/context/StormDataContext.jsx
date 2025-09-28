@@ -94,13 +94,13 @@ const StormDataProvider = ({ children }) => {
 
         getStormData: () => {
             return {
-                video_url: videoURL,
-                chat_url: "https://www.youtube.com/live_chat?v=" + videoURL.split('v=')[1],
-                messages: messages,
-                subscribe: subscribe,
-                subscribe_and_wait: subscribeAndWait,
-                subscribe_and_wait_time: subscribeWaitTime,
-                slow_mode: slowMode,
+                videoURL,
+                chatUrl: "https://www.youtube.com/live_chat?v=" + videoURL.split('v=')[1],
+                messages,
+                subscribe,
+                subscribeAndWait,
+                subscribeAndWaitTime: subscribeWaitTime,
+                slowMode,
                 background: loadInBackground,
                 channels: getChannels(),
             };
