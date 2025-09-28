@@ -1,6 +1,5 @@
 from logging import Formatter, Logger, getLogger, DEBUG, INFO, FileHandler, StreamHandler, NullHandler, Handler  # noqa: F401
 from logging.handlers import QueueHandler, QueueListener
-from gevent import config
 from platformdirs import user_data_dir
 from pathlib import Path
 from queue import Queue
