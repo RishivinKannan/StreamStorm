@@ -162,8 +162,8 @@ def dgupdater_commit_and_publish(new_version: str) -> None:
     log_info(f"Running 'dgupdater commit -v {new_version}'")
     run(f"dgupdater commit -v {new_version}", shell=True, check=True)
     
-    log_info("Running 'dgupdater publish'")
-    call("dgupdater publish", shell=True)
+    # log_info("Running 'dgupdater publish'")
+    # call("dgupdater publish", shell=True)
     
     
 def main() -> None:
