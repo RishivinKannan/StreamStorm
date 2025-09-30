@@ -37,9 +37,11 @@ jobs:
             librsvg2-dev
 
       - name: Install frontend dependencies
+        working-directory: ./Tauri-build
         run: npm install
 
       - name: Build Tauri App
+        working-directory: ./Tauri-build
         run: npm run tauri build
 
       - name: Upload build artifacts
@@ -47,4 +49,4 @@ jobs:
         with:
           name: tauri-build-${{ matrix.platform }}
           path: |
-            src-tauri/target/
+            Tauri-build/src-tauri/target/
