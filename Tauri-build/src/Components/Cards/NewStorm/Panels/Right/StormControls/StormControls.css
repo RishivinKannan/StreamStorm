@@ -1,0 +1,43 @@
+.storm-controls-heading-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.zap-icon {
+    margin-right: 0.5rem;
+}
+
+.storm-controls-title {
+    font-weight: normal;
+    margin: 0;    
+}
+
+.storm-controls-btns-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.storm-in-progress-container{
+    display: flex;
+    flex-direction: row;
+    padding: .5rem;
+    align-items: center;
+    justify-content: center;
+    margin-top: .5rem;
+}
+
+.storm-in-progress-text{
+    margin-left: .5rem;
+    font-weight: normal;
+    font-size: .875rem;
+    
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 0.5rem;
+}

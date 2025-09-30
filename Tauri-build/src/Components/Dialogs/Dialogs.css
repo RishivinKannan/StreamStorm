@@ -1,0 +1,17 @@
+.available-channels-container {
+    height: 280px;
+    width: 100%;
+    overflow: auto;
+}
+
+.selected-channels-container {
+    padding: .5rem 1rem;
+    overflow: scroll;
+    display: flex;
+    flex-direction: column;
+    height: 60px;
+}
+
+.selected-channels-container span {
+    font-size: 0.7rem;
+}

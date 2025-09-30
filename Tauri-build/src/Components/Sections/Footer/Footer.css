@@ -1,0 +1,14 @@
+.footer {
+    height: 7.3vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--slight-light-text);
+}
+
+.footer-light {
+    background-color: var(--very-light-red);
+}
+.footer-dark {
+    background-color: var(--dark-gray);
+}

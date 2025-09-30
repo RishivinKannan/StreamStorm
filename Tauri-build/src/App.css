@@ -1,0 +1,127 @@
+:root {
+    --very-light-red: #f6e9e9;
+    --bright-red: #e84a4a;
+    --bright-red-2: #ef4444;
+    --bright-red-2-hover: #ef4444e6;
+    --dark-red: #b41d1d;
+    --dark-red-2: #7F1D1D;
+    --dark-red-2-hover: #7F1D1De6;
+
+    --white: #ffffff;
+    --light-gray: #262626;
+    --dark-gray: #1a1a1a;
+
+    --light-text: #fafafa;
+    --slight-light-text: #a3a3a3;
+
+    --dark-text: #0a0a0a;
+    --slight-dark-text: #737373;
+
+    --input-active-red-dark: #dc2828;
+    --input-active-red-dark-hover: #dc2828e6;
+    --input-active-red-light: #b41d1d;
+    --input-active-red-light-hover: #b41d1de6;
+
+    --font-family: 'Inter', sans-serif;
+    --border-radius: 0.5rem;    
+
+}
+
+::-webkit-scrollbar {
+    display: none
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-family);
+    /* overflow-x: scroll; */
+}
+
+.main-container {
+    display: flex;
+    width: 100vw;
+    flex-direction: column;
+}
+
+.main-container-light {
+    background-color: var(--very-light-red);
+    color: var(--dark-text);
+}
+
+.main-container-dark {
+    background-color: var(--dark-gray);
+    color: var(--light-text);
+}
+
+.dark-bordered-container {
+    border: 1px solid #333333;
+    border-radius: var(--border-radius);
+}
+
+.light-bordered-container {
+    border: 1px solid #e5e7eb;
+    border-radius: var(--border-radius);
+}
+
+.light-text {
+    color: var(--dark-text);
+}
+
+.dark-text {
+    color: var(--light-text);
+}
+
+.switch-container {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+    padding: 0.75rem;
+}
+
+.switch-container .switch-label {
+    width: 100%;
+}
+
+.card-header-container {
+    padding: 1.5rem;
+}
+
+.card-header .MuiCardHeader-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.card-header-light {
+    color: var(--dark-text)
+}
+
+.card-header-dark {
+    color: var(--light-text);
+}
+
+.card-header-description {
+    font-size: 0.875rem;
+}
+
+.card-header-description-light {
+    color: var(--slight-dark-text);
+}
+
+.card-header-description-dark {
+    color: var(--slight-light-text);
+}
+
+/* .MuiCardContent-root {
+    padding: 0;
+} */
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
