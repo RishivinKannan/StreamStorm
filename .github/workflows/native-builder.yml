@@ -27,6 +27,15 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Cache APT packages (Linux only)
+        if: matrix.platform == 'ubuntu-latest'
+        uses: actions/cache@v4
+        with:
+          path: /var/cache/apt/archives
+          key: ${{ runner.os }}-apt-${{ hashFiles('**/Tauri-build/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-apt-
+
       - name: Install system dependencies (Linux only)
         if: matrix.platform == 'ubuntu-latest'
         run: |
