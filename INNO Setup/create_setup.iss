@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "StreamStorm"
-#define MyAppVersion "3.4.6"
+#define MyAppVersion "3.4.7"
 #define MyAppPublisher "DarkGlance"
 #define MyAppURL "https://streamstorm.darkglance.in"
 #define MyAppExeName "StreamStorm.exe"
@@ -48,7 +48,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "D:\PROGRAMMING\PROJECTS\StreamStorm\output\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\PROGRAMMING\PROJECTS\StreamStorm\output\dgupdaterupdate\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:\PROGRAMMING\PROJECTS\StreamStorm\output\dgupdaterupdate\*"; DestDir: "{app}\dgupdaterupdate"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "D:\PROGRAMMING\PROJECTS\StreamStorm\output\dgupdaterconf.json"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\PROGRAMMING\PROJECTS\StreamStorm\output\RAMMap.exe"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files

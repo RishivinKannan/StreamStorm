@@ -93,6 +93,9 @@ const Instructions = () => {
                 <li className="instructions-list-item">In the application UI, click on the <code className="instructions-inline-code">Manage Profiles</code> button.</li>
                 <li className="instructions-list-item">Enter number of profiles you want to create.</li>
                 <li className="instructions-list-item">Click on the <code className="instructions-inline-code">Create Profiles</code> button.</li>
+                <div className='instructions-warning'>
+                  <li><strong>Caution:</strong> Do not Minimize or Move away from the browser window while creating profiles.</li>
+                </div>
               </ul>
             </li>
             <li className="instructions-list-item">The application will open a browser window and it will prompt you to log in to your YouTube account</li>
