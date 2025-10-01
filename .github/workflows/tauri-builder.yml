@@ -63,4 +63,4 @@ jobs:
         with:
           name: tauri-build-${{ matrix.platform }}
           path: |
-            Tauri-build/src-tauri/target/release
+            Tauri-build/src-tauri/target/release/streamstorm
