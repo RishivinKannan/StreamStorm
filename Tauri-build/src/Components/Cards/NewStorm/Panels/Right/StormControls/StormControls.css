@@ -10,7 +10,7 @@
 
 .storm-controls-title {
     font-weight: normal;
-    margin: 0;    
+    margin: 0;
 }
 
 .storm-controls-btns-container {
@@ -19,20 +19,19 @@
     align-items: center;
 }
 
-.storm-in-progress-container{
+.storm-in-progress-container {
     display: flex;
     flex-direction: row;
-    padding: .5rem;
+    padding: 0.5rem;
     align-items: center;
     justify-content: center;
-    margin-top: .5rem;
+    margin-top: 0.5rem;
 }
 
-.storm-in-progress-text{
-    margin-left: .5rem;
+.storm-in-progress-text {
+    margin-left: 0.5rem;
     font-weight: normal;
-    font-size: .875rem;
-    
+    font-size: 0.875rem;
 }
 
 .row {

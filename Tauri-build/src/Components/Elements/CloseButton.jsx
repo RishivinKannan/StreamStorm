@@ -4,17 +4,28 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useColorScheme } from '@mui/material/styles';
 
 const CloseButton = ({ onClick }) => {
-
     const { colorScheme } = useColorScheme();
 
     return (
         <Tooltip title="Close" placement="bottom">
             <Fragment>
                 <IconButton
-                    sx={{ position: 'absolute', right: '5px', top: '5px', '&:hover': { backgroundColor: '#ffffff10' } }}
+                    sx={{
+                        position: 'absolute',
+                        right: '5px',
+                        top: '5px',
+                        '&:hover': { backgroundColor: '#ffffff10' },
+                    }}
                     onClick={onClick}
                 >
-                    <CloseIcon sx={{ color: colorScheme === 'light' ? 'var(--dark-text)' : 'var(--light-text)' }} />
+                    <CloseIcon
+                        sx={{
+                            color:
+                                colorScheme === 'light'
+                                    ? 'var(--dark-text)'
+                                    : 'var(--light-text)',
+                        }}
+                    />
                 </IconButton>
             </Fragment>
         </Tooltip>

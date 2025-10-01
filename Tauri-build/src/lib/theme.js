@@ -14,11 +14,11 @@ export const theme = createTheme({
             palette: {
                 primary: {
                     main: '#dc2828',
-                }
+                },
             },
         },
     },
     typography: {
-        fontFamily: "'Inter', sans-serif"
+        fontFamily: "'Inter', sans-serif",
     },
 });

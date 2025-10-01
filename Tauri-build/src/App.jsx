@@ -1,12 +1,11 @@
 import { useColorScheme } from '@mui/material/styles';
 
-import "./App.css";
-import Header from "./Components/Sections/Header/Header";
-import Footer from "./Components/Sections/Footer/Footer";
-import Main from "./Components/Sections/Main/Main";
+import './App.css';
+import Header from './Components/Sections/Header/Header';
+import Footer from './Components/Sections/Footer/Footer';
+import Main from './Components/Sections/Main/Main';
 
 const App = () => {
-
     const { colorScheme } = useColorScheme();
 
     return (
@@ -15,7 +14,7 @@ const App = () => {
             <Main />
             <Footer />
         </div>
-    )
-}
+    );
+};
 
 export default App;

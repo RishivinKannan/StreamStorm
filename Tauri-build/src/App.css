@@ -4,8 +4,8 @@
     --bright-red-2: #ef4444;
     --bright-red-2-hover: #ef4444e6;
     --dark-red: #b41d1d;
-    --dark-red-2: #7F1D1D;
-    --dark-red-2-hover: #7F1D1De6;
+    --dark-red-2: #7f1d1d;
+    --dark-red-2-hover: #7f1d1de6;
 
     --white: #ffffff;
     --light-gray: #262626;
@@ -23,12 +23,11 @@
     --input-active-red-light-hover: #b41d1de6;
 
     --font-family: 'Inter', sans-serif;
-    --border-radius: 0.5rem;    
-
+    --border-radius: 0.5rem;
 }
 
 ::-webkit-scrollbar {
-    display: none
+    display: none;
 }
 
 body {
@@ -93,7 +92,7 @@ body {
 }
 
 .card-header-light {
-    color: var(--dark-text)
+    color: var(--dark-text);
 }
 
 .card-header-dark {

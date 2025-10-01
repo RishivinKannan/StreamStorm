@@ -1,5 +1,13 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, useColorScheme } from "@mui/material";
-import { useCustomMUIProps } from "../../context/CustomMUIPropsContext";
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    useColorScheme,
+} from '@mui/material';
+import { useCustomMUIProps } from '../../context/CustomMUIPropsContext';
 
 const AreYouSure = ({ payload, open, onClose }) => {
     const { btnProps } = useCustomMUIProps();
@@ -11,20 +19,19 @@ const AreYouSure = ({ payload, open, onClose }) => {
             fullWidth
             onClose={() => onClose(null)}
             sx={{
-                "& .MuiDialog-paper": {
-                    backgroundColor: colorScheme === 'light' ? "var(--white)" : "var(--light-gray)",
-                    backgroundImage: "none",
-                    borderRadius: "var(--border-radius)",
+                '& .MuiDialog-paper': {
+                    backgroundColor:
+                        colorScheme === 'light'
+                            ? 'var(--white)'
+                            : 'var(--light-gray)',
+                    backgroundImage: 'none',
+                    borderRadius: 'var(--border-radius)',
                 },
             }}
         >
-            <DialogTitle>
-                Confirm                
-            </DialogTitle>
+            <DialogTitle>Confirm</DialogTitle>
             <DialogContent>
-                <DialogContentText>
-                    {payload.text}
-                </DialogContentText>
+                <DialogContentText>{payload.text}</DialogContentText>
             </DialogContent>
             <DialogActions>
                 <Button
@@ -33,7 +40,7 @@ const AreYouSure = ({ payload, open, onClose }) => {
                     color="primary"
                     sx={{
                         ...btnProps,
-                        width: "100px",
+                        width: '100px',
                     }}
                 >
                     Cancel
@@ -45,10 +52,13 @@ const AreYouSure = ({ payload, open, onClose }) => {
                     color="error"
                     sx={{
                         ...btnProps,
-                        width: "100px",
-                        backgroundColor: "var(--input-active-red-dark)",
+                        width: '100px',
+                        backgroundColor: 'var(--input-active-red-dark)',
                         '&:hover': {
-                            backgroundColor: colorScheme === 'light' ? "var(--input-active-red-light-hover)" : "var(--input-active-red-dark-hover)",
+                            backgroundColor:
+                                colorScheme === 'light'
+                                    ? 'var(--input-active-red-light-hover)'
+                                    : 'var(--input-active-red-dark-hover)',
                         },
                     }}
                 >
@@ -57,6 +67,6 @@ const AreYouSure = ({ payload, open, onClose }) => {
             </DialogActions>
         </Dialog>
     );
-}
+};
 
 export default AreYouSure;

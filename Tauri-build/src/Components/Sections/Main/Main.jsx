@@ -1,10 +1,9 @@
 import { useColorScheme } from '@mui/material/styles';
 
-import "./Main.css";
-import HostConfig from "../../Cards/HostConfig/HostConfig";
-import NewStorm from "../../Cards/NewStorm/NewStorm";
-import SystemInfo from "../../Cards/SystemInfo/SystemInfo";
-
+import './Main.css';
+import HostConfig from '../../Cards/HostConfig/HostConfig';
+import NewStorm from '../../Cards/NewStorm/NewStorm';
+import SystemInfo from '../../Cards/SystemInfo/SystemInfo';
 
 const Main = () => {
     const { colorScheme } = useColorScheme();
@@ -17,7 +16,7 @@ const Main = () => {
                 <HostConfig />
             </div>
         </main>
-    )
-}
+    );
+};
 
 export default Main;
