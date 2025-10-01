@@ -1,31 +1,38 @@
-import { useState, useEffect } from "react";
-import { Button, Card, CardActions, CardContent, CardHeader, TextField } from "@mui/material";
-import { useLocalStorageState } from "@toolpad/core/useLocalStorageState";
+import { useState, useEffect } from 'react';
+import {
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    CardHeader,
+    TextField,
+} from '@mui/material';
+import { useLocalStorageState } from '@toolpad/core/useLocalStorageState';
 import { useColorScheme } from '@mui/material/styles';
 import { Save, RotateCcw } from 'lucide-react';
-import { useNotifications } from "@toolpad/core/useNotifications";
-import { logEvent } from "firebase/analytics";
+import { useNotifications } from '@toolpad/core/useNotifications';
+import { logEvent } from 'firebase/analytics';
 
-import "./HostConfig.css";
-import { DEFAULT_HOST_ADDRESS } from "../../../lib/Constants";
-import { analytics } from "../../../config/firebase";
-import { useCustomMUIProps } from "../../../context/CustomMUIPropsContext";
+import './HostConfig.css';
+import { DEFAULT_HOST_ADDRESS } from '../../../lib/Constants';
+import { analytics } from '../../../config/firebase';
+import { useCustomMUIProps } from '../../../context/CustomMUIPropsContext';
 
 const HostConfig = () => {
     const { colorScheme } = useColorScheme();
     const { btnProps, inputProps } = useCustomMUIProps();
-    const [savedHostAddress, setSavedHostAddress] = useLocalStorageState("hostAddress");
+    const [savedHostAddress, setSavedHostAddress] =
+        useLocalStorageState('hostAddress');
     const notifications = useNotifications();
 
     const [hostAddress, setHostAddress] = useState(savedHostAddress);
     const [hostAddressError, setHostAddressError] = useState(false);
-    const [hostAddressHelperText, setHostAddressHelperText] = useState("");
-
+    const [hostAddressHelperText, setHostAddressHelperText] = useState('');
 
     const handleSave = () => {
-        if (hostAddress.trim() == "") {
+        if (hostAddress.trim() == '') {
             setHostAddressError(true);
-            setHostAddressHelperText("Host address cannot be empty.");
+            setHostAddressHelperText('Host address cannot be empty.');
             return;
         }
 
@@ -33,51 +40,55 @@ const HostConfig = () => {
             new URL(hostAddress);
         } catch (error) {
             setHostAddressError(true);
-            setHostAddressHelperText("Invalid URL format.");
+            setHostAddressHelperText('Invalid URL format.');
             return;
         }
-        logEvent(analytics, "host_address_change");
+        logEvent(analytics, 'host_address_change');
 
         setHostAddressError(false);
-        setHostAddressHelperText("");
+        setHostAddressHelperText('');
         setSavedHostAddress(hostAddress.trim());
-        
-        notifications.show("Host address saved successfully!", {
-            severity: "success",
-        });
 
-    }
+        notifications.show('Host address saved successfully!', {
+            severity: 'success',
+        });
+    };
 
     const handleReset = () => {
         setHostAddress(DEFAULT_HOST_ADDRESS);
         setSavedHostAddress(DEFAULT_HOST_ADDRESS);
 
         setHostAddressError(false);
-        setHostAddressHelperText("");
+        setHostAddressHelperText('');
 
-        logEvent(analytics, "host_address_reset");
+        logEvent(analytics, 'host_address_reset');
 
-        notifications.show("Host address reset to default!", {
-            severity: "info",
+        notifications.show('Host address reset to default!', {
+            severity: 'info',
         });
-    }
+    };
 
     useEffect(() => {
         if (!savedHostAddress) {
             setSavedHostAddress(DEFAULT_HOST_ADDRESS);
-            setHostAddress(DEFAULT_HOST_ADDRESS);            
+            setHostAddress(DEFAULT_HOST_ADDRESS);
         }
-
     }, [savedHostAddress, setSavedHostAddress]);
 
     return (
         <Card
             className={`host-config-card ${colorScheme}-bordered-container`}
             sx={{
-                borderRadius: "var(--border-radius)",
-                backgroundColor: colorScheme === 'light' ? "var(--white)" : "var(--light-gray)",
-                backgroundImage: "none",
-                color: colorScheme === 'light' ? "var(--dark-text)" : "var(--light-text)",
+                borderRadius: 'var(--border-radius)',
+                backgroundColor:
+                    colorScheme === 'light'
+                        ? 'var(--white)'
+                        : 'var(--light-gray)',
+                backgroundImage: 'none',
+                color:
+                    colorScheme === 'light'
+                        ? 'var(--dark-text)'
+                        : 'var(--light-text)',
             }}
         >
             <div className="card-header-container">
@@ -89,7 +100,9 @@ const HostConfig = () => {
                         padding: 0,
                     }}
                 />
-                <span className={`card-header-description card-header-description-${colorScheme}`}>
+                <span
+                    className={`card-header-description card-header-description-${colorScheme}`}
+                >
                     Set the base URL of the host.
                 </span>
             </div>
@@ -110,9 +123,9 @@ const HostConfig = () => {
                         error={hostAddressError}
                         helperText={hostAddressHelperText}
                         onChange={(e) => {
-                            setHostAddress(e.target.value)
+                            setHostAddress(e.target.value);
                             setHostAddressError(false);
-                            setHostAddressHelperText("");
+                            setHostAddressHelperText('');
                         }}
                     />
                 </div>
@@ -120,15 +133,16 @@ const HostConfig = () => {
 
             <CardActions
                 sx={{
-                    "padding": "0 1.5rem 1.5rem 1.5rem",
-                }}>
+                    padding: '0 1.5rem 1.5rem 1.5rem',
+                }}
+            >
                 <Button
                     startIcon={<RotateCcw size={16} />}
                     variant="contained"
                     onClick={handleReset}
                     sx={{
                         ...btnProps,
-                        marginTop: "1rem",
+                        marginTop: '1rem',
                     }}
                 >
                     Reset
@@ -140,9 +154,12 @@ const HostConfig = () => {
                     onClick={handleSave}
                     sx={{
                         ...btnProps,
-                        marginTop: "1rem",
-                        backgroundColor: colorScheme === 'light' ? "var(--input-active-red-light)" : "var(--input-active-red-dark)",
-                        color: "var(--light-text)",
+                        marginTop: '1rem',
+                        backgroundColor:
+                            colorScheme === 'light'
+                                ? 'var(--input-active-red-light)'
+                                : 'var(--input-active-red-dark)',
+                        color: 'var(--light-text)',
                     }}
                 >
                     Save

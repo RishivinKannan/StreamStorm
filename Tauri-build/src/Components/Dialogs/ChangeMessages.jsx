@@ -1,14 +1,23 @@
-import { useState, useEffect } from "react";
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, useColorScheme } from "@mui/material";
+import { useState, useEffect } from 'react';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    TextField,
+    useColorScheme,
+} from '@mui/material';
 
-import { useCustomMUIProps } from "../../context/CustomMUIPropsContext";
+import { useCustomMUIProps } from '../../context/CustomMUIPropsContext';
 
 const ChangeMessages = ({ payload, open, onClose }) => {
     const { btnProps, inputProps } = useCustomMUIProps();
     const { formControls } = payload;
     const { colorScheme } = useColorScheme();
 
-    const [messagesString, setMessagesString] = useState("");
+    const [messagesString, setMessagesString] = useState('');
 
     useEffect(() => {
         setMessagesString(formControls.messagesString);
@@ -16,9 +25,9 @@ const ChangeMessages = ({ payload, open, onClose }) => {
 
     const [messages, setMessages] = useState([]);
     const [messagesError, setMessagesError] = useState(false);
-    const [messagesHelperText, setMessagesHelperText] = useState("");
+    const [messagesHelperText, setMessagesHelperText] = useState('');
 
-    const messagesChangeHandler = (e) => { 
+    const messagesChangeHandler = (e) => {
         // sourcery skip: use-object-destructuring
         const value = e.target.value;
         setMessagesString(value);
@@ -27,28 +36,30 @@ const ChangeMessages = ({ payload, open, onClose }) => {
             return message !== '';
         });
 
-        allMessages = allMessages.map((message) => message.trim())
+        allMessages = allMessages.map((message) => message.trim());
 
         setMessages(allMessages);
         setMessagesError(false);
-        setMessagesHelperText("");
-    }
+        setMessagesHelperText('');
+    };
 
     const onSubmitHandler = () => {
         if (messages.length === 0) {
             setMessagesError(true);
-            setMessagesHelperText("Enter at least one message.");
+            setMessagesHelperText('Enter at least one message.');
             return;
         }
 
-        if (JSON.stringify(messages) === JSON.stringify(formControls.messages)) {
+        if (
+            JSON.stringify(messages) === JSON.stringify(formControls.messages)
+        ) {
             setMessagesError(true);
-            setMessagesHelperText("No changes made to the messages.");
+            setMessagesHelperText('No changes made to the messages.');
             return;
         }
 
         onClose(messages);
-    }
+    };
 
     return (
         <Dialog
@@ -56,16 +67,24 @@ const ChangeMessages = ({ payload, open, onClose }) => {
             fullWidth
             onClose={() => onClose(null)}
             sx={{
-                "& .MuiDialog-paper": {
-                    backgroundColor: colorScheme === 'light' ? "var(--white)" : "var(--light-gray)",
-                    backgroundImage: "none",
-                    borderRadius: "var(--border-radius)",
+                '& .MuiDialog-paper': {
+                    backgroundColor:
+                        colorScheme === 'light'
+                            ? 'var(--white)'
+                            : 'var(--light-gray)',
+                    backgroundImage: 'none',
+                    borderRadius: 'var(--border-radius)',
                 },
             }}
         >
-            <DialogTitle sx={{ display: "flex", flexDirection: "column" }}>
+            <DialogTitle sx={{ display: 'flex', flexDirection: 'column' }}>
                 Change Messages list
-                <span style={{ fontSize: "0.875rem", color: "var(--slight-light-text)" }}>
+                <span
+                    style={{
+                        fontSize: '0.875rem',
+                        color: 'var(--slight-light-text)',
+                    }}
+                >
                     Change the existing messages list in ongoing storm.
                 </span>
             </DialogTitle>
@@ -83,7 +102,6 @@ const ChangeMessages = ({ payload, open, onClose }) => {
                     margin="normal"
                     sx={inputProps}
                 />
-
             </DialogContent>
 
             <DialogActions>
@@ -92,7 +110,7 @@ const ChangeMessages = ({ payload, open, onClose }) => {
                     onClick={() => onClose(false)}
                     sx={{
                         ...btnProps,
-                        width: "100px",
+                        width: '100px',
                     }}
                 >
                     Cancel
@@ -103,10 +121,13 @@ const ChangeMessages = ({ payload, open, onClose }) => {
                     onClick={onSubmitHandler}
                     sx={{
                         ...btnProps,
-                        width: "100px",
-                        backgroundColor: "var(--input-active-red-dark)",
+                        width: '100px',
+                        backgroundColor: 'var(--input-active-red-dark)',
                         '&:hover': {
-                            backgroundColor: colorScheme === 'light' ? "var(--input-active-red-light-hover)" : "var(--input-active-red-dark-hover)",
+                            backgroundColor:
+                                colorScheme === 'light'
+                                    ? 'var(--input-active-red-light-hover)'
+                                    : 'var(--input-active-red-dark-hover)',
                         },
                     }}
                 >
@@ -114,7 +135,7 @@ const ChangeMessages = ({ payload, open, onClose }) => {
                 </Button>
             </DialogActions>
         </Dialog>
-    )
-}
+    );
+};
 
 export default ChangeMessages;

@@ -24,7 +24,7 @@
 }
 
 .modal-header-description-light {
-    color: var(--slight-dark-text)
+    color: var(--slight-dark-text);
 }
 
 .modal-header-description-dark {

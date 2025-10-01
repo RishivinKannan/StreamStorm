@@ -2,9 +2,8 @@
     /* min-height: 646px; */
     /* max-width: 800.66px; */
     width: 100%;
-    height: fit-content
+    height: fit-content;
 }
-
 
 .new-storm-card-content {
     display: grid;
