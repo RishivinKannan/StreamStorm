@@ -22,13 +22,13 @@ class StormData(BaseModel):
     
     model_config = ConfigDict(strict=True) 
     
-    video_url: str = Field(..., description="Video url", validation_alias=AliasChoices("video_url","videoUrl"))
-    chat_url: str = Field(... , description="Chat url", validation_alias=AliasChoices("chat_url","chatUrl"))
+    video_url: str = Field(..., description="Video url", validation_alias=AliasChoices("video_url", "videoUrl"))
+    chat_url: str = Field(... , description="Chat url", validation_alias=AliasChoices("chat_url", "chatUrl"))
     messages: list[str] = Field(..., description="Message list")
     subscribe: bool = Field(... , description="Subscribe flag")
-    subscribe_and_wait: bool = Field(..., description="Subscribe and wait flag", validation_alias=AliasChoices("subscribe_and_wait","subscribeAndWait"))
-    subscribe_and_wait_time: StrictInt = Field(... , ge=0, description="Subscribe and wait time in seconds", validation_alias=AliasChoices("subscribe_and_wait_time","subscribeAndWaitTime"))
-    slow_mode: int = Field(... , ge=1, description="Slow mode time in seconds", validation_alias=AliasChoices("slow_mode","slowMode"))
+    subscribe_and_wait: bool = Field(..., description="Subscribe and wait flag", validation_alias=AliasChoices("subscribe_and_wait", "subscribeAndWait"))
+    subscribe_and_wait_time: StrictInt = Field(... , ge=0, description="Subscribe and wait time in seconds", validation_alias=AliasChoices("subscribe_and_wait_time", "subscribeAndWaitTime"))
+    slow_mode: int = Field(... , ge=1, description="Slow mode time in seconds", validation_alias=AliasChoices("slow_mode", "slowMode"))
     channels: list[int] = Field(... , description="Channels")
     background: bool = Field(... , description="Background flag")
 
@@ -113,7 +113,7 @@ class ChangeMessagesData(BaseModel):
         return value
     
 class ChangeSlowModeData(BaseModel):
-    slow_mode: int = Field(..., description="New slow mode value", ge=1, validation_alias=AliasChoices("slow_mode","slowMode"))
+    slow_mode: int = Field(..., description="New slow mode value", ge=1, validation_alias=AliasChoices("slow_mode", "slowMode"))
     
     @field_validator("slow_mode")
     def validate_slow_mode(cls, value: int) -> int:

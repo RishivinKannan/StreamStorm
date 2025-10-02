@@ -23,6 +23,10 @@ class SeparateInstance(Playwright):
         self.index: int = index
         self.__instance_alive: bool = True
         self.__logged_in: Optional[bool] = None
+        
+        
+    async def change_language(self):
+        self.go_to_page("https://www.youtube.com/account?hl=en-US&persist_hl=1")             
 
 
     async def login(self) -> bool:        
@@ -34,7 +38,13 @@ class SeparateInstance(Playwright):
             
             await self.go_to_page("https://www.youtube.com/account") # We are going to account page because it loads faster than the main page
             
+            english: bool = await self.check_language_english()            
+            
+            if not english:
+                await self.change_language()
+                
             await self.find_and_click_element('//*[@id="avatar-btn"]', 'avatar_button') # Click on avatar button
+            
             
             await self.find_and_click_element("//*[text()='Switch account']", 'switch_account_button') # Click on switch account button
 
