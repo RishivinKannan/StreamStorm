@@ -43,8 +43,8 @@ def test_storm_data_instantiated(client: TestClient):
     response = client.post("/storm/start", json=payload)
     assert response.status_code == 200
     
-    assert StreamStorm.ss_instance.url == video_url
-    assert StreamStorm.ss_instance.chat_url == chat_url
+    assert StreamStorm.ss_instance.url == f"{video_url}?hl=en-US&persist_hl=1"
+    assert StreamStorm.ss_instance.chat_url == f"{chat_url}?hl=en-US&persist_hl=1"
     assert StreamStorm.ss_instance.messages == messages
     assert StreamStorm.ss_instance.subscribe == (subscribe, subscribe_and_wait)
     assert StreamStorm.ss_instance.subscribe_and_wait_time == subscribe_and_wait_time
