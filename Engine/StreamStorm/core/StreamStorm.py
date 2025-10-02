@@ -49,8 +49,8 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
         
         super().__init__()
 
-        self.url: str = f"{url}?hl=en-US&persist_hl=1"
-        self.chat_url: str = f"{chat_url}?hl=en-US&persist_hl=1"
+        self.url: str = f"{url}&hl=en-US&persist_hl=1"
+        self.chat_url: str = f"{chat_url}&hl=en-US&persist_hl=1"
         self.messages: list[str] = messages
         self.subscribe: tuple[bool, bool] = subscribe
         self.subscribe_and_wait_time: int = subscribe_and_wait_time
