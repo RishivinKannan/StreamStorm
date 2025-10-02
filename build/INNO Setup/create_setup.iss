@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "StreamStorm"
-#define MyAppVersion "3.4.7"
+#define MyAppVersion "3.4.8"
 #define MyAppPublisher "DarkGlance"
 #define MyAppURL "https://streamstorm.darkglance.in"
 #define MyAppExeName "StreamStorm.exe"
@@ -29,14 +29,14 @@ ArchitecturesAllowed=x64compatible
 ; the 64-bit view of the registry.
 ArchitecturesInstallIn64BitMode=x64compatible
 DisableProgramGroupPage=yes
-LicenseFile=D:\PROGRAMMING\PROJECTS\StreamStorm\INNO Setup\License.txt
-InfoAfterFile=D:\PROGRAMMING\PROJECTS\StreamStorm\INNO Setup\AfterText.txt
+LicenseFile=D:\PROGRAMMING\PROJECTS\StreamStorm\build\INNO Setup\License.txt
+InfoAfterFile=D:\PROGRAMMING\PROJECTS\StreamStorm\build\INNO Setup\AfterText.txt
 ; Remove the following line to run in administrative install mode (install for all users).
 PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
-OutputDir=D:\PROGRAMMING\PROJECTS\StreamStorm\INNO Setup\Output
+OutputDir=D:\PROGRAMMING\PROJECTS\StreamStorm\build\INNO Setup\Output
 OutputBaseFilename=StreamStorm Setup
-SetupIconFile=D:\PROGRAMMING\PROJECTS\StreamStorm\UI\public\favicon.ico
+SetupIconFile=D:\PROGRAMMING\PROJECTS\StreamStorm\src\UI\public\favicon.ico
 SolidCompression=yes
 WizardStyle=modern
 
@@ -47,10 +47,10 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "D:\PROGRAMMING\PROJECTS\StreamStorm\output\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\PROGRAMMING\PROJECTS\StreamStorm\output\dgupdaterupdate\*"; DestDir: "{app}\dgupdaterupdate"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "D:\PROGRAMMING\PROJECTS\StreamStorm\output\dgupdaterconf.json"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\PROGRAMMING\PROJECTS\StreamStorm\output\RAMMap.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROGRAMMING\PROJECTS\StreamStorm\build\output\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROGRAMMING\PROJECTS\StreamStorm\build\output\dgupdaterupdate\*"; DestDir: "{app}\dgupdaterupdate"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:\PROGRAMMING\PROJECTS\StreamStorm\build\output\dgupdaterconf.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\PROGRAMMING\PROJECTS\StreamStorm\build\output\RAMMap.exe"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

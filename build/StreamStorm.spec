@@ -1,9 +1,10 @@
 # -*- mode: python ; coding: utf-8 -*-
 from pathlib import Path
+from os import getcwd
 
-ROOT = Path(".").resolve()
-ENGINE = ROOT / "Engine"
-UI = ROOT / "UI"
+ROOT = Path(getcwd()).parent.resolve()
+ENGINE = ROOT / "src" / "Engine"
+UI = ROOT / "src" / "UI"
 
 a = Analysis(
     [str(ENGINE / "main.py")],

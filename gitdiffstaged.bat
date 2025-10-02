@@ -1,1 +1,0 @@
-git diff --staged > diff.txt
