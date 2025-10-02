@@ -1,3 +1,4 @@
+import re
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -37,17 +38,16 @@ class Selenium(BrowserAutomator):
                 self.driver.execute_script("arguments[0].scrollIntoView();", element)
             element.click()
 
-        except (ElementNotInteractableException, ElementNotFound):
+        except (ElementNotInteractableException, ElementNotFound) as e:
             if not for_subscribe and not for_profiles_init:
                 self.driver.close()
-                raise BrowserClosedError    
+                raise BrowserClosedError from e
             
     def check_language_english(self) -> bool:
         html_tag: WebElement = self.find_element(By.TAG_NAME, "html")
         language: str = html_tag.get_attribute("lang")
         
-        if language.startswith("en-"): 
-            return True   
+        return language.startswith("en-") 
     
     def change_language(self):
         raise NotImplementedError

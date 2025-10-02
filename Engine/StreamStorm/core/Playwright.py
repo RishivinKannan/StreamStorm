@@ -97,8 +97,7 @@ class Playwright(BrowserAutomator):
     async def check_language_english(self) -> bool:
         language: str = await self.page.evaluate("navigator.language")        
         
-        if language.startswith("en-"): 
-            return True  
+        return language.startswith("en-")
         
     def change_language(self):
         raise NotImplementedError
