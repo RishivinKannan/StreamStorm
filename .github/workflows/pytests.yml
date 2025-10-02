@@ -10,7 +10,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      PYTEST_RUN_PATH: Engine
+      PYTEST_RUN_PATH: src/Engine
 
     steps:
       - name: Checkout repo
@@ -26,7 +26,7 @@ jobs:
         with:
           path: |
             ~/.cache/pip
-            Engine/.venv
+            src/Engine/.venv
           key: ${{ runner.os }}-pip-${{ hashFiles('**/pyproject.toml') }}-engine
           restore-keys: |
             ${{ runner.os }}-pip-
@@ -37,7 +37,7 @@ jobs:
           python -m pip install uv
 
       - name: Run tests with uv (Engine dir)
-        working-directory: Engine
+        working-directory: src/Engine
         run: |
           uv sync || true
           uv run pytest -q
