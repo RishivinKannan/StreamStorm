@@ -93,6 +93,16 @@ class Playwright(BrowserAutomator):
         except Exception as _:
             self.__instance_alive = False
             logger.info(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: Failure to attach error listeners")
+            
+    async def check_language_english(self) -> bool:
+        language: str = await self.page.evaluate("navigator.language")        
+        
+        if language.startswith("en-"): 
+            return True  
+        
+    def change_language(self):
+        raise NotImplementedError
+    
 
     async def open_browser(self) -> None:
         self.playwright: AsyncPlaywright = await async_playwright().start()

@@ -48,29 +48,29 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
     ) -> None:
         
         super().__init__()
-        
-        self.url: str = url
-        self.chat_url: str = chat_url
+
+        self.url: str = f"{url}?hl=en-US&persist_hl=1"
+        self.chat_url: str = f"{chat_url}?hl=en-US&persist_hl=1"
         self.messages: list[str] = messages
         self.subscribe: tuple[bool, bool] = subscribe
         self.subscribe_and_wait_time: int = subscribe_and_wait_time
         self.slow_mode: int = slow_mode
         self.channels: list[int] = sorted(channels)
         self.background: bool = background
-        
+
         self.ready_event: Event = Event()
         self.pause_event: Event = Event()
         self.run_stopper_event: Event = Event()
-        
+
         self.total_instances: int = len(channels)
         self.ready_to_storm_instances: int = 0
         self.total_channels: int = 0
         self.all_channels: dict[str, dict[str, str]] = {}
-        
+
         self.assigned_profiles: dict[str, int] = {}
-        
+
         StreamStorm.ss_instance = self
-        
+
         logger.debug(f"StreamStorm initialized with url: {self.url}, channels: {self.channels}, "
                     f"messages count: {len(self.messages)}, slow_mode: {self.slow_mode}s, "
                     f"background: {self.background}")        

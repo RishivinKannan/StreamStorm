@@ -56,13 +56,20 @@ class UndetectedDrivers(Selenium):
 
         logger.debug(f"Browser PID: {self.driver.browser_pid}")
 
+
     def get_total_channels(self) -> None:
         
         with suppress(NoSuchElementException, ElementNotInteractableException):
             # select first channel if popup appears
             self.find_and_click_element(By.XPATH, "//ytd-popup-container//*[@id='contents']/ytd-account-item-renderer[1]", for_profiles_init=True)
+            
+        english: bool = self.check_language_english()
+        
+        if not english: 
+            self.driver.get("https://www.youtube.com/account?hl=en-US&persist_hl=1")
         
         self.find_and_click_element(By.XPATH, '//*[@id="avatar-btn"]')
+        
         self.find_and_click_element(By.XPATH, "//*[text()='Switch account']")
 
         WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, "//*[@id='submenu']//*[@id='container']//*[@id='contents']//*[@id='contents']/ytd-account-item-renderer")))

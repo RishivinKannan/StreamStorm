@@ -3,6 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import ElementNotInteractableException
+from selenium.webdriver.common.by import By
 
 from ..utils.exceptions import BrowserClosedError, ElementNotFound
 from .BrowserAutomator import BrowserAutomator
@@ -31,17 +32,26 @@ class Selenium(BrowserAutomator):
 
         try:
             element: WebElement = self.find_element(by, value, wait_time=5 if for_profiles_init else 15)
-            
+
             if scroll:
                 self.driver.execute_script("arguments[0].scrollIntoView();", element)
             element.click()
-            
+
         except (ElementNotInteractableException, ElementNotFound):
-            if for_subscribe or for_profiles_init:
-                pass
-            else:
-                self.driver.close()  
-                raise BrowserClosedError       
+            if not for_subscribe and not for_profiles_init:
+                self.driver.close()
+                raise BrowserClosedError    
+            
+    def check_language_english(self) -> bool:
+        html_tag: WebElement = self.find_element(By.TAG_NAME, "html")
+        language: str = html_tag.get_attribute("lang")
+        
+        if language.startswith("en-"): 
+            return True   
+    
+    def change_language(self):
+        raise NotImplementedError
+    
         
     async def open_browser(self):
         """
