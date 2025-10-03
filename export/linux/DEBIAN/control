@@ -1,0 +1,10 @@
+Package: streamstorm
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Maintainer: Ashif (DarkGlance) <you@example.com>
+Depends: python3, python3-pyqt5, python3-pyqt5.qtwebengine, python3-pyqt5.qtwebchannel, libqt5webkit5
+Description: StreamStorm - lightweight YouTube live chat automator (packaged)
+ Long description line 1.
+ Long description line 2.

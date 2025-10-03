@@ -1,0 +1,3 @@
+#!/bin/sh
+# launcher wrapper for StreamStorm
+exec /opt/streamstorm/StreamStorm_lin "$@"

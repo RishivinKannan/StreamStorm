@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=StreamStorm
+Comment=StreamStorm - YouTube live chat automator
+Exec=/usr/bin/streamstorm
+Icon=streamstorm
+Terminal=false
+Type=Application
+Categories=Utility;Network;
+StartupNotify=true
