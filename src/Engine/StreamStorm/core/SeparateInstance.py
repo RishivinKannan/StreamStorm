@@ -26,7 +26,7 @@ class SeparateInstance(Playwright):
         
         
     async def change_language(self):
-        self.go_to_page("https://www.youtube.com/account?hl=en-US&persist_hl=1")             
+        await self.go_to_page("https://www.youtube.com/account?hl=en-US&persist_hl=1")             
 
 
     async def login(self) -> bool:        
