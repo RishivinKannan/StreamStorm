@@ -2,8 +2,8 @@
 set -e
 
 # fix perms
-chown -R root:root /opt/streamstorm
-chmod -R 755 /opt/streamstorm
+chown -R root:root /opt/StreamStorm
+chmod -R 755 /opt/StreamStorm
 # ensure wrapper scripts are executable
 chmod 755 /usr/bin/streamstorm /usr/bin/dgupdater || true
 

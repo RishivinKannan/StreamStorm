@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=StreamStorm
-Comment=StreamStorm - YouTube live chat automator
+Comment=StreamStorm - Bot to Spam messages on YouTube Live Stream Chat
 Exec=/usr/bin/streamstorm
 Icon=streamstorm
 Terminal=false

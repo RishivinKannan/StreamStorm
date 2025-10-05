@@ -1,2 +1,2 @@
 #!/bin/sh
-exec /opt/streamstorm/dgupdaterupdater_lin "$@"
+exec /opt/StreamStorm/dgupdaterupdater_lin "$@"
