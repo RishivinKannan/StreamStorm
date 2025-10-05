@@ -1,12 +1,13 @@
 test_files
-output
 .firebase
 .env
 .env.production
 *.log
 diff.txt
+build/output
 build/build
 build/dist
+build/INNO Setup/Output
 .pytest_cache
 .vite
 .vscode

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=StreamStorm
+Comment=StreamStorm - Bot to Spam messages on YouTube Live Stream Chat
+Exec=/usr/bin/streamstorm
+Icon=streamstorm
+Terminal=false
+Type=Application
+Categories=Utility;Network;
+StartupNotify=true

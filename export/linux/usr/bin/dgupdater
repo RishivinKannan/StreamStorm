@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /opt/StreamStorm/dgupdaterupdater_lin "$@"
