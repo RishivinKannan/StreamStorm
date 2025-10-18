@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+/* eslint-disable react/prop-types */
 import { createContext, useState, useRef, useContext } from 'react';
 import { useNotifications } from "@toolpad/core/useNotifications";
 import { useLocalStorageState } from "@toolpad/core/useLocalStorageState";
