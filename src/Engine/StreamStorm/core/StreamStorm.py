@@ -206,16 +206,10 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
                         await SI.page.close()
                     except PlaywrightError as e:
                         logger.error(f"[{index}] [{channel_name}] : Error closing page: {e}")
-
-                    # try:
-                    #     StreamStorm.each_channel_instances.remove(SI)
-                    # except ValueError:
-                    #     pass
                     
                     with suppress(ValueError):
                         StreamStorm.each_channel_instances.remove(SI)
-                        logger.debug(f"[{index}] [{channel_name}] : Removed from instances")
-                        
+                        logger.debug(f"[{index}] [{channel_name}] : Removed from instances")                        
                     
                     break
                     

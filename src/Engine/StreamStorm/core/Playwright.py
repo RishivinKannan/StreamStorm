@@ -171,6 +171,8 @@ class Playwright(BrowserAutomator):
             await element.click()
         except ElementNotFound as e:
             if not for_subscribe:
+                logger.error(f"[{self.index}] [{self.channel_name}] Element not found: {selector_name} : {selector}")
+                
                 await self.page.close(
                     reason="Browser closed due to element not found. Element: "
                     + selector

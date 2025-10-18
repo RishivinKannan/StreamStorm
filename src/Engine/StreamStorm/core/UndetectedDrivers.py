@@ -37,6 +37,7 @@ class UndetectedDrivers(Selenium):
             with open(self.config_json_path, "w", encoding="utf-8") as file:
                 dump(data, file, indent=4)
         except Exception as e:
+            logger.error(f"Failed to create config.json: {e}")
             raise RuntimeError(f"Failed to create config.json: {e}") from e
          
     @deprecated("Using user installed Chrome now.")
@@ -93,8 +94,11 @@ class UndetectedDrivers(Selenium):
                     "logo": channel_logo_url
                 }
                 
-            except NoSuchElementException:
+            except NoSuchElementException as e:
+                logger.error(f"Error occurred while getting channel {index}: {e}")
+                
                 continue
+            
         total_channels: int = len(channels_list)
 
         if total_channels == 0:
@@ -133,10 +137,14 @@ class UndetectedDrivers(Selenium):
                         sleep(2)
 
                         logged_in = True
+                        
                     except NoSuchElementException:
+                        
                         self.driver.get(self.youtube_login_url)
                         
         except (NoSuchWindowException, AttributeError) as e:
+            logger.error(f"Error occurred while logging in: The Browser window was closed or not found: {e}")
+            
             raise RuntimeError("The Browser window was closed or not found. Try again.") from e
         
 

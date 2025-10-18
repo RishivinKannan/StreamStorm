@@ -1,11 +1,17 @@
+from logging import Logger, getLogger
+
 from fastapi import Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
+
+logger: Logger = getLogger(f"fastapi.{__name__}")
 
 async def common_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     """
     Common exception handler for all exceptions.
     """
+    logger.error(f"An error occurred: {str(exc)}")
+    
     return JSONResponse(
         status_code=500,
         content={"success": False, "message": f"An error occurred: {str(exc)}"},
