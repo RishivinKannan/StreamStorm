@@ -70,12 +70,14 @@ class Profiles:
         tempdir: str = join(self.profiles_dir, profile)
 
         makedirs(tempdir, exist_ok=True)
+        
         try:
             copytree(
                 self.base_profile_dir,
                 tempdir,
                 dirs_exist_ok=True,
             )
+            
         except Error as e:
             str_error: str = str(e)
             logger.error(f"Error occurred while creating {profile}: {str_error}")

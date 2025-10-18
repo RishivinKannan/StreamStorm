@@ -68,11 +68,15 @@ async def start(data: StormData) -> JSONResponse:
         environ.update({"BUSY": "0", "BUSY_REASON": ""})
         StreamStorm.ss_instance = None
         cl.log_to_history(data, "Storm failed to start")
+        
+        logger.error(f"Storm failed to start: SystemError: {e}")
         raise e
     
     except Exception as e:
         environ.update({"BUSY": "0", "BUSY_REASON": ""})
         cl.log_to_history(data, "Storm failed to start")
+        
+        logger.error(f"Storm failed to start: Exception: {e}")
         raise e   
 
 
@@ -91,8 +95,9 @@ async def stop() -> JSONResponse:
         try:
             if instance.page:
                 await instance.page.close()
+                
         except Exception as e:
-            logger.warning(f"Error occurred while closing browser: {e}")
+            logger.error(f"Error occurred while closing browser: {e}")
 
     await gather(*(close_browser(i) for i in StreamStorm.each_channel_instances))
 
@@ -234,6 +239,7 @@ async def get_channels_data(data: GetChannelsData) -> JSONResponse:
             config: dict = loads(await file.read())
             
     except (FileNotFoundError, PermissionError, UnicodeDecodeError, JSONDecodeError) as e:
+        logger.error(f"Error reading config file: {config_json_path}: {e}")
         
         return JSONResponse(
             status_code=500,
@@ -243,6 +249,7 @@ async def get_channels_data(data: GetChannelsData) -> JSONResponse:
             }
         )
     except Exception as e:
+        logger.error(f"Error parsing config file: {e}")
         
         return JSONResponse(
             status_code=500,

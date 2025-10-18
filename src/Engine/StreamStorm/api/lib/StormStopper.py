@@ -4,13 +4,13 @@ from logging import getLogger, Logger
 
 from ...core.StreamStorm import StreamStorm
 
-
 logger: Logger = getLogger(f"fastapi.{__name__}")
 
 async def background_storm_stopper() -> NoReturn:
     while True:
         try:
             await sleep(5)
+            
             if StreamStorm.ss_instance is None:
                 continue
             
@@ -25,6 +25,7 @@ async def background_storm_stopper() -> NoReturn:
                 StreamStorm.ss_instance = None
                 StreamStorm.each_channel_instances.clear()
                 StreamStorm.ss_instance.run_stopper_event.clear()
+                
         except Exception as e:
             logger.error(f"Error occurred in background_storm_stopper: {e}")
 
