@@ -239,7 +239,7 @@ async def get_channels_data(data: GetChannelsData) -> JSONResponse:
             config: dict = loads(await file.read())
             
     except (FileNotFoundError, PermissionError, UnicodeDecodeError, JSONDecodeError) as e:
-        logger.error(f"Error reading config file: {e}")
+        logger.error(f"Error reading config file: {config_json_path}: {e}")
         
         return JSONResponse(
             status_code=500,

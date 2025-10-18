@@ -41,7 +41,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         "mode": "Channels selection mode"
     }
     
-    message: str = field_map[errors[0]["loc"][1]] + " : " + errors[0]["msg"][6:].capitalize()
+    message: str = field_map[errors[0]["loc"][1]] + ": " + errors[0]["msg"][6:].capitalize()
     
     if "ctx" in errors[0]:
         del errors[0]["ctx"]
