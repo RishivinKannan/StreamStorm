@@ -19,7 +19,6 @@ from .lib.LifeSpan import lifespan
 from .lib.middlewares import LogRequestMiddleware, RequestValidationMiddleware
 from ..utils.CustomLogger import CustomLogger
 from .routers.StormRouter import router as storm_router
-from .routers.ProfileRouter import router as profile_router
 from .routers.EnvironmentRouter import router as environment_router
 
 
@@ -44,6 +43,7 @@ if CONFIG["ENV"] == "development":
             {
                 'APP_NAME': environ.get('ATATUS_APP_NAME'),
                 'LICENSE_KEY': environ.get('ATATUS_LICENSE_KEY'),
+                'APP_VERSION': CONFIG["VERSION"],
                 'TRACING': True,
                 'ANALYTICS': True,
                 'ANALYTICS_CAPTURE_OUTGOING': True,
