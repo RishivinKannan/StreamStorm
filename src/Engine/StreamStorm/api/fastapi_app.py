@@ -90,7 +90,6 @@ if CONFIG["ENV"] == "development":
     logger.debug("Atatus middleware added to FastAPI app")
 
 app.include_router(storm_router)
-# app.include_router(profile_router)
 app.include_router(environment_router)
 
 @app.get("/")
