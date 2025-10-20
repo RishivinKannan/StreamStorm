@@ -1,4 +1,5 @@
 from typing import Self
+from pathlib import Path
 from warnings import deprecated
 from pydantic import BaseModel, ConfigDict, field_validator, model_validator, StrictInt, Field, AliasChoices
 from logging import getLogger, Logger
@@ -156,6 +157,71 @@ class GetChannelsData(BaseModel):
         
         return value
     
+class CreateChannelsData(BaseModel):
+    channels: list[dict[str, str]] = Field(... , description="Channels data with name and logo uri")
+    logo_needed: bool = Field(... , description="Logo needed flag", validation_alias=AliasChoices("logo_needed", "logoNeeded"))
+    random_logo: bool = Field(... , description="Random logo flag", validation_alias=AliasChoices("random_logo", "randomLogo"))
+    
+    @field_validator("channels")
+    def validate_channels(cls, value: list) -> list[dict[str, str]]:
+        if not value:
+            raise ValueError("Channels cannot be empty")
+        
+        if not all(isinstance(channel, dict) for channel in value):
+            raise ValueError("All channels must be a JS object")
+        
+        if any("name" not in channel or "uri" not in channel for channel in value):
+            raise ValueError("All channels must have a name and logo")
+        
+        if any(channel["name"] == "" for channel in value):
+            raise ValueError("All channels must have a name")
+        
+        return value
+        
+    @model_validator(mode='after')
+    def validate_data(self) -> list[dict[str, str]]:  
+        print(self.channels)  
+        
+        if self.logo_needed and not self.random_logo:
+            if any(channel["uri"] == "" for channel in self.channels):
+                raise ValueError("All channels must have a logo uri, since you have set Logo is needed")
+            
+            new_value: list = []
+            
+            for channel in self.channels:
+                try:
+                    path: Path = Path(channel["uri"]).resolve(strict=True)
+                    new_value.append({"name": channel["name"], "logo_uri": str(path)})
+                    
+                except FileNotFoundError as e:
+                    logger.error(f"Logo file not found for {channel['name']}")
+                    raise ValueError(f"Logo file not found for {channel['name']}") from e
+                
+                except Exception as e:
+                    logger.error(f"Unexpected error while finding logo file: {e}")
+                    raise ValueError(f"Logo file not found for {channel['name']}") from e
+        
+        
+        self.channels = new_value
+        
+        return self
+    
+
+class VerifyChannelsDirectoryData(BaseModel):
+    directory: str
+    
+    @field_validator("directory")
+    def validate_directory(cls, value: str) -> str:
+        path = Path(value)
+        
+        try:
+            path.resolve(strict=True)
+            return value
+        
+        except Exception as e:
+            raise ValueError("Invalid directory") from e
+        
+        
     
 __all__ : list[str] = [
     "StormData",
@@ -164,5 +230,7 @@ __all__ : list[str] = [
     "ChangeSlowModeData",
     "StartMoreChannelsData",
     "GetChannelsData",
+    "CreateChannelsData",
+    "VerifyChannelsDirectoryData",
     "Validate"
 ]
