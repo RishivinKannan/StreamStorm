@@ -43,6 +43,11 @@ def main() -> None:
 
     Thread(target=serve_api, daemon=True).start()
     logger.info("API server started.")
+    
+    # Comment this below two line after testing
+    # if CONFIG["ENV"] == "development":
+    #     input()
+    #     return
 
     try:
 

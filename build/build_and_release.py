@@ -18,7 +18,7 @@ basicConfig(level=INFO)
 log_info(f"Root directory: {ROOT}")
 
 
-def check_engine_env():
+def check_engine_env(version: str):
     """Check if the Engine environment is set to production before building."""
     
     log_info("Checking environment configuration...")
@@ -27,6 +27,12 @@ def check_engine_env():
         raise ValueError(
             "Environment is not set to 'production' in Engine/config/config.py. "
             "Change it to 'production' before building the release."
+        )
+        
+    if CONFIG["VERSION"] != version:
+        raise ValueError(
+            "Version in Engine/config/config.py is not the same as the new version. "
+            "Change it to the new version before building the release."
         )
     
     log_info(f"Environment configuration check passed. ENV is set to '{CONFIG['ENV']}'.")
@@ -180,7 +186,7 @@ def main() -> None:
     new_version: str = input("Enter the new version: ")
     
     # Step 0: Check environment configuration
-    check_engine_env()
+    check_engine_env(new_version)
 
     # Step 1
     update_versions(new_version)
