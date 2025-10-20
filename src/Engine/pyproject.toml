@@ -16,6 +16,7 @@ dependencies = [
     "playwright>=1.53.0",
     "aiofiles>=24.1.0",
     "dgupdater>=1.2.1",
+    "pyautogui>=0.9.54",
 ]
 
 [dependency-groups]
