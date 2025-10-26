@@ -33,7 +33,7 @@ if CONFIG["ENV"] == "development":
     from dotenv import load_dotenv
     load_dotenv()
 
-    from atatus import Client, get_client
+    from atatus import Client, get_client, set_response_body
     from atatus.contrib.starlette import create_client, Atatus
 
     atatus_client: Optional[Client] = get_client()
@@ -86,6 +86,15 @@ async def add_cors_headers(request: Request, call_next: Callable):
     return response
 
 if CONFIG["ENV"] == "development":
+    
+    @app.middleware("http")
+    async def add_atatus_set_response_body_middleware(request: Request, call_next: Callable):
+        response: Response = await call_next(request)
+        set_response_body(response.body)
+        return response
+    
+    logger.debug("Atatus set_response_body middleware added to FastAPI app")    
+    
     app.add_middleware(Atatus, client=atatus_client)
     logger.debug("Atatus middleware added to FastAPI app")
 
