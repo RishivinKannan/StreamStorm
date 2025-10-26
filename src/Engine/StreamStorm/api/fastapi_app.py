@@ -87,13 +87,16 @@ async def add_cors_headers(request: Request, call_next: Callable):
 
 if CONFIG["ENV"] == "development":
     
-    @app.middleware("http")
-    async def add_atatus_set_response_body_middleware(request: Request, call_next: Callable):
-        response: Response = await call_next(request)
-        set_response_body(response.body)
-        return response
+    # @app.middleware("http")
+    # async def add_atatus_set_response_body_middleware(request: Request, call_next: Callable):
+    #     response: Response = await call_next(request)
+        
+    #     if request.method == "POST":
+    #         set_response_body(response.body)
+            
+    #     return response
     
-    logger.debug("Atatus set_response_body middleware added to FastAPI app")    
+    # logger.debug("Atatus set_response_body middleware added to FastAPI app")    
     
     app.add_middleware(Atatus, client=atatus_client)
     logger.debug("Atatus middleware added to FastAPI app")
