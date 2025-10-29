@@ -89,10 +89,10 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
         logger.debug(f"Checking channel availability for profiles in: {self.profiles_dir}")
         
         try:
-            async with aio_open(join(self.profiles_dir, "config.json"), "r", encoding="utf-8") as file:
+            async with aio_open(join(self.profiles_dir, "data.json"), "r", encoding="utf-8") as file:
                 data: dict = loads(await file.read()) # We are using loads instead of load to avoid blocking the event loop
         except (FileNotFoundError, PermissionError, UnicodeDecodeError, JSONDecodeError) as e:
-            logger.debug("Failed to read config.json - profiles not created yet")
+            logger.debug("Failed to read data.json - profiles not created yet")
             raise SystemError("Create profiles first.") from e
             
         no_of_channels: int = data.get("no_of_channels", 0)
