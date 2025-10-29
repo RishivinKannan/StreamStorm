@@ -22,7 +22,7 @@ class UndetectedDrivers(Selenium):
     def __init__(self, base_profile_dir: str) -> None:
         self.base_profile_dir: str = base_profile_dir
         self.youtube_login_url: str = "https://accounts.google.com/ServiceLogin?service=youtube"
-        self.config_json_path: str = join(dirname(normpath(self.base_profile_dir)), "config.json")
+        self.config_json_path: str = join(dirname(normpath(self.base_profile_dir)), "data.json")
         
         super().__init__(base_profile_dir, background=False)
 
@@ -37,8 +37,8 @@ class UndetectedDrivers(Selenium):
             with open(self.config_json_path, "w", encoding="utf-8") as file:
                 dump(data, file, indent=4)
         except Exception as e:
-            logger.error(f"Failed to create config.json: {e}")
-            raise RuntimeError(f"Failed to create config.json: {e}") from e
+            logger.error(f"Failed to create data.json: {e}")
+            raise RuntimeError(f"Failed to create data.json: {e}") from e
          
     @deprecated("Using user installed Chrome now.")
     def get_browser_path(self) -> str:
