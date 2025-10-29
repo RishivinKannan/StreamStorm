@@ -223,7 +223,7 @@ async def get_channels_data(data: GetChannelsData) -> JSONResponse:
         )
 
     app_data_dir: str = user_data_dir("StreamStorm", "DarkGlance")
-    config_json_path: str = join(app_data_dir, "ChromiumProfiles", "config.json")
+    config_json_path: str = join(app_data_dir, "ChromiumProfiles", "data.json")
 
     if not exists(config_json_path):
         return JSONResponse(
