@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PYTEST_RUN_PATH: src/Engine
-      DISPLAY: "0"
+      DISPLAY: ":0"
 
     steps:
       - name: Checkout repo
