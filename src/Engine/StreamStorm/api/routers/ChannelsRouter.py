@@ -1,3 +1,4 @@
+from logging import getLogger, Logger
 from pathlib import Path
 from os import listdir
 
@@ -12,6 +13,7 @@ router: APIRouter = APIRouter(prefix="/channels")
 
 router.include_router(profile_router)
 
+logger: Logger = getLogger(f"fastapi.{__name__}")
 
 @router.post("/create")
 def create_channels(data: CreateChannelsData) -> JSONResponse:
@@ -25,6 +27,8 @@ def create_channels(data: CreateChannelsData) -> JSONResponse:
         "failed": failed_list
     }
     
+    logger.info("Channels created successfully")
+    
     return JSONResponse(
         status_code=200,
         content=response
@@ -34,8 +38,10 @@ def create_channels(data: CreateChannelsData) -> JSONResponse:
 async def verify_dir(data: VerifyChannelsDirectoryData) -> JSONResponse:
     
     path: Path = Path(data.directory)
-    
+
     if not path.exists():
+        logger.error("Directory not found")
+        
         return JSONResponse(
             status_code=404,
             content={
@@ -43,8 +49,10 @@ async def verify_dir(data: VerifyChannelsDirectoryData) -> JSONResponse:
                 "message": "Directory not found"
             }
         )
-        
+
     if not path.is_dir():
+        logger.error("Provided path is not a directory")
+        
         return JSONResponse(
             status_code=400,
             content={
@@ -52,10 +60,11 @@ async def verify_dir(data: VerifyChannelsDirectoryData) -> JSONResponse:
                 "message": "Provided path is not a directory"
             }
         )
-        
+
     files: list = listdir(path)
-       
+
     if not files:
+        logger.error("Directory is empty")
         return JSONResponse(
             status_code=400,
             content={
@@ -63,11 +72,25 @@ async def verify_dir(data: VerifyChannelsDirectoryData) -> JSONResponse:
                 "message": "Directory is empty"
             }
         )
-        
+
     new_files: list = []
-        
+
     for file in files:
+        
+        if (path / file).is_dir():
+            logger.error("Directory contains folders (Only files are supported)")
+            
+            return JSONResponse(
+                status_code=400,
+                content={
+                    "success": False,
+                    "message": "Directory contains folders (Only files are supported)"
+                }
+            )
+                
         if not file.endswith(".png") and not file.endswith(".jpg") and not file.endswith(".jpeg"):
+            logger.error("Directory contains non-image files (Only png, jpg and jpeg files are supported)")
+            
             return JSONResponse(
                 status_code=400,
                 content={
@@ -75,13 +98,14 @@ async def verify_dir(data: VerifyChannelsDirectoryData) -> JSONResponse:
                     "message": "Directory contains non-image files (Only png, jpg and jpeg files are supported)"
                 }
             ) 
-            
-        file_name: str = '.'.join(file.split(".")[:-1])
+
+        channel_name: str = '.'.join(file.split(".")[:-1])
+        
         new_files.append({
-            "name": file_name,
+            "name": channel_name,
             "uri": str(path / file)
         })
-        
+
     return JSONResponse(
         status_code=200,
         content={

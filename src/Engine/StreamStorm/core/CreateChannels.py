@@ -21,7 +21,7 @@ class CreateChannels(UndetectedDrivers):
         unsuccessful_creations: list = []
 
         for channel in channels:
-            created: bool = self.create_channel(channel["name"], self.logo_needed, self.random_logo, channel["logo_uri"])
+            created: bool = self.create_channel(channel["name"], self.logo_needed, self.random_logo, channel["uri"])
 
             if not created:
                 unsuccessful_creations.append(channel["name"])

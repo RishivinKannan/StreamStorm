@@ -9,11 +9,13 @@ from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from selenium.common.exceptions import SessionNotCreatedException
 
 from ..core.StreamStorm import StreamStorm
 from .lib.exception_handlers import (
     common_exception_handler,
     validation_exception_handler,
+    session_not_created_exception_handler
 )
 from .lib.LifeSpan import lifespan
 from .lib.middlewares import LogRequestMiddleware, RequestValidationMiddleware
@@ -66,6 +68,7 @@ app.exception_handlers = {
     SystemError: common_exception_handler,
     RuntimeError: common_exception_handler,
     RequestValidationError: validation_exception_handler,
+    SessionNotCreatedException: session_not_created_exception_handler
 }
 
 app.add_middleware(

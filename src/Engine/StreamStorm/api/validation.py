@@ -180,7 +180,6 @@ class CreateChannelsData(BaseModel):
         
     @model_validator(mode='after')
     def validate_data(self) -> list[dict[str, str]]:  
-        print(self.channels)  
         
         if self.logo_needed and not self.random_logo:
             if any(channel["uri"] == "" for channel in self.channels):
@@ -191,7 +190,7 @@ class CreateChannelsData(BaseModel):
             for channel in self.channels:
                 try:
                     path: Path = Path(channel["uri"]).resolve(strict=True)
-                    new_value.append({"name": channel["name"], "logo_uri": str(path)})
+                    new_value.append({"name": channel["name"], "uri": str(path)})
                     
                 except FileNotFoundError as e:
                     logger.error(f"Logo file not found for {channel['name']}")
@@ -202,7 +201,7 @@ class CreateChannelsData(BaseModel):
                     raise ValueError(f"Logo file not found for {channel['name']}") from e
         
         
-        self.channels = new_value
+            self.channels = new_value
         
         return self
     
