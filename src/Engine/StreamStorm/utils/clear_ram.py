@@ -1,11 +1,16 @@
 from os import environ
 from subprocess import Popen
+from platform import system
 
 from logging import getLogger, Logger
 
 logger: Logger = getLogger(f"streamstorm.{__name__}")
 
 def clear_ram() -> None:
+    
+    if system() != "Windows":
+        return
+    
     rammap_path: str = environ.get("rammap_path")
     if not rammap_path:
         raise EnvironmentError("RAMMap path is not set in the environment variables.")

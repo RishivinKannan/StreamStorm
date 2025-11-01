@@ -18,7 +18,7 @@ basicConfig(level=INFO)
 log_info(f"Root directory: {ROOT}")
 
 
-def check_engine_env():
+def check_engine_env(version: str):
     """Check if the Engine environment is set to production before building."""
     
     log_info("Checking environment configuration...")
@@ -27,6 +27,12 @@ def check_engine_env():
         raise ValueError(
             "Environment is not set to 'production' in Engine/config/config.py. "
             "Change it to 'production' before building the release."
+        )
+        
+    if CONFIG["VERSION"] != version:
+        raise ValueError(
+            "Version in Engine/config/config.py is not the same as the new version. "
+            "Change it to the new version before building the release."
         )
     
     log_info(f"Environment configuration check passed. ENV is set to '{CONFIG['ENV']}'.")
@@ -114,7 +120,7 @@ def generate_exe() -> None:
 
     dist_dir: Path = ROOT / "build" / "dist"
     exe_path: Path = dist_dir / "StreamStorm.exe"
-    output_dir: Path = ROOT / "build" / "output"
+    output_dir: Path = ROOT / "export" / "windows"
 
     target_path: Path = output_dir / "StreamStorm.exe"
 
@@ -155,7 +161,7 @@ def generate_setup_file() -> None:
 
 def firebase_deploy() -> None:
     log_info("Deploying to Firebase...")
-    
+    call(str(ROOT / "src" / "functions" / "venv" / "Scripts" / "activate.bat"), shell=True)
     chdir(ROOT / "src")
     
     log_info("Running 'firebase deploy'")
@@ -165,7 +171,7 @@ def firebase_deploy() -> None:
 def dgupdater_commit_and_publish(new_version: str) -> None:
     log_info(f"Committing and publishing with dgupdater for version {new_version}")
     
-    chdir(ROOT / "build" / "output")
+    chdir(ROOT / "export" / "windows")
     
     log_info(f"Running 'dgupdater commit -v {new_version}'")
     run(f"dgupdater commit -v {new_version}", shell=True, check=True)
@@ -175,24 +181,24 @@ def dgupdater_commit_and_publish(new_version: str) -> None:
     
     
 def main() -> None:
-    log_info("Starting build and release process...")
+    # log_info("Starting build and release process...")
     
-    new_version: str = input("Enter the new version: ")
+    # new_version: str = input("Enter the new version: ")
     
-    # Step 0: Check environment configuration
-    check_engine_env()
+    # # Step 0: Check environment configuration
+    # check_engine_env(new_version)
 
-    # Step 1
-    update_versions(new_version)
+    # # Step 1
+    # update_versions(new_version)
 
-    # Step 2
-    generate_exe()
+    # # Step 2
+    # generate_exe()
     
     # Step 3
     firebase_deploy()
 
     # Step 4
-    dgupdater_commit_and_publish(new_version)
+    # dgupdater_commit_and_publish(new_version)
     
     # Step 5
     generate_setup_file()  

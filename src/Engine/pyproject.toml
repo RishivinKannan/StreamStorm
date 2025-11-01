@@ -1,6 +1,6 @@
 [project]
 name = "streamstorm"
-version = "3.4.8"
+version = "3.5.0"
 description = "Spam chats on YouTube live streams"
 requires-python = ">=3.13"
 dependencies = [
@@ -16,6 +16,7 @@ dependencies = [
     "playwright>=1.53.0",
     "aiofiles>=24.1.0",
     "dgupdater>=1.2.1",
+    "pyautogui>=0.9.54",
 ]
 
 [dependency-groups]

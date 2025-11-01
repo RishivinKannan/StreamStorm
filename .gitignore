@@ -11,3 +11,4 @@ build/INNO Setup/Output
 .pytest_cache
 .vite
 .vscode
+dgupdater_release/

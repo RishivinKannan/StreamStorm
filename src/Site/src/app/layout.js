@@ -50,6 +50,17 @@ export default function RootLayout({ children }) {
                 </Script>
                 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
                 <link rel="author" href="https://github.com/Ashif4354" />
+                <Script
+                    id="website-schema" // An ID is required
+                    type="application/ld+json"
+                >
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "WebSite",
+                        "name": "streamstorm",
+                        "url": "https://streamstorm.darkglance.in"
+                    })}
+                </Script>
             </head>
             <body>
                 <DownloadCountProvider>

@@ -1,9 +1,10 @@
 {
     "name": "streamstorm",
     "private": true,
-    "version": "3.4.8",
+    "version": "3.5.0",
     "type": "module",
     "scripts": {
+        "start": "vite --host",
         "dev": "vite",
         "build": "vite build",
         "lint": "eslint .",
