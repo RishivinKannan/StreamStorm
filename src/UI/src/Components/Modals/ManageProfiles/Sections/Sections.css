@@ -88,7 +88,12 @@
     margin-top: 0.5rem;
     color: var(--slight-light-text);
     margin-left: 0.5rem;
+}
 
+.experimental-warning {
+    font-size: small;
+    margin-top: 1rem;
+    color: var(--slight-light-text);
 }
 
 

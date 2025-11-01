@@ -31,7 +31,7 @@ const ManageProfiles = (props) => {
                     </div>
                     <div className="modal-header-description-container">
                         <span className={`modal-header-description modal-header-description-${colorScheme}`}>
-                            Create Youtube channels and Manage your temp browser profiles for the Storm
+                            Create Youtube channels and manage your temp browser profiles for the Storm
                         </span>
                     </div>
                 </div>

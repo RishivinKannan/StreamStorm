@@ -7,9 +7,11 @@ import RadioGroup from '@mui/material/RadioGroup';
 import Radio from '@mui/material/Radio';
 import Button from '@mui/material/Button';
 import InputAdornment from '@mui/material/InputAdornment';
+import { useNotifications } from '@toolpad/core/useNotifications';
+import { Tv, RefreshCw } from 'lucide-react';
 
-import { Tv } from 'lucide-react';
-
+import "./Sections.css";
+import ErrorText from '../../../Elements/ErrorText';
 import { useCustomMUIProps } from '../../../../context/CustomMUIPropsContext';
 import { useStormData } from '../../../../context/StormDataContext';
 
@@ -17,6 +19,7 @@ const CreateChannels = () => {
     const { colorScheme } = useColorScheme();
     const { btnProps, inputProps } = useCustomMUIProps();
     const formControls = useStormData();
+    const notifications = useNotifications();
 
     const [logoRequired, setLogoRequired] = useState(false);
     const [logoSelection, setLogoSelection] = useState('random');
@@ -32,9 +35,12 @@ const CreateChannels = () => {
     const [validatingPath, setValidatingPath] = useState(false);
     const [creatingChannels, setCreatingChannels] = useState(false);
 
+    const [errorText, setErrorText] = useState("");
+    const [validated, setValidated] = useState(false);
     const [totalChannels, setTotalChannels] = useState({});
 
     const channelsChangeHandler = (value) => {
+        setErrorText('');
         setChannelsError(false);
         setChannelsHelperText('');
         setChannelsString(value);
@@ -53,6 +59,7 @@ const CreateChannels = () => {
         if (!channelsLogoPath) {
             setChannelsLogoPathError(true);
             setChannelsLogoPathHelperText('Enter a system path');
+            return;
         }
 
         setValidatingPath(true);
@@ -67,15 +74,24 @@ const CreateChannels = () => {
             .then((response) => response.json())
             .then((data) => {
                 if (data.success) {
+                    setValidated(true);
+                    setTotalChannels({ count: data.count, files: data.files });
                     setChannelsLogoPathError(false);
                     setChannelsLogoPathHelperText('');
 
-                    setTotalChannels({ count: data.count, files: data.files });
+                    notifications.show('Directory validated', {
+                        severity: 'success'
+                    });
                 } else {
+                    setValidated(false);
+                    setTotalChannels({});
                     setChannelsLogoPathError(true);
                     setChannelsLogoPathHelperText(data.message);
-                }
 
+                    notifications.show(data.message, {
+                        severity: 'error'
+                    });
+                }
             })
             .finally(() => {
                 setValidatingPath(false);
@@ -83,6 +99,64 @@ const CreateChannels = () => {
     }
 
     const onStartHandler = () => {
+        setErrorText('');
+
+        if (logoRequired && logoSelection === "custom" && !validated) {
+            setChannelsLogoPathError(true);
+            setChannelsLogoPathHelperText('Enter a system path and click Validate');
+            console.log("a")
+            return;
+        }
+
+        if ((!logoRequired || logoSelection !== "custom") && channels.length === 0) {
+            setChannelsError(true);
+            setChannelsHelperText('Enter at least one channel name');
+            return;
+        }
+
+        let finalChannels;
+
+        if (logoSelection === "custom") {
+            finalChannels = totalChannels.files
+        } else {
+            finalChannels = channels.map((channel) => ({ name: channel, uri: "" }))
+        }
+
+        const data = {
+            channels: finalChannels,
+            randomLogo: logoSelection === "random",
+            logoNeeded: logoRequired,
+        };
+
+        setCreatingChannels(true);
+
+        fetch(`${formControls.hostAddress}/environment/channels/create`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    notifications.show("Channels created successfully", {
+                        severity: 'success'
+                    });
+                } else {
+                    setErrorText(data.message);
+
+                    notifications.show(data.message, {
+                        severity: 'error'
+                    });
+                }
+            })
+            .finally(() => {
+                setCreatingChannels(false);
+            })
+
+
+
 
     };
 
@@ -146,6 +220,7 @@ const CreateChannels = () => {
                     {
                         logoRequired && logoSelection == "custom" ? (
                             <div className="channel-logo-path-container">
+                                <span className="experimental-warning">Custom Logo is an experimental feature. It may break sometimes.</span>
                                 <TextField
                                     fullWidth
                                     variant="outlined"
@@ -230,9 +305,14 @@ const CreateChannels = () => {
                     marginTop: "1rem",
                 }}
                 disabled={creatingChannels}
+                startIcon={creatingChannels ? <RefreshCw size={20} className="spin"/> : null}
+                onClick={onStartHandler}
             >
-                Start
+                {
+                    creatingChannels ? "Creating Channels..." : "Create Channels"
+                }
             </Button>
+            <ErrorText errorText={errorText} />
 
         </div>
     );
