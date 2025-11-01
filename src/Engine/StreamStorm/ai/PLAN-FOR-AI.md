@@ -21,8 +21,10 @@ src/
             ├── __init__.py
             ├── Base.py
             ├── ResponseModels.py
-            ├── AgentFactory.py
-            └── LangChain.py
+            ├── PydanticAIModelFactory.py
+            |── LangChainModelFactory.py
+            |── LangChain.py
+            └── PydanticAI.py
 ```
 
 ---
