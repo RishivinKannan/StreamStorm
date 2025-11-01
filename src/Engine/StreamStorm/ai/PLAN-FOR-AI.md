@@ -1,4 +1,4 @@
-# Development Plan: StreamStorm AI Engine Module
+# Development Plan: StreamStorm AI Module
 
 ## 1. Objective
 
@@ -19,10 +19,10 @@ src/
     └── StreamStorm/
         └── ai/
             ├── __init__.py
-            ├── AIBase.py
+            ├── Base.py
             ├── ResponseModels.py
             ├── AgentFactory.py
-            └── AI.py
+            └── LangChain.py
 ```
 
 ---
@@ -33,16 +33,16 @@ Detailed plan for each file below 👇
 
 ---
 
-### 3.1. `src/Engine/StreamStorm/ai/AIBase.py`
+### 3.1. `src/Engine/StreamStorm/ai/Base.py`
 
 **Purpose:**
 Defines the abstract base classes (interfaces) for all provider and factory implementations.
 This ensures that any new provider adheres to a consistent API contract.
 
 ```python
-# src/Engine/StreamStorm/ai/AIBase.py
+# src/Engine/StreamStorm/ai/Base.py
 
-class ProviderBase:
+class AIBase:
     """
     Abstract base class for an AI provider.
     """
@@ -52,13 +52,25 @@ class ProviderBase:
         """
         raise NotImplementedError
 
-class ModelFactory:
+    def generate_messages(self):
+        """
+        Generates a list of random messages.
+        """
+        raise NotImplementedError
+
+    def generate_channels(self):
+        """
+        Generates a list of random channel names.
+        """
+        raise NotImplementedError
+
+class ModelBase:
     """
-    Abstract factory interface for creating AI models.
+    Abstract interface for creating AI models.
     """
     def create_model(self):
         """
-        Factory method to be implemented by concrete factories.
+        Model method to be implemented by concrete factories.
         """
         raise NotImplementedError
 ```
@@ -73,7 +85,6 @@ This ensures predictable data structures for tasks like **message generation** a
 
 ```python
 # src/Engine/StreamStorm/ai/ResponseModels.py
-from pydantic import BaseModel
 
 class Messages(BaseModel):
     """
@@ -92,14 +103,14 @@ class ChannelNames(BaseModel):
 
 ---
 
-### 3.3. `src/Engine/StreamStorm/ai/AgentFactory.py`
+### 3.3.1 `src/Engine/StreamStorm/ai/PydanticAIModelFactory.py`
 
 **Purpose:**
 Implements the concrete factory classes for each supported AI provider (**OpenAI**, **Ollama**).
-Includes a `ModelFactoryProvider` to dynamically select the correct factory at runtime based on configuration.
+Includes a `ModelFactory` to dynamically select the correct factory at runtime based on configuration.
 
 ```python
-# src/Engine/StreamStorm/ai/AgentFactory.py
+# src/Engine/StreamStorm/ai/PydanticAIModelFactory.py
 
 from pydantic_ai.models.openai import OpenAIChatModel
 # Assuming provider implementations exist
@@ -108,50 +119,100 @@ from pydantic_ai.providers.ollama import OllamaProvider
 # Assuming AIBase contains the ModelFactory definition
 from .AIBase import ModelFactory 
 
-class OpenAIModelFactory(ModelFactory):
+class OpenAIModel(ModelBase):
     def create_model(self, model_name):
         provider = OpenAIProvider()
         return OpenAIChatModel(model_name, provider=provider)
 
-class OllamaModelFactory(ModelFactory):
+class OllamaModel(ModelBase):
     def create_model(self):
         provider = OllamaProvider(base_url="http://localhost:11434")
         return OpenAIChatModel("llama3", provider=provider)
 
 
-class ModelFactoryProvider:
+class ModelFactory:
     """Returns the right factory based on provider name."""
 
     factories = {
-        "openai": OpenAIModelFactory(),
-        "ollama": OllamaModelFactory(),
+        "openai": OpenAIModel(),
+        "ollama": OllamaModel(),
     }
 
     @staticmethod
-    def get_factory(provider_name: str) -> ModelFactory:
+    def get_model(provider_name: str) -> ModelFactory:
         provider_name = provider_name.lower()
-        if provider_name not in ModelFactoryProvider.factories:
+        if provider_name not in ModelFactory.factories:
             raise ValueError(f"Unsupported provider: {provider_name}")
-        return ModelFactoryProvider.factories[provider_name]
+        provider = ModelFactory.factories[provider_name]
+        return provider.create_model()
 ```
 
 ---
 
-### 3.4. `src/Engine/StreamStorm/ai/AI.py`
+### 3.3.2 `src/Engine/StreamStorm/ai/LangChainModelFactory.py`
+
+**Purpose:**
+Implements the concrete factory classes for each supported AI provider (**OpenAI**, **Ollama**).
+Includes a `ModelFactory` to dynamically select the correct factory at runtime based on configuration.
+
+```python
+# src/Engine/StreamStorm/ai/PydanticAI.py
+## Implement this yourself
+````
+
+---
+
+### 3.4.1 `src/Engine/StreamStorm/ai/PydanticAI.py`
 
 **Purpose:**
 Main service class for the AI module.
 It initializes with the desired provider and provides high-level methods for business logic like generating messages and channel names.
 
 ```python
-# src/Engine/StreamStorm/ai/AI.py
+# src/Engine/StreamStorm/ai/PydanticAI.py
 
-class AI:
+class PydanticAI(AIBase):
     def __init__(self, provider_name: str, model_name: str = None):
         """
         Initializes the AI service with a specific provider.
         """
-        # Logic to use ModelFactoryProvider to get a factory
+        # Logic to use ModelFactory to get a factory
+        # and create a model instance
+        model = ModelFactory.get_model(provider_name)
+        self.agent = Agent(model)
+
+    def generate_random_messages(self, count: int):
+        """
+        Generates a list of random messages.
+        """
+        # Will use the initialized model and the Messages response model
+        pass
+
+    def generate_channel_names(self, topic: str):
+        """
+        Generates suggested channel names based on a topic.
+        """
+        # Will use the initialized model and the ChannelNames response model
+        pass
+```
+
+---
+
+### 3.4.2 `src/Engine/StreamStorm/ai/LangChain.py`
+
+**Purpose:**
+Main service class for the AI module.
+It initializes with the desired provider and provides high-level methods for business logic like generating messages and channel names.
+
+```python
+# src/Engine/StreamStorm/ai/LangChain.py
+
+class LangChain(AIBase):
+    def __init__(self, provider_name: str, model_name: str = None):
+        """
+        Initializes the AI service with a specific provider.
+        """
+        # Logic to use ModelFactory to get a factory
         # and create a model instance
         pass
 
@@ -172,47 +233,16 @@ class AI:
 
 ---
 
-## 4. Example Usage to be done in `AI class`
-
-Demonstration of how an external service (like an **Agent**) uses this module to perform a task and return structured Pydantic responses.
-
-```python
-from pydantic import BaseModel
-# This 'Agent' is a conceptual consumer of the factory
-# from some_agent_library import Agent 
-# from .AgentFactory import ModelFactoryProvider
-
-# Define the desired output structure
-class Summary(BaseModel):
-    topic: str
-    summary: str
-
-# 1. Choose the factory dynamically
-# Note: 'anthropic' would need to be added to ModelFactoryProvider
-factory = ModelFactoryProvider.get_factory("anthropic") 
-
-# 2. Create the model
-# (Assuming create_model() signature is standardized)
-model = factory.create_model() 
-
-# 3. Run the task
-# (Assuming an 'Agent' class wraps the model)
-agent = Agent(model)
-result = agent.run("Summarize the advantages of Python’s asyncio.", result_type=Summary)
-
-# The 'result' is a validated Pydantic object
-print(result)
-```
-
----
-
 ## 4. The AI class will be used by StreamStorm in the following ways
 
 ```python
-from Engine.StreamStorm.ai.AI import AI
+from Engine.StreamStorm.ai.AI import LangChain
 
 # Instantiate the AI service with the desired provider
-ai = AI(provider_name="openai", model_name="gpt-4o-mini")
+ai = LangChain(provider_name="openai", model_name="gpt-4o-mini")
+# (or)
+ai = PydanticAI(provider_name="openai", model_name="gpt-4o-mini")
+#  You can create a factory this switching as well
 
 # Generate some random messages
 messages = ai.generate_random_messages(count=5)
