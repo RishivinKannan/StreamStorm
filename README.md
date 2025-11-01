@@ -58,7 +58,7 @@ git clone https://github.com/Ashif4354/StreamStorm.git
 The backend is a FastAPI server that handles all the browser automation logic.
 
 ```bash
-cd Engine
+cd src/Engine
 uv sync
 uv run main.py
 ```
@@ -71,7 +71,7 @@ uv run main.py
 The frontend is a React application built with Vite.
 
 ```bash
-cd UI
+cd src/UI
 npm install
 vite --host
 ```
