@@ -97,12 +97,11 @@ class StormData(BaseModel):
 
 
 class ProfileData(BaseModel):
-    count: StrictInt = Field(... , ge=1, description="Count must be an integer and at least 1")
-    
+    count: StrictInt = Field(... , ge=1, description="Count must be an integer and at least 1")   
     
     
 class ChangeMessagesData(BaseModel):
-    messages: list[str]
+    messages: list[str] = Field(... , description="Message list")
     
     @field_validator("messages")
     def validate_messages(cls, value: list[str]) -> list[str]:
@@ -125,7 +124,7 @@ class ChangeSlowModeData(BaseModel):
         return value
 
 class StartMoreChannelsData(BaseModel):
-    channels: list[StrictInt]
+    channels: list[StrictInt] = Field(... , description="Channels")
 
     @field_validator("channels")
     def validate_channels(cls, value: list[int]) -> list[int]:
@@ -148,7 +147,7 @@ class StartMoreChannelsData(BaseModel):
     
     
 class GetChannelsData(BaseModel):
-    mode: str
+    mode: str = Field(... , description="Mode")
 
     @field_validator("mode")
     def validate_mode(cls, value: str) -> str:
@@ -207,7 +206,7 @@ class CreateChannelsData(BaseModel):
     
 
 class VerifyChannelsDirectoryData(BaseModel):
-    directory: str
+    directory: str = Field(... , description="Directory")
     
     @field_validator("directory")
     def validate_directory(cls, value: str) -> str:
