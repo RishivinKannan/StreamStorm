@@ -6,8 +6,8 @@ from warnings import deprecated
 from undetected_chromedriver import Chrome
 from logging import getLogger, Logger
 from contextlib import suppress
-from pyautogui import write as pyautogui_write, press as pyautogui_press
-
+with suppress(KeyError): # 
+    from pyautogui import write as pyautogui_write, press as pyautogui_press
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, NoSuchWindowException, ElementNotInteractableException
 from selenium.webdriver.support.ui import WebDriverWait
