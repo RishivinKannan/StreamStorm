@@ -43,7 +43,7 @@ const SystemInfoProvider = ({children}) => {
 
             notifications.show('Debug mode enabled!', { severity: 'info' });
         }
-        stopPolling(); //comment this line in production
+        // stopPolling(); //comment this line in production
     }, []);
 
     return (
