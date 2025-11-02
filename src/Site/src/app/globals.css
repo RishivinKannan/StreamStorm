@@ -9,6 +9,7 @@
     --light-red-hover: #d43f3f;
     --gray-text: #a3a3a3;
     --border-radius: 0.5rem;
+    --header-height: 4rem;
 }
 
 body {
@@ -19,6 +20,10 @@ body {
 
 h2 {
     margin: 0;
+}
+
+h1, h2, h3 {
+    scroll-margin-top: var(--header-height);
 }
 
 .header {

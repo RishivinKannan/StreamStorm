@@ -9,11 +9,15 @@ import Button from '@mui/material/Button';
 import InputAdornment from '@mui/material/InputAdornment';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { Tv, RefreshCw } from 'lucide-react';
+import { logEvent } from 'firebase/analytics';
+
+import * as atatus from 'atatus-spa';
 
 import "./Sections.css";
 import ErrorText from '../../../Elements/ErrorText';
 import { useCustomMUIProps } from '../../../../context/CustomMUIPropsContext';
 import { useStormData } from '../../../../context/StormDataContext';
+import { analytics } from '../../../../config/firebase';
 
 const CreateChannels = () => {
     const { colorScheme } = useColorScheme();
@@ -82,6 +86,8 @@ const CreateChannels = () => {
                     notifications.show('Directory validated', {
                         severity: 'success'
                     });
+
+                    logEvent(analytics, 'validate_path_success');
                 } else {
                     setValidated(false);
                     setTotalChannels({});
@@ -91,7 +97,23 @@ const CreateChannels = () => {
                     notifications.show(data.message, {
                         severity: 'error'
                     });
+
+                    logEvent(analytics, 'validate_path_failed');
+                    atatus.notify()
                 }
+            })
+            .catch((error) => {
+                console.error(error);
+                setValidated(false);
+                setTotalChannels({});
+                setErrorText("An error occurred while validating the directory. Try again.");
+
+                notifications.show('An error occurred while validating the directory. Try again.', {
+                    severity: 'error'
+                });
+
+                logEvent(analytics, 'validate_path_error');
+                atatus.notify(error)
             })
             .finally(() => {
                 setValidatingPath(false);

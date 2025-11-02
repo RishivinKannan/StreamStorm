@@ -31,6 +31,7 @@ const Instructions = () => {
                   <li><a href="#storm-controls" className="instructions-index-link">Storm Controls</a></li>
                 </ul>
               </li>
+              <li><a href="#creating-channels" className="instructions-index-link">Creating Channels</a></li>
               <li>
                 <a href="#host-config" className="instructions-index-link">Host Configuration</a>
                 <ul className="instructions-index-list">
@@ -70,7 +71,7 @@ const Instructions = () => {
 
           <div className="instructions-warning">
             <p className="instructions-warning-text">
-              <strong>Disclaimer:</strong> You may get your channels <strong>Deleted</strong>  or <strong>Banned</strong>, and you may not be able to use Youtube with the account you used for StreamStorm, because we are violating Youtube Terms and Conditions. So use a temp/fake gmail account for creating channels for the spam. Never use your Real/Personal Account.
+              <strong>Disclaimer:</strong> You may get your channels <strong>Deleted</strong>  or <strong>Banned</strong>, and you may not be able to use Youtube with the account you used for StreamStorm, because we are violating Youtube Terms and Conditions. So <strong>use a temp/fake gmail account</strong> for creating channels for the spam. <strong>Never use your Real/Personal Account.</strong>
             </p>
           </div>
 
@@ -78,6 +79,7 @@ const Instructions = () => {
           <ul className="instructions-list">
             <li className="instructions-list-item">You need to have a YouTube account (Google account) to use the application.</li>
             <li className="instructions-list-item">In your YouTube account, you need to have at least one channel created. More channels are recommended for better results.</li>
+            <li className="instructions-list-item">If you don't have many channels, we have a feature that can create channels for you. <a href="#creating-channels" className="instructions-index-link"><i>click to proceed</i></a></li>
             <li className="instructions-list-item">You need to have Chrome browser installed on your system.</li>
             <li className="instructions-list-item">Stable internet connection to function properly.</li>
             <li className="instructions-list-item">To use one channel you need to have at least 300MB of free RAM available on your system. The more channels you use, the more RAM is required.</li>
@@ -90,8 +92,8 @@ const Instructions = () => {
             <li className="instructions-list-item">
               Creating temp profiles is the first step to use the application.
               <ul className="instructions-list">
-                <li className="instructions-list-item">In the application UI, click on the <code className="instructions-inline-code">Manage Profiles</code> button.</li>
-                <li className="instructions-list-item">Enter number of profiles you want to create.</li>
+                <li className="instructions-list-item">In the application UI, click on the <code className="instructions-inline-code">Manage Environment</code> button.</li>
+                <li className="instructions-list-item">In create profile section, enter number of profiles you want to create.</li>
                 <li className="instructions-list-item">Click on the <code className="instructions-inline-code">Create Profiles</code> button.</li>
                 <div className='instructions-warning'>
                   <li><strong>Caution:</strong> Do not Minimize or Move away from the browser window while creating profiles.</li>
@@ -269,6 +271,45 @@ const Instructions = () => {
               </ul>
             </li>
           </ol>
+
+          <h3 id="creating-channels" className="instructions-step-heading">Creating Channels</h3>
+          <p className="instructions-paragraph">First Click on <code className="instructions-inline-code">Manage Environment</code> button</p>
+
+          <h4>Without Logo</h4>
+          <ul className="instructions-list">
+            <li className="instructions-list-item">Do not toggle the logo required switch</li>
+            <li className="instructions-list-item">Enter names of channels separated by a new line</li>
+            <li className="instructions-list-item">Click on the <code className="instructions-inline-code">Create Channels</code> button.</li>
+            <li className="instructions-list-item">This will start creating channels with the names provided without any logo.</li>
+          </ul>
+
+          <h4>With Logo</h4>
+          <p>You can also create channels with logo, either random logo or custom logo provided by you</p>
+          <ul className="instructions-list">
+            <li className="instructions-list-item">Toggle the logo required switch</li>
+
+            <h4>Random Logo</h4>
+            <ul className="instructions-list">              
+              <li className="instructions-list-item">Click on Random Logo radio button.</li>
+              <li className="instructions-list-item">Enter names of channels separated by a new line.</li>
+              <li className="instructions-list-item">Click on the <code className="instructions-inline-code">Create Channels</code> button.</li>
+              <li className="instructions-list-item">This will start creating channels with the names provided with random logo from google's logo collection.</li>
+            </ul>
+
+            <h4>Custom Logo</h4>
+            <ul className="instructions-list">
+              <li className="instructions-list-item">Click on <code className="instructions-inline-code">Custom Logo radio button</code>.</li>
+              <li className="instructions-list-item">In this you need not provide channel names in the textbox.</li>
+              <li className="instructions-list-item">You need to have a directory in your local PC with image files with channel name as its name.</li>
+              <li className="instructions-list-item">If you want to create 10 channels with logo, you need to have 10 files in the directory, one for each channel, with the channel name as the file name and the logo as the image.</li>
+              <li className="instructions-list-item">For example, if you have an image file named <code className="instructions-inline-code">Pro Gamer.png</code> in the directory, then a channel named <code className="instructions-inline-code">Pro Gamer</code> with the logo <code className="instructions-inline-code">Pro Gamer.png</code> will be created.</li>
+              <li className="instructions-list-item">Note: only image files with <code className="instructions-inline-code">.png</code> <code className="instructions-inline-code">.jpg</code> <code className="instructions-inline-code">.jpeg</code> extension are supported.</li>
+              <li className="instructions-list-item">Enter the directory path in the textbox provided and click <code className="instructions-inline-code">Validate</code> .</li>
+              <li className="instructions-list-item">After validating, click on the <code className="instructions-inline-code">Create Channels</code> button.</li>
+              <li className="instructions-list-item">This will start creating channels with the names and logo provided.</li>
+              <p className="instructions-warning-text"><strong>Note: ⚠ Custom logo is currently experimental and may not work as expected. We're actively working on fixing the bugs.</strong></p>
+            </ul>
+          </ul>
 
           <h2 id="host-config" className="instructions-section-heading">Host Configuration</h2>
           <ul className="instructions-list">
