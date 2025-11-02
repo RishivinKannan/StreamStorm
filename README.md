@@ -13,6 +13,7 @@ There’s no coding, no fancy setup — just plug in your message, set your inte
 StreamStorm's core functionality revolves around its ability to automate the sending of messages in YouTube live chats. Key features include:
 
 * **Multi-Account Management**: Seamlessly operate multiple YouTube channels using separate, isolated browser profiles.
+* **Custom Channel Creation**: Effortlessly create multiple YouTube accounts directly from the app.
 * **Custom Message Scheduling**: Control message timing with flexible intervals, supporting both rapid-fire and delayed delivery.
 * **One-Click Profile System**:
   * Automatically generate and configure browser profiles per channel.
