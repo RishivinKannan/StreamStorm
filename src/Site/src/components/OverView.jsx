@@ -58,7 +58,7 @@ const OverView = () => {
                     <i>For Windows 10+ | macOS & linux build coming soon...</i>
                 </span>
                 <span className="download-note">
-                    Safe to install. No background monitoring. No data collected. Fully open source.
+                    Safe to install. No personal data collected. Fully open source.
                 </span>
                 <div className="overview-image-container">
                     <img src="assets/ss.png" alt="StreamStorm Overview" className="overview-media" />
