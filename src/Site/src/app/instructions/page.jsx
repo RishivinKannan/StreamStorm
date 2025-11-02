@@ -79,7 +79,7 @@ const Instructions = () => {
           <ul className="instructions-list">
             <li className="instructions-list-item">You need to have a YouTube account (Google account) to use the application.</li>
             <li className="instructions-list-item">In your YouTube account, you need to have at least one channel created. More channels are recommended for better results.</li>
-            <li className="instructions-list-item">If you dont have many channels, we have a feature that can create channels for you. <a href="#creating-channels" className="instructions-index-link"><i>click to proceed</i></a></li>
+            <li className="instructions-list-item">If you don't have many channels, we have a feature that can create channels for you. <a href="#creating-channels" className="instructions-index-link"><i>click to proceed</i></a></li>
             <li className="instructions-list-item">You need to have Chrome browser installed on your system.</li>
             <li className="instructions-list-item">Stable internet connection to function properly.</li>
             <li className="instructions-list-item">To use one channel you need to have at least 300MB of free RAM available on your system. The more channels you use, the more RAM is required.</li>
