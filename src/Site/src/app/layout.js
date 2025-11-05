@@ -45,13 +45,13 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en">
             <head>
-                <Script id="atatus-init">
+                <script id="atatus-init">
                     {atatusScript}
-                </Script>
+                </script>
                 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
                 <link rel="author" href="https://github.com/Ashif4354" />
-                <Script
-                    id="website-schema" // An ID is required
+                <script
+                    id="website-schema"
                     type="application/ld+json"
                 >
                     {JSON.stringify({
@@ -60,7 +60,7 @@ export default function RootLayout({ children }) {
                         "name": "streamstorm",
                         "url": "https://streamstorm.darkglance.in"
                     })}
-                </Script>
+                </script>
             </head>
             <body>
                 <DownloadCountProvider>
