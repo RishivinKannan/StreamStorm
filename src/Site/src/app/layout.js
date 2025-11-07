@@ -44,7 +44,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
     return (
         <html lang="en">
-            <GoogleTagManager gtmId="GTM-KDFP7XDC" />
+            <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID} />
             <head>
                 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
                 <link rel="author" href="https://github.com/Ashif4354" />
@@ -66,7 +66,7 @@ export default function RootLayout({ children }) {
             </head>
             <body>
                 <noscript>
-                    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KDFP7XDC"
+                    <iframe src={`https://www.googletagmanager.com/ns.html?id=${process.env.NEXT_PUBLIC_GTM_ID}`}
                         height="0" width="0" style={{ display: 'none', visibility: 'hidden' }}></iframe>
                 </noscript>
                 <DownloadCountProvider>
