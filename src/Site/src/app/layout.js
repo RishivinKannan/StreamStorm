@@ -44,14 +44,15 @@ export const metadata = {
 export default function RootLayout({ children }) {
     return (
         <html lang="en">
+            <GoogleTagManager gtmId="GTM-KDFP7XDC" />
             <head>
-                <GoogleTagManager id="GTM-KDFP7XDC" />
                 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
                 <link rel="author" href="https://github.com/Ashif4354" />
                 <Script
                     id="website-schema"
                     type="application/ld+json"
                     strategy="beforeInteractive"
+                    
                 >
                     {
                         JSON.stringify({
@@ -66,7 +67,7 @@ export default function RootLayout({ children }) {
             <body>
                 <noscript>
                     <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KDFP7XDC"
-                        height="0" width="0" style="display:none;visibility:hidden"></iframe>
+                        height="0" width="0" style={{ display: 'none', visibility: 'hidden' }}></iframe>
                 </noscript>
                 <DownloadCountProvider>
                     <VisitCountProvider>
