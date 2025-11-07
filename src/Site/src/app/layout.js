@@ -1,3 +1,4 @@
+import Script from "next/script";
 import { DownloadCountProvider } from "@/context/DownloadCountContext";
 import { VisitCountProvider } from "@/context/VisitCountContext";
 import Header from "@/components/Header";
@@ -43,7 +44,7 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en">
             <head>
-                <script>
+                <Script id="google-tag-manager" strategy="beforeInteractive">
                     {
                         (function (w, d, s, l, i) {
                             w[l] = w[l] || []; w[l].push({
@@ -54,12 +55,13 @@ export default function RootLayout({ children }) {
                                     'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
                         })(window, document, 'script', 'dataLayer', 'GTM-KDFP7XDC')
                     }
-                </script>
+                </Script>
                 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
                 <link rel="author" href="https://github.com/Ashif4354" />
-                <script
+                <Script
                     id="website-schema"
                     type="application/ld+json"
+                    strategy="beforeInteractive"
                 >
                     {
                         JSON.stringify({
@@ -69,7 +71,7 @@ export default function RootLayout({ children }) {
                             "url": "https://streamstorm.darkglance.in"
                         })
                     }
-                </script>
+                </Script>
             </head>
             <body>
                 <noscript>
