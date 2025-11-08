@@ -167,24 +167,28 @@ const CreateChannels = () => {
                     });
                 } else {
                     setErrorText(data.message);
-
+                    
+                    logEvent(analytics, 'create_channels_failed');
                     notifications.show(data.message, {
                         severity: 'error'
                     });
                 }
             })
+            .catch((error) => {
+                console.error(error);
+                setErrorText("An error occurred while creating channels. Try again.");
+
+                notifications.show('An error occurred while creating channels. Try again.', {
+                    severity: 'error'
+                });
+
+                logEvent(analytics, 'create_channels_error');
+                atatus.notify(error)
+            })
             .finally(() => {
                 setCreatingChannels(false);
             })
-
-
-
-
     };
-
-    // useEffect(() => {
-    //     console.log(channels);
-    // }, [channelsString]);
 
     return (
         <div className={`create-channels-container ${colorScheme}-text`}>
@@ -234,7 +238,6 @@ const CreateChannels = () => {
                             </div>
                         )
                     }
-
                 </div>
 
                 <div className='channel-data-input-container'>
@@ -271,8 +274,6 @@ const CreateChannels = () => {
                                                             ...btnProps,
                                                             marginTop: "0",
                                                             // height: "3.5rem",
-
-
                                                             backgroundColor: colorScheme === 'light' ? "var(--bright-red-2)" : "var(--input-active-red-dark)"
                                                         }}
                                                         disabled={creatingChannels || validatingPath}
@@ -283,7 +284,6 @@ const CreateChannels = () => {
                                                 </InputAdornment>
                                             )
                                         }
-
                                     }}
                                 />
                                 {
@@ -315,8 +315,6 @@ const CreateChannels = () => {
                             />
                         )
                     }
-
-
                 </div>
             </div>
 
@@ -335,7 +333,6 @@ const CreateChannels = () => {
                 }
             </Button>
             <ErrorText errorText={errorText} />
-
         </div>
     );
 };

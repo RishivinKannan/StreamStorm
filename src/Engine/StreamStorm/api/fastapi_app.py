@@ -132,7 +132,8 @@ async def get_ram_info() -> JSONResponse:
 @app.get("/engine-status")
 async def status() -> JSONResponse:
     response: dict = {
-        "storm_in_progress": False
+        "storm_in_progress": False,
+        "version": CONFIG["VERSION"]
     }
 
     if StreamStorm.ss_instance is not None:
