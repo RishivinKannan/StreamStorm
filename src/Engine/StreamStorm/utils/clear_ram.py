@@ -1,6 +1,6 @@
 from subprocess import Popen
 from platform import system
-from StreamStorm.config.config import CONFIG
+from ..config.config import CONFIG
 
 from logging import getLogger, Logger
 

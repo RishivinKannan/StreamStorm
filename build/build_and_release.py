@@ -183,22 +183,22 @@ def dgupdater_commit_and_publish(new_version: str) -> None:
 def main() -> None:
     # log_info("Starting build and release process...")
     
-    # new_version: str = input("Enter the new version: ")
+    new_version: str = input("Enter the new version: ")
     
     # # Step 0: Check environment configuration
-    # check_engine_env(new_version)
+    check_engine_env(new_version)
 
     # # Step 1
-    # update_versions(new_version)
+    update_versions(new_version)
 
     # # Step 2
-    # generate_exe()
+    generate_exe()
     
     # Step 3
     firebase_deploy()
 
     # Step 4
-    # dgupdater_commit_and_publish(new_version)
+    dgupdater_commit_and_publish(new_version)
     
     # Step 5
     generate_setup_file()  

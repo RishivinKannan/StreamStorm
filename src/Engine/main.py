@@ -4,9 +4,8 @@
 # See LICENSE file or visit: https://github.com/Ashif4354/StreamStorm
 # Unauthorized Redistribution or Commercial Use is Prohibited
 
-from os import kill, getpid, environ
+from os import kill, getpid
 from signal import SIGTERM
-from os.path import dirname, abspath, join
 from threading import Thread
 from logging import Logger, getLogger
 
