@@ -31,15 +31,9 @@ def serve_api() -> None:
         log_level="warning"
     ) 
 
-def set_rammap_path() -> None:
-    environ.update({"rammap_path": join(dirname(abspath(__file__)), "RAMMap.exe")})
-    logger.info(f"RAMMap path set to: {environ['rammap_path']}")
-
 def main() -> None:
     
     check_update(parallel=True)   
-
-    set_rammap_path()
 
     Thread(target=serve_api, daemon=True).start()
     logger.info("API server started.")
