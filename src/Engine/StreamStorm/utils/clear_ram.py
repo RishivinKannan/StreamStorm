@@ -1,6 +1,6 @@
-from os import environ
 from subprocess import Popen
 from platform import system
+from StreamStorm.config.config import CONFIG
 
 from logging import getLogger, Logger
 
@@ -11,9 +11,7 @@ def clear_ram() -> None:
     if system() != "Windows":
         return
     
-    rammap_path: str = environ.get("rammap_path")
-    if not rammap_path:
-        raise EnvironmentError("RAMMap path is not set in the environment variables.")
+    rammap_path: str = CONFIG['ROOT'] / "RAMMap.exe"
     
     try:
         Popen(
