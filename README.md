@@ -37,7 +37,7 @@ StreamStorm's core functionality revolves around its ability to automate the sen
 * **Advanced Tuning Options**: Fine-tune performance parameters to match your use case or system limits — no coding required.
 
 # Instructions to use The Application
-###### [INSTRUCTIONS](./INSTRUCTIONS.md)
+###### [INSTRUCTIONS](https://streamstorm.darkglance.in/instructions)
 
 
 # 👨‍💻 **Development Setup**
