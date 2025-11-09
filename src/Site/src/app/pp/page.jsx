@@ -15,7 +15,7 @@ const PrivacyPolicy = () => {
 
   return (
     <div className="pp-page">
-      <div className="pp-container">
+      <article className="pp-container">
         <h1>Privacy Policy</h1>
         <p className="last-updated">Last Updated: August 23, 2025</p>
 
@@ -96,7 +96,7 @@ const PrivacyPolicy = () => {
             📧 <a href="mailto:darkglance.developer@gmail.com">darkglance.developer@gmail.com</a>
           </p>
         </section>
-      </div>
+      </article>
     </div>
   );
 };

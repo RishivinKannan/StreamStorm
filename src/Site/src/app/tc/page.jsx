@@ -15,7 +15,7 @@ const TermsAndConditions = () => {
 
   return (
     <div className="tc-page">
-      <div className="tc-container">
+      <article className="tc-container">
         <h1>Terms & Conditions</h1>
         <p className="last-updated">Last Updated: July 5, 2025</p>
 
@@ -81,7 +81,7 @@ const TermsAndConditions = () => {
             📧 <a href="mailto:darkglance.developer@gmail.com">darkglance.developer@gmail.com</a>
           </p>
         </section>
-      </div>
+      </article>
     </div>
   );
 };

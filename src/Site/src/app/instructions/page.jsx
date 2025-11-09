@@ -6,6 +6,7 @@ import { analytics } from '@/config/firebase';
 const Instructions = () => {
 
   useEffect(() => {
+    window.document.title = 'Instructions | StreamStorm';
     logEvent(analytics, 'instructions_viewed', {
       page_location: window.location.href,
       page_path: window.location.pathname,
@@ -16,8 +17,8 @@ const Instructions = () => {
   return (
     <div className="instructions-page">
       <div className="instructions-page-body">
-        <div className="instructions-container">
-          <h1 className="instructions-main-heading">Instructions To Use The StreamStorm Application</h1>
+        <article className="instructions-container">
+          <h1 className="instructions-main-heading">Instructions</h1>
 
           <nav className="instructions-index" aria-label="Table of Contents">
             <h2 className="instructions-index-heading">Table of Contents</h2>
@@ -289,7 +290,7 @@ const Instructions = () => {
             <li className="instructions-list-item">Toggle the logo required switch</li>
 
             <h4>Random Logo</h4>
-            <ul className="instructions-list">              
+            <ul className="instructions-list">
               <li className="instructions-list-item">Click on Random Logo radio button.</li>
               <li className="instructions-list-item">Enter names of channels separated by a new line.</li>
               <li className="instructions-list-item">Click on the <code className="instructions-inline-code">Create Channels</code> button.</li>
@@ -349,10 +350,12 @@ const Instructions = () => {
           <ul className="instructions-list">
             <li className="instructions-list-item">The less free RAM you have after clicking <code className="instructions-inline-code">Start Storm</code>, the more likely the storming process will be slower, and the more likely it is to fail. So choose the number of accounts responsibly. For example, if you have 10 GB of free RAM, use only 6-7 GB for storm and keep the rest free, for a smooth flow.</li>
           </ul>
-        </div>
+        </article>
       </div>
     </div>
   );
 };
+
+
 
 export default Instructions;

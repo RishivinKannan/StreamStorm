@@ -58,7 +58,7 @@ export default function RootLayout({ children }) {
                         JSON.stringify({
                             "@context": "https://schema.org",
                             "@type": "WebSite",
-                            "name": "streamstorm",
+                            "name": "StreamStorm",
                             "url": "https://streamstorm.darkglance.in"
                         })
                     }

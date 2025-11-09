@@ -183,7 +183,7 @@ h1, h2, h3 {
     margin-bottom: 1rem;
 }
 
-@media (max-width: 360px) {
+@media (max-width: 500px) {
     .overview-buttons-container {
         flex-direction: column;
         align-items: center;
