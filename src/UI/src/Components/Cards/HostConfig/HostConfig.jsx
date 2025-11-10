@@ -11,6 +11,25 @@ import { DEFAULT_HOST_ADDRESS } from "../../../lib/Constants";
 import { analytics } from "../../../config/firebase";
 import { useCustomMUIProps } from "../../../context/CustomMUIPropsContext";
 
+const normalizeURL = (url) => {
+    url = url.trim();
+    
+    if (url.match(/^[a-zA-Z][a-zA-Z\d+\-.]*:/)) return url
+    return `https://${url}`;
+};
+
+const isValidURL = (url) => {
+  if (!url || url.trim() === "") return false;
+  url = normalizeURL(url);
+
+  try {
+    new URL(url);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
 const HostConfig = () => {
     const { colorScheme } = useColorScheme();
     const { btnProps, inputProps } = useCustomMUIProps();
@@ -19,37 +38,34 @@ const HostConfig = () => {
 
     const [hostAddress, setHostAddress] = useState(savedHostAddress);
     const [hostAddressError, setHostAddressError] = useState(false);
-    const [hostAddressHelperText, setHostAddressHelperText] = useState("");
-
-    const isValidURL = (url) => {
-        if (!url || url.trim() === "") return false;
-        try {
-            new URL(url);
-            return true;
-        } catch (error) {
-            return false;
-        }
-    };
+    const [hostAddressHelperText, setHostAddressHelperText] = useState("") 
 
     const handleSave = () => {
-        if (hostAddress.trim() == "") {
+        const trimmed = hostAddress.trim();
+        
+        if (trimmed === "") {
             setHostAddressError(true);
             setHostAddressHelperText("Host address cannot be empty.");
             return;
         }
 
+        const normalised = normalizeURL(trimmed);
+
         try {
-            new URL(hostAddress);
+            new URL(normalised);
         } catch (error) {
             setHostAddressError(true);
-            setHostAddressHelperText("Invalid URL format.");
+            setHostAddressHelperText("Invalid URL format, please enter a valid URL.");
             return;
         }
+
         logEvent(analytics, "host_address_change");
 
         setHostAddressError(false);
         setHostAddressHelperText("");
-        setSavedHostAddress(hostAddress.trim());
+        setSavedHostAddress(normalised);
+        setHostAddress(normalised);
+
         
         notifications.show("Host address saved successfully!", {
             severity: "success",
@@ -78,7 +94,6 @@ const HostConfig = () => {
         } else {
             setHostAddress(savedHostAddress);
         }
-
     }, [savedHostAddress, setSavedHostAddress]);
 
     return (
