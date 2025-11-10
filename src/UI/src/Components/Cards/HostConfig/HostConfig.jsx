@@ -21,6 +21,15 @@ const HostConfig = () => {
     const [hostAddressError, setHostAddressError] = useState(false);
     const [hostAddressHelperText, setHostAddressHelperText] = useState("");
 
+    const isValidURL = (url) => {
+        if (!url || url.trim() === "") return false;
+        try {
+            new URL(url);
+            return true;
+        } catch (error) {
+            return false;
+        }
+    };
 
     const handleSave = () => {
         if (hostAddress.trim() == "") {
@@ -63,9 +72,11 @@ const HostConfig = () => {
     }
 
     useEffect(() => {
-        if (!savedHostAddress) {
+        if (!savedHostAddress || !isValidURL(savedHostAddress)) {
             setSavedHostAddress(DEFAULT_HOST_ADDRESS);
             setHostAddress(DEFAULT_HOST_ADDRESS);            
+        } else {
+            setHostAddress(savedHostAddress);
         }
 
     }, [savedHostAddress, setSavedHostAddress]);
