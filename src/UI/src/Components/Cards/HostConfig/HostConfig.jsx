@@ -28,9 +28,9 @@ const HostConfig = () => {
     const [savedHostAddress, setSavedHostAddress] = useLocalStorageState("hostAddress");
     const notifications = useNotifications();
 
-    const [hostAddress, setHostAddress] = useState(savedHostAddress);
+    const [hostAddress, setHostAddress] = useState("");
     const [hostAddressError, setHostAddressError] = useState(false);
-    const [hostAddressHelperText, setHostAddressHelperText] = useState("") 
+    const [hostAddressHelperText, setHostAddressHelperText] = useState("");
 
     const handleSave = () => {
         const trimmed = hostAddress.trim();
@@ -41,11 +41,9 @@ const HostConfig = () => {
             return;
         }
 
-        try {
-            new URL(trimmed);
-        } catch (error) {
+        if (!isValidURL(trimmed)) {
             setHostAddressError(true);
-            setHostAddressHelperText("Invalid URL format, please enter a valid URL.");
+            setHostAddressHelperText("Invalid URL format, Enter a valid URL.");
             return;
         }
 
@@ -54,8 +52,6 @@ const HostConfig = () => {
         setHostAddressError(false);
         setHostAddressHelperText("");
         setSavedHostAddress(trimmed);
-        setHostAddress(trimmed);
-
         
         notifications.show("Host address saved successfully!", {
             severity: "success",
