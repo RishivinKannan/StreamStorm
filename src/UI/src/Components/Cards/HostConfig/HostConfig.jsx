@@ -11,16 +11,8 @@ import { DEFAULT_HOST_ADDRESS } from "../../../lib/Constants";
 import { analytics } from "../../../config/firebase";
 import { useCustomMUIProps } from "../../../context/CustomMUIPropsContext";
 
-const normalizeURL = (url) => {
-    url = url.trim();
-    
-    if (url.match(/^[a-zA-Z][a-zA-Z\d+\-.]*:/)) return url
-    return `https://${url}`;
-};
-
 const isValidURL = (url) => {
   if (!url || url.trim() === "") return false;
-  url = normalizeURL(url);
 
   try {
     new URL(url);
@@ -49,10 +41,8 @@ const HostConfig = () => {
             return;
         }
 
-        const normalised = normalizeURL(trimmed);
-
         try {
-            new URL(normalised);
+            new URL(trimmed);
         } catch (error) {
             setHostAddressError(true);
             setHostAddressHelperText("Invalid URL format, please enter a valid URL.");
@@ -63,8 +53,8 @@ const HostConfig = () => {
 
         setHostAddressError(false);
         setHostAddressHelperText("");
-        setSavedHostAddress(normalised);
-        setHostAddress(normalised);
+        setSavedHostAddress(trimmed);
+        setHostAddress(trimmed);
 
         
         notifications.show("Host address saved successfully!", {
