@@ -1,4 +1,4 @@
-.PHONY: help run run-ui run-site build-ui build-site deb update-versions executable firebase-deploy dgupdater-commit-publish generate-setup-windows build-and-release
+.PHONY: help run run-ui run-site build-ui build-site deb artifacts update-versions executable firebase-deploy dgupdater-commit-publish generate-setup-windows build-and-release
 
 # Variables
 PYTHON := python
@@ -30,6 +30,7 @@ help:
 	@echo "  make deb                      Build DEB installer (Linux only)"
 	@echo ""
 	@echo "Release Commands:"
+	@echo "  make artifacts                Download release artifacts"
 	@echo "  make update-versions          Update versions across all config files"
 	@echo "  make executable               Generate executable using PyInstaller"
 	@echo "  make firebase-deploy          Deploy to Firebase"
@@ -89,6 +90,10 @@ endif
 # ============================================================================
 # RELEASE COMMANDS
 # ============================================================================
+
+artifacts:
+	@echo "Downloading release artifacts..."
+	$(PYTHON) $(PY_SCRIPTS_DIR)/download_linux_artifacts.py
 
 update-versions:
 	@echo "Running update versions script..."
