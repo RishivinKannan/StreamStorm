@@ -32,7 +32,8 @@ def serve_api() -> None:
 
 def main() -> None:
     
-    check_update(parallel=True)   
+    if CONFIG["OS"] == "Windows":
+        check_update(parallel=True)
 
     Thread(target=serve_api, daemon=True).start()
     logger.info("API server started.")
