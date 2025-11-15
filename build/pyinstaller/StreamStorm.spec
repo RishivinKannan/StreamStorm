@@ -1,10 +1,21 @@
 # -*- mode: python ; coding: utf-8 -*-
 from pathlib import Path
+from platform import system
 from os import getcwd
 
 ROOT = Path(getcwd()).parent.resolve()
 ENGINE = ROOT / "src" / "Engine"
 UI = ROOT / "src" / "UI"
+
+match system():
+    case "Windows":
+        file_name = "StreamStorm"
+    case "Darwin":
+        file_name = "StreamStorm-mac"
+    case "Linux":
+        file_name = "StreamStorm-linux"
+    case _:
+        raise OSError(f"Unsupported OS: {system()}")
 
 a = Analysis(
     [str(ENGINE / "main.py")],
@@ -27,7 +38,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name="StreamStorm",
+    name=file_name,
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

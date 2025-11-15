@@ -49,7 +49,6 @@ def update_versions(new_version: str) -> None:
         project_data: dict = load(f)
         current_version: list[int] = [int(i) for i in project_data["version"].split(".")]
 
-
         if new_version_split <= current_version:
             raise ValueError("New version must be greater than current version.")
 
@@ -121,33 +120,47 @@ def generate_executable() -> None:
     call(build_command)
 
     dist_dir: Path = ROOT / "build" / "dist"
-    exe_path: Path = dist_dir / "StreamStorm.exe"
-    output_dir: Path = ROOT / "export" / "windows"
+    
+    if OS == "Windows":
+        executable_path: Path = dist_dir / "StreamStorm.exe"
+        output_dir: Path = ROOT / "export" / "windows"
+        target_path: Path = output_dir / "StreamStorm.exe"
+        
+    elif OS == "Linux":
+        executable_path: Path = dist_dir / "StreamStorm-linux"
+        output_dir: Path = ROOT / "export" / "linux" / "opt" / "StreamStorm"
+        target_path: Path = output_dir / "StreamStorm-linux"
+        
+    elif OS == "Darwin":
+        executable_path: Path = dist_dir / "StreamStorm-mac"
+        output_dir: Path = ROOT / "export" / "mac"
+        target_path = output_dir / "StreamStorm-mac"
+        
+    else:
+        raise OSError(f"Unsupported OS: {OS}")
 
-    target_path: Path = output_dir / "StreamStorm.exe"
-
-    if exe_path.exists():
-        log_info(f"Moving {exe_path} to {output_dir}")
+    if executable_path.exists():
+        log_info(f"Moving {executable_path} to {output_dir}")
         
         if target_path.exists():
             log_info(f"Removing existing {target_path}")
             
             target_path.unlink()
             
-        move(str(exe_path), str(output_dir))
+        move(str(executable_path), str(output_dir))
         
     else:
-        log_info("Built .exe file not found!")
-        raise FileNotFoundError("Built .exe file not found")
+        log_info("Built executable not found!")
+        raise FileNotFoundError("Built executable not found")
     
     inner_build_dir: Path = ROOT / "build" / "build"
     
     log_info(f"Cleaning up {dist_dir} and {inner_build_dir}")
     rmtree(dist_dir, ignore_errors=True)
     rmtree(inner_build_dir, ignore_errors=True)
-   
-# Windows    
-def generate_setup_file() -> None: 
+    
+       
+def generate_setup_file_windows() -> None: 
     log_info("Generating setup file using Inno Setup...")
     
     if not which("ISCC"):
@@ -203,7 +216,7 @@ def main() -> None:
     dgupdater_commit_and_publish(new_version)
     
     # Step 5
-    generate_setup_file()  
+    generate_setup_file_windows()  
     
     log_info("Build and release process completed.")
 
