@@ -37,6 +37,8 @@ jobs:
         run: |
           set -eux
           ls src/Engine
+          which python
+          which pyinstaller
           source src/Engine/.venv/bin/activate
           make executable
 
