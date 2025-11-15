@@ -28,19 +28,19 @@ def generate_executable() -> None:
     log_info("Running 'uv sync' in Engine directory")
     
     call("uv sync", shell=True)
-    call(".venv/bin/activate", shell=True)
     
     build_dir: Path = ROOT / "build"    
-    chdir(build_dir)
+    # chdir(build_dir)
     
     spec_file: Path = build_dir / "pyinstaller" / "StreamStorm.spec"
 
     build_command: str = ([
-        # "uv", "run",
+        "uv", "run",
         "pyinstaller",
         str(spec_file),
         "--noconfirm",
-        "--clean"
+        "--clean",
+        "--distpath", str(build_dir / "dist")
     ])
 
     log_info(f"Running build command: {' '.join(build_command)}")
