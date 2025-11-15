@@ -1,5 +1,5 @@
 from pathlib import Path
-ROOT: Path = Path(__file__).parent.parent.resolve()
+ROOT: Path = Path(__file__).parent.parent.parent.resolve()
 
 from sys import path  # noqa: E402
 path.insert(0, str(ROOT))
@@ -10,6 +10,7 @@ from shutil import move, rmtree, which  # noqa: E402
 from tomlkit import TOMLDocument, parse, dumps  # noqa: E402
 from json import dump, load  # noqa: E402
 from re import sub  # noqa: E402
+from platform import system  # noqa: E402
 from logging import basicConfig, INFO, info as log_info  # noqa: E402
 from src.Engine.StreamStorm.config.config import CONFIG  # noqa: E402
 
@@ -17,6 +18,7 @@ basicConfig(level=INFO)
 
 log_info(f"Root directory: {ROOT}")
 
+OS: str = system()
 
 def check_engine_env(version: str):
     """Check if the Engine environment is set to production before building."""
@@ -94,7 +96,7 @@ def update_versions(new_version: str) -> None:
     create_setup_iss.write_text(text, encoding="utf-8")
 
 
-def generate_exe() -> None:
+def generate_executable() -> None:
     log_info("Generating executable...")
     
     chdir(ROOT / "src" / "Engine")
@@ -106,7 +108,7 @@ def generate_exe() -> None:
     build_dir: Path = ROOT / "build"    
     chdir(build_dir)
     
-    spec_file: Path = build_dir / "StreamStorm.spec"
+    spec_file: Path = build_dir / "pyinstaller" / "StreamStorm.spec"
 
     build_command: str = ([
         "pyinstaller",
@@ -144,8 +146,8 @@ def generate_exe() -> None:
     rmtree(dist_dir, ignore_errors=True)
     rmtree(inner_build_dir, ignore_errors=True)
    
-    
-def generate_setup_file() -> None:
+# Windows    
+def generate_setup_file() -> None: 
     log_info("Generating setup file using Inno Setup...")
     
     if not which("ISCC"):
@@ -192,7 +194,7 @@ def main() -> None:
     update_versions(new_version)
 
     # # Step 2
-    generate_exe()
+    generate_executable()
     
     # Step 3
     firebase_deploy()
