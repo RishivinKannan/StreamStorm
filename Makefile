@@ -1,4 +1,4 @@
-.PHONY: help run run-ui run-site build-ui build-site deb update-versions generate-executable firebase-deploy dgupdater-commit-publish generate-setup-windows build-and-release
+.PHONY: help run run-ui run-site build-ui build-site deb update-versions executable firebase-deploy dgupdater-commit-publish generate-setup-windows build-and-release
 
 # Variables
 PYTHON := python
@@ -31,7 +31,7 @@ help:
 	@echo ""
 	@echo "Release Commands:"
 	@echo "  make update-versions          Update versions across all config files"
-	@echo "  make generate-executable      Generate executable using PyInstaller"
+	@echo "  make executable               Generate executable using PyInstaller"
 	@echo "  make firebase-deploy          Deploy to Firebase"
 	@echo "  make dgupdater-commit-publish Commit and publish with dgupdater"
 	@echo "  make generate-setup-windows   Generate Windows setup file (Windows only)"
@@ -84,6 +84,8 @@ else
 	exit 1
 endif
 
+
+
 # ============================================================================
 # RELEASE COMMANDS
 # ============================================================================
@@ -92,7 +94,7 @@ update-versions:
 	@echo "Running update versions script..."
 	$(PYTHON) $(PY_SCRIPTS_DIR)/update_versions.py
 
-generate-executable:
+executable:
 	@echo "Running generate executable script..."
 	$(PYTHON) $(PY_SCRIPTS_DIR)/generate_executable.py
 
