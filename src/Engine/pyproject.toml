@@ -10,7 +10,7 @@ dependencies = [
     "platformdirs>=4.3.8",
     "undetected-chromedriver>=3.5.5",
     "setuptools>=80.9.0",
-    "pywebview[qt]",
+    "pywebview>=5.4",
     "fastapi[standard]>=0.115.14",
     "uvicorn>=0.35.0",
     "playwright>=1.53.0",
@@ -28,9 +28,4 @@ dev = [
     "python-dotenv>=1.1.1",
     "pytest>=8.4.1",
     "pytest-mock>=3.14.1"
-]
-
-[tool.uv]
-required-environments = [
-  "sys_platform == 'linux' and platform_machine == 'x86_64'"
 ]
