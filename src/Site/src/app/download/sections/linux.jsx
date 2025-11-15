@@ -1,7 +1,4 @@
-import { useDownloadCount } from "@/context/DownloadCountContext";
 import { useState } from "react";
-import { logEvent } from "firebase/analytics";
-import { analytics } from "@/config/firebase";
 
 const CodeBlock = ({ code }) => {
     const [copied, setCopied] = useState(false);
@@ -24,33 +21,23 @@ const CodeBlock = ({ code }) => {
 
 const Linux = () => {
 
-    const [downloadButtonDisabled, setDownloadButtonDisabled] = useState(false);
-
-    const { downloadCount, updateDownloadCount } = useDownloadCount();
-
-    const handleDownload = () => {
-        setDownloadButtonDisabled(true);
-        logEvent(analytics, 'download_count');
-        updateDownloadCount();
-
-        setTimeout(() => {
-            setDownloadButtonDisabled(false);
-        }, 5000); // Reset button after 5 seconds
-    }
-
     return (
         <section className='download-section'>
             <div className='download-section-title-container'>
                 <h4 className='download-section-title'>Download for Linux</h4>
             </div>
             <span className="download-note">
-                <i>For Linux distributions with glibc 2.29+</i>
+                <i>For Linux distributions with glibc 2.31+</i>
             </span>
 
             {/* Tar.gz Installation */}
             <div className='linux-install-method'>
                 <h5 className='linux-method-title'>📦 Option 1: tar.gz Package</h5>
                 <ol className='linux-install-list'>
+                    <li>
+                        <span className='linux-step-label'>Install dependencies:</span>
+                        <CodeBlock code="sudo apt-get update && sudo apt-get install -y python3 python3-pyqt5 python3-pyqt5.qtwebengine python3-pyqt5.qtwebchannel libqt5webkit5 python3-xlib scrot python3-tk python3-dev" />
+                    </li>
                     <li>
                         <span className='linux-step-label'>Download the package:</span>
                         <CodeBlock code="wget https://github.com/Ashif4354/StreamStorm/releases/latest/download/StreamStorm.tar.gz" />
@@ -96,14 +83,6 @@ const Linux = () => {
                     </li>
                 </ol>
             </div>
-
-            {
-                downloadCount && (
-                    <span className="download-note">
-                        <i>Total Downloads: {downloadCount}</i>
-                    </span>
-                )
-            }
         </section>
     )
 };
