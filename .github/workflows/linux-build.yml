@@ -36,6 +36,7 @@ jobs:
       - name: Make executable (project root)
         run: |
           set -eux
+          source src/Engine/.venv/bin/activate
           make executable
 
       - name: Build .deb (project root)
