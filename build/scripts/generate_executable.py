@@ -35,6 +35,7 @@ def generate_executable() -> None:
     spec_file: Path = build_dir / "pyinstaller" / "StreamStorm.spec"
 
     build_command: str = ([
+        "uv", "run",
         "pyinstaller",
         str(spec_file),
         "--noconfirm",
