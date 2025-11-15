@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
-    runs-on: darkglance
+  build:
+    runs-on: streamstorm
 
     steps:
       - name: Checkout repo
