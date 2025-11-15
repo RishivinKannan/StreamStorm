@@ -10,7 +10,7 @@ dependencies = [
     "platformdirs>=4.3.8",
     "undetected-chromedriver>=3.5.5",
     "setuptools>=80.9.0",
-    "pywebview[qt]>=5.4 ; sys_platform == 'linux'",
+    "pywebview[qt] ; sys_platform == 'linux'",
     "pywebview>=5.4 ; sys_platform != 'linux'",
     "fastapi[standard]>=0.115.14",
     "uvicorn>=0.35.0",
