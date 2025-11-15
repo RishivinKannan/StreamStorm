@@ -13,11 +13,33 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Cache APT packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            /var/cache/apt/archives
+            /var/lib/apt/lists
+          key: ${{ runner.os }}-apt-${{ hashFiles('.github/apt-packages.txt') }}
+
+      # List all packages in a file so cache becomes stable
+      - name: Prepare APT package list
+        run: |
+          echo "python3
+          python3-pyqt5
+          python3-pyqt5.qtwebengine
+          python3-pyqt5.qtwebchannel
+          libqt5webkit5
+          python3-xlib
+          scrot
+          python3-tk
+          python3-dev" > .github/apt-packages.txt
+
       - name: Install dependencies
         run: |
           set -eux
           sudo apt-get update
-          sudo apt-get install -y python3 python3-pyqt5 python3-pyqt5.qtwebengine python3-pyqt5.qtwebchannel libqt5webkit5 python3-xlib scrot python3-tk python3-dev
+          sudo xargs -a .github/apt-packages.txt apt-get install -y
+
 
       - name: Setup Python
         uses: actions/setup-python@v4
