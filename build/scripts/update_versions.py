@@ -82,7 +82,7 @@ def update_versions(new_version: str) -> None:
 
     control_file.write_text(text, encoding="utf-8")
     
-    log_info(f"Version update completed successfully.")
+    log_info("Version update completed successfully.")
 
 
 def main() -> None:
