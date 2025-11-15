@@ -90,10 +90,20 @@ def update_versions(new_version: str) -> None:
     create_setup_iss: Path = ROOT / "build" /"INNO Setup" / "create_setup.iss"
     
     log_info(f"Updating {create_setup_iss}")
+    
     text: str = create_setup_iss.read_text(encoding="utf-8")
     text = sub(r'#define MyAppVersion\s+".*"', f'#define MyAppVersion "{new_version}"', text)
     create_setup_iss.write_text(text, encoding="utf-8")
+    
+    # Linux build version
+    control_file: Path = ROOT / "export" / "linux" / "DEBIAN" / "control"
+    log_info(f"Updating {control_file}")
+    
+    text: str = control_file.read_text(encoding="utf-8")
+    
+    text = sub(r'^Version:\s*.*$', f'Version: {new_version}', text, flags=__import__("re").MULTILINE)
 
+    control_file.write_text(text, encoding="utf-8")
 
 def generate_executable() -> None:
     log_info("Generating executable...")
