@@ -3,7 +3,7 @@ from pathlib import Path
 from platform import system
 from os import getcwd
 
-ROOT = Path(getcwd()).parent.resolve()
+ROOT = Path(getcwd()).parent.parent.resolve()
 ENGINE = ROOT / "src" / "Engine"
 UI = ROOT / "src" / "UI"
 
