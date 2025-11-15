@@ -28,7 +28,7 @@ def generate_executable() -> None:
     log_info("Running 'uv sync' in Engine directory")
     
     call("uv sync", shell=True)
-    call("source .venv/bin/activate", shell=True)
+    call(".venv/bin/activate", shell=True)
     
     build_dir: Path = ROOT / "build"    
     chdir(build_dir)
