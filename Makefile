@@ -72,6 +72,7 @@ build-site:
 deb:
 ifeq ($(DETECTED_OS),Linux)
 	@echo "Building DEB package..."
+	chmod +x ./export/linux/DEBIAN/postinst
 	dpkg-deb --build ./export/linux ./export/streamstorm.deb
 	@if [ -f ./export/streamstorm.deb ]; then \
 		mv ./export/streamstorm.deb ./export/installers/streamstorm.deb; \
