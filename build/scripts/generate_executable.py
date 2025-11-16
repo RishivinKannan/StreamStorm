@@ -11,12 +11,35 @@ from os import chdir  # noqa: E402
 from shutil import move, rmtree  # noqa: E402
 from platform import system  # noqa: E402
 from logging import basicConfig, INFO, info as log_info  # noqa: E402
+from json import load # noqa: E402
+from src.Engine.StreamStorm.config.config import CONFIG  # noqa: E402
 
 basicConfig(level=INFO)
 
 log_info(f"Root directory: {ROOT}")
 
 OS: str = system()
+
+def check_engine_env():
+    """Check if the Engine environment is set to production before building."""
+    
+    log_info("Checking environment configuration...")
+    
+    if CONFIG["ENV"] in ("development", "test"):
+        raise ValueError(
+            "Environment is not set to 'production' in Engine/config/config.py. "
+            "Change it to 'production' before building the release."
+        )
+        
+    new_version: str = load(open(str(ROOT / "project.json")))["version"]
+        
+    if CONFIG["VERSION"] != new_version:
+        raise ValueError(
+            "Version in Engine/config/config.py is not the same as the new version. "
+            "Change it to the new version before building the release."
+        )
+    
+    log_info(f"Environment configuration check passed. ENV is set to '{CONFIG['ENV']}'.")
 
 
 def generate_executable() -> None:
@@ -91,6 +114,8 @@ def generate_executable() -> None:
 
 def main() -> None:
     """Main entry point."""
+    
+    check_engine_env()
     generate_executable()
     log_info("Generate executable process completed.")
 
