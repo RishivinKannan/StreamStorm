@@ -23,7 +23,7 @@ def get_latest_run_id() -> str:
     
     cmd: list[str] = [
         "gh", "run", "list",
-        "--workflow", "linux-build.yml",
+        "--workflow", "cross-os-build.yml",
         "--repo", "Ashif4354/StreamStorm",
         "--limit", "1",
         "--json", "databaseId"
