@@ -13,7 +13,7 @@ from dgupdater import check_update
 from uvicorn import run as run_uvicorn
 from webview import create_window, start
 
-from StreamStorm import app
+from StreamStorm.api.fastapi_app import app
 from StreamStorm.utils.CustomLogger import CustomLogger
 from StreamStorm.config.config import CONFIG
 
