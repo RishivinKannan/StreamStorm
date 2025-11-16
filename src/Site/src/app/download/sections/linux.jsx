@@ -40,27 +40,27 @@ const Linux = () => {
                     </li>
                     <li>
                         <span className='linux-step-label'>Download the package:</span>
-                        <CodeBlock code="wget https://github.com/Ashif4354/StreamStorm/releases/latest/download/StreamStorm.tar.gz" />
+                        <CodeBlock code="wget https://github.com/Ashif4354/StreamStorm/releases/latest/download/streamstorm.tar.gz" />
                     </li>
                     <li>
                         <span className='linux-step-label'>Extract the archive:</span>
-                        <CodeBlock code="tar -xzf StreamStorm.tar.gz" />
-                    </li>
-                    <li>
-                        <span className='linux-step-label'>Create a symbolic link:</span>
-                        <CodeBlock code="sudo ln -s ./StreamStorm/streamstorm /usr/local/bin/streamstorm" />
-                    </li>
+                        <CodeBlock code="tar -xzf streamstorm.tar.gz" />
+                    </li>                    
                     <li>
                         <span className='linux-step-label'>Navigate to the directory:</span>
                         <CodeBlock code="cd StreamStorm" />
                     </li>
                     <li>
                         <span className='linux-step-label'>Make the script executable:</span>
-                        <CodeBlock code="chmod +x streamstorm" />
+                        <CodeBlock code="chmod +x StreamStorm-linux" />
+                    </li>
+                    <li>
+                        <span className='linux-step-label'>Create a symbolic link:</span>
+                        <CodeBlock code="sudo ln -s ./StreamStorm-linux /usr/local/bin/streamstorm" />
                     </li>
                     <li>
                         <span className='linux-step-label'>Run StreamStorm:</span>
-                        <CodeBlock code="./streamstorm" />
+                        <CodeBlock code="streamstorm" />
                     </li>
                 </ol>
             </div>
