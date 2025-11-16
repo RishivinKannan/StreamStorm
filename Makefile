@@ -22,8 +22,8 @@ help:
 	@echo ""
 	@echo "Core Commands:"
 	@echo "  make run                      Start the Engine app (uv run main.py in src/Engine)"
-	@echo "  make run-ui                   Start the UI (npm start in src/UI)"
-	@echo "  make run-site                 Start the Site (npm run dev in src/Site)"
+	@echo "  make ui                   Start the UI (npm start in src/UI)"
+	@echo "  make site                 Start the Site (npm run dev in src/Site)"
 	@echo ""
 	@echo "Build Commands:"
 	@echo "  make build-ui                 Build the UI (npm build in src/UI)"
@@ -49,11 +49,11 @@ run:
 	@echo "Starting Engine application..."
 	cd src/Engine && uv run main.py
 
-run-ui:
+ui:
 	@echo "Starting UI application..."
 	cd src/UI && npm start
 
-run-site:
+site:
 	@echo "Starting Site application..."
 	cd src/Site && npm run dev
 

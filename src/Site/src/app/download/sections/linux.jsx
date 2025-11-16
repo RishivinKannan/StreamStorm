@@ -44,7 +44,7 @@ const Linux = () => {
                     </li>
                     <li>
                         <span className='linux-step-label'>Extract the archive:</span>
-                        <CodeBlock code="tar -xzf streamstorm.tar.gz" />
+                        <CodeBlock code="tar -xzf StreamStorm.tar.gz" />
                     </li>                    
                     <li>
                         <span className='linux-step-label'>Navigate to the directory:</span>
@@ -56,7 +56,7 @@ const Linux = () => {
                     </li>
                     <li>
                         <span className='linux-step-label'>Create a symbolic link:</span>
-                        <CodeBlock code="sudo ln -s ./StreamStorm-linux /usr/local/bin/streamstorm" />
+                        <CodeBlock code="sudo ln -s $PWD/StreamStorm-linux /usr/local/bin/streamstorm" />
                     </li>
                     <li>
                         <span className='linux-step-label'>Run StreamStorm:</span>
@@ -75,14 +75,21 @@ const Linux = () => {
                     </li>
                     <li>
                         <span className='linux-step-label'>Install the package:</span>
-                        <CodeBlock code="sudo dpkg -i StreamStorm.deb" />
+                        <CodeBlock code="sudo dpkg -i streamstorm.deb" />
+                        <p>or</p>
+                        <CodeBlock code="sudo apt install streamstorm.deb" />
                     </li>
                     <li>
                         <span className='linux-step-label'>Run StreamStorm:</span>
                         <CodeBlock code="streamstorm" />
+                        <span className='linux-step-label'>...or Start the application from the application menu</span>
                     </li>
                 </ol>
             </div>
+
+             <span className="download-note">
+                <i>⚠️ Note: Linux builds currently do not support checking for new versions and auto-update functionality. We are working on adding this feature soon.</i>
+            </span>
         </section>
     )
 };
