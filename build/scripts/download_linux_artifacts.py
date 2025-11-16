@@ -6,12 +6,16 @@ path.insert(0, str(ROOT))
 
 from subprocess import run, CompletedProcess  # noqa: E402
 from json import loads  # noqa: E402
-from shutil import move, rmtree  # noqa: E402
+from shutil import move, rmtree, which   # noqa: E402
 from logging import basicConfig, INFO, info as log_info  # noqa: E402
 
 basicConfig(level=INFO)
 
 log_info(f"Root directory: {ROOT}")
+
+def check_gh_available():
+    if not which("gh"):
+        raise RuntimeError("GitHub CLI (gh) is not installed or not found in PATH. Please install it to proceed.")
 
 def get_latest_run_id() -> str:
     
@@ -72,6 +76,8 @@ def move_artifacts(streamstorm_deb: Path, streamstorm_tar: Path) -> None:
 
 
 def main() -> None:
+    
+    check_gh_available()
     
     streamstorm_deb: Path = ROOT / "linux-builds" / "streamstorm-deb" / "streamstorm.deb"
     streamstorm_tar: Path = ROOT / "linux-builds" / "streamstorm-tar" / "streamstorm.tar.gz"
