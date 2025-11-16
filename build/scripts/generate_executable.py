@@ -12,7 +12,6 @@ from shutil import move, rmtree  # noqa: E402
 from platform import system  # noqa: E402
 from logging import basicConfig, INFO, info as log_info  # noqa: E402
 from json import load # noqa: E402
-from src.Engine.StreamStorm.config.config import CONFIG  # noqa: E402
 
 basicConfig(level=INFO)
 
@@ -22,6 +21,8 @@ OS: str = system()
 
 def check_engine_env():
     """Check if the Engine environment is set to production before building."""
+    
+    from src.Engine.StreamStorm.config.config import CONFIG  # noqa: E402
     
     log_info("Checking environment configuration...")
     
@@ -56,6 +57,8 @@ def generate_executable() -> None:
     # chdir(build_dir)
     
     spec_file: Path = build_dir / "pyinstaller" / "StreamStorm.spec"
+    
+    check_engine_env()
 
     build_command: str = ([
         "uv", "run",
@@ -115,7 +118,6 @@ def generate_executable() -> None:
 def main() -> None:
     """Main entry point."""
     
-    check_engine_env()
     generate_executable()
     log_info("Generate executable process completed.")
 
