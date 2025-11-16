@@ -59,7 +59,7 @@ def main() -> None:
         )
         logger.info("Webview created.")
         
-        if CONFIG["OS"] != "Linux":
+        if CONFIG["OS"] == "Linux":
             start(gui='qt')
         else:
             start()
