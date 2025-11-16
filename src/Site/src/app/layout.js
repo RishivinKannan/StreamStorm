@@ -1,10 +1,12 @@
 import Script from "next/script";
+import { ThemeProvider } from '@mui/material/styles';
 import { GoogleTagManager } from '@next/third-parties/google'
 import { DownloadCountProvider } from "@/context/DownloadCountContext";
 import { VisitCountProvider } from "@/context/VisitCountContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import "./globals.css";
+import { theme } from "../config/theme";
 
 export const metadata = {
     title: 'StreamStorm - Spam YouTube live chat',
@@ -52,7 +54,7 @@ export default function RootLayout({ children }) {
                     id="website-schema"
                     type="application/ld+json"
                     strategy="beforeInteractive"
-                    
+
                 >
                     {
                         JSON.stringify({
@@ -69,13 +71,15 @@ export default function RootLayout({ children }) {
                     <iframe src={`https://www.googletagmanager.com/ns.html?id=${process.env.NEXT_PUBLIC_GTM_ID}`}
                         height="0" width="0" style={{ display: 'none', visibility: 'hidden' }}></iframe>
                 </noscript>
-                <DownloadCountProvider>
-                    <VisitCountProvider>
-                        <Header />
-                        {children}
-                        <Footer />
-                    </VisitCountProvider>
-                </DownloadCountProvider>
+                <ThemeProvider theme={theme}>
+                    <DownloadCountProvider>
+                        <VisitCountProvider>
+                            <Header />
+                            {children}
+                            <Footer />
+                        </VisitCountProvider>
+                    </DownloadCountProvider>
+                </ThemeProvider>
             </body>
         </html>
     );
