@@ -15,7 +15,8 @@ from webview import create_window, start
 
 from StreamStorm import app
 from StreamStorm.utils.CustomLogger import CustomLogger
-from StreamStorm.config.config import CONFIG 
+from StreamStorm.config.config import CONFIG
+from test_files import g 
 
 CustomLogger().setup_streamstorm_logging()
 
@@ -58,7 +59,13 @@ def main() -> None:
             confirm_close=True,
         )
         logger.info("Webview created.")
-        start()
+        
+        if CONFIG["OS"] != "Linux":
+            start(gui='qt')
+        else:
+            start()
+            
+        logger.info("Webview started.")
     finally:
         # Ensure the API is stopped when the webview is closed
         logger.info("Webview closed, stopping API server.")
