@@ -71,7 +71,7 @@ const Linux = () => {
                 <ol className='linux-install-list'>
                     <li>
                         <span className='linux-step-label'>Download the .deb file:</span>
-                        <CodeBlock code="wget https://github.com/Ashif4354/StreamStorm/releases/latest/download/StreamStorm.deb" />
+                        <CodeBlock code="wget https://github.com/Ashif4354/StreamStorm/releases/latest/download/streamstorm.deb" />
                     </li>
                     <li>
                         <span className='linux-step-label'>Install the package:</span>
