@@ -64,7 +64,7 @@ jobs:
       - name: Make executable (project root)
         run: |
           set -eux
-          chmod 0755 ./export/linux/DEBIAN/postinst
+          chmod +x ./export/linux/DEBIAN/postinst
           make executable
 
       - name: Build .deb (project root)

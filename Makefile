@@ -1,14 +1,15 @@
 .PHONY: help run run-ui run-site build-ui build-site deb artifacts update-versions executable firebase-deploy dgupdater-commit-publish generate-setup-windows build-and-release
 
 # Variables
-PYTHON := python
 PY_SCRIPTS_DIR := build/scripts
 
 # Detect OS
 ifeq ($(OS),Windows_NT)
+	PYTHON := python
 	DETECTED_OS := Windows
 	ACTIVATE_VENV := call venv\Scripts\activate.bat &&
 else
+	PYTHON := python3
 	DETECTED_OS := $(shell uname -s)
 	ifeq ($(DETECTED_OS),Darwin)
 		DETECTED_OS := Darwin
