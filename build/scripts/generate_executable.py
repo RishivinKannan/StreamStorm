@@ -56,7 +56,7 @@ def generate_executable() -> None:
     elif OS == "Linux":
         executable_path: Path = dist_dir / "StreamStorm-linux"
         output_dir: Path = ROOT / "export" / "linux" / "opt" / "StreamStorm"
-        target_path: Path = output_dir / "StreamStorm_lin"
+        target_path: Path = output_dir / "StreamStorm-linux"
         
     elif OS == "Darwin":
         executable_path: Path = dist_dir / "StreamStorm-mac"
