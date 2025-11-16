@@ -12,3 +12,4 @@ build/INNO Setup/Output
 .vite
 .vscode
 dgupdater_release/
+export/windows/StreamStorm.exe
