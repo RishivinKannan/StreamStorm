@@ -2,7 +2,7 @@ name: Linux build & artifacts
 
 on:
   push:
-    branches: [ master, feat/download-page-and-linux-build ]
+    branches: [ master ]
   workflow_dispatch:
 
 jobs:
