@@ -75,9 +75,9 @@ const Linux = () => {
                     </li>
                     <li>
                         <span className='linux-step-label'>Install the package:</span>
-                        <CodeBlock code="sudo dpkg -i streamstorm.deb" />
+                        <CodeBlock code="sudo dpkg -i ./streamstorm.deb" />
                         <p>or</p>
-                        <CodeBlock code="sudo apt install streamstorm.deb" />
+                        <CodeBlock code="sudo apt install ./streamstorm.deb" />
                     </li>
                     <li>
                         <span className='linux-step-label'>Run StreamStorm:</span>
