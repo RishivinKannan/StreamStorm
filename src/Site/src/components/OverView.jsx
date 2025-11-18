@@ -1,29 +1,12 @@
 "use client";
-import { useState } from 'react';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { analytics } from '@/config/firebase';
 import { logEvent } from 'firebase/analytics';
-import { useDownloadCount } from '@/context/DownloadCountContext';
 
 const OverView = () => {
-
-    const [downloadButtonDisabled, setDownloadButtonDisabled] = useState(false);
-
-    const {downloadCount, updateDownloadCount} = useDownloadCount();
-
-    const handleDownload = () => {
-        setDownloadButtonDisabled(true);
-        logEvent(analytics, 'download_count');
-        updateDownloadCount();
-
-        setTimeout(() => {
-            setDownloadButtonDisabled(false);
-        }, 5000); // Reset button after 5 seconds
-    }
     
     const handleGitHubClick = () => {
         logEvent(analytics, 'github_repo_visit');
-
         window.open('https://github.com/Ashif4354/StreamStorm', '_blank');
     }
 
@@ -38,7 +21,7 @@ const OverView = () => {
                 </span>
                 <div className="overview-buttons-container">
                     <a href="/download">
-                        <button className="get-started-button" onClick={handleDownload} disabled={downloadButtonDisabled}>
+                        <button className="get-started-button">
                             Get Started
                         </button>
                     </a>
