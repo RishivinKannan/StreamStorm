@@ -1,16 +1,12 @@
 from typing import Any
 from asyncio import to_thread, sleep
 from contextlib import suppress
- 
 from psutil import cpu_percent, virtual_memory
-from psutil._pswindows import svmem
 
 from ..socketio.sio import sio
 
-
 def get_system_metrics() -> dict[str, Any]:
-    mem: svmem = virtual_memory()
-
+    mem: Any = virtual_memory()
     free_ram_mb: int = int(mem.available / (1024**2))  # MB without decimals
 
     return {
