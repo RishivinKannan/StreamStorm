@@ -2,9 +2,9 @@ from typing import NoReturn
 from asyncio import sleep
 from logging import getLogger, Logger
 
-from ...core.StreamStorm import StreamStorm
+from ..core.StreamStorm import StreamStorm
 
-logger: Logger = getLogger(f"fastapi.{__name__}")
+logger: Logger = getLogger(f"streamstorm.{__name__}")
 
 async def background_storm_stopper() -> NoReturn:
     while True:

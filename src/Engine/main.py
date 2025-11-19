@@ -12,17 +12,22 @@ from logging import Logger, getLogger
 from dgupdater import check_update
 from uvicorn import run as run_uvicorn
 from webview import create_window, start
+from socketio import ASGIApp
 
-from StreamStorm.api.fastapi_app import app
+from StreamStorm.api.fastapi_app import app as fastapi_app
 from StreamStorm.utils.CustomLogger import CustomLogger
 from StreamStorm.config.config import CONFIG
+from StreamStorm.socketio.sio import sio
 
 CustomLogger().setup_streamstorm_logging()
 
 logger: Logger = getLogger(f"streamstorm.{__name__}") 
 
 def serve_api() -> None:
-    logger.debug("Starting API Server") 
+    logger.debug("Starting API-SocketIO Server") 
+    
+    app: ASGIApp = ASGIApp(sio, fastapi_app)
+    
     run_uvicorn(
         app, 
         host="0.0.0.0", 
