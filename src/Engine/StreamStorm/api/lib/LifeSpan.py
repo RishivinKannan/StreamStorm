@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from asyncio import create_task
 from logging import Logger, getLogger
 
-from .StormStopper import background_storm_stopper
+from ...utils.StormStopper import background_storm_stopper
 
 logger: Logger = getLogger(f"fastapi.{__name__}")
 
