@@ -23,6 +23,10 @@ CustomLogger().setup_streamstorm_logging()
 
 logger: Logger = getLogger(f"streamstorm.{__name__}") 
 
+def exit_app() -> None:
+    logger.debug("Exiting StreamStorm")
+    kill(getpid(), SIGTERM)
+
 def serve_api() -> None:
     logger.debug("Starting API-SocketIO Server") 
     
@@ -41,7 +45,7 @@ def main() -> None:
         check_update(parallel=True)
 
     Thread(target=serve_api, daemon=True).start()
-    logger.info("API server started.")
+    logger.debug("API server started.")
     
     # Comment this below two line after testing
     # if CONFIG["ENV"] == "development":
@@ -62,18 +66,18 @@ def main() -> None:
             height=900,
             confirm_close=True,
         )
-        logger.info("Webview created.")
+        logger.debug("Webview created.")
         
         if CONFIG["OS"] == "Linux":
             start(gui='qt')
         else:
             start()
             
-        logger.info("Webview started.")
+        logger.debug("Webview started.")
     finally:
         # Ensure the API is stopped when the webview is closed
-        logger.info("Webview closed, stopping API server.")
-        kill(getpid(), SIGTERM)
+        logger.debug("Webview closed, stopping API server.")
+        exit_app()
         
         
 if __name__ == "__main__":

@@ -92,7 +92,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
             async with aio_open(join(self.profiles_dir, "data.json"), "r", encoding="utf-8") as file:
                 data: dict = loads(await file.read()) # We are using loads instead of load to avoid blocking the event loop
         except (FileNotFoundError, PermissionError, UnicodeDecodeError, JSONDecodeError) as e:
-            logger.debug("Failed to read data.json - profiles not created yet")
+            logger.error("Failed to read data.json - profiles not created yet")
             raise SystemError("Create profiles first.") from e
             
         no_of_channels: int = data.get("no_of_channels", 0)
@@ -100,10 +100,10 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
         self.total_channels = no_of_channels
         self.all_channels = data.get("channels", {})
         
-        logger.debug(f"Found {no_of_channels} channels in config, required: {len(self.channels)}")
+        logger.error(f"Found {no_of_channels} channels in config, required: {len(self.channels)}")
 
         if no_of_channels < len(self.channels):
-            logger.debug(f"Insufficient channels: available={no_of_channels}, required={len(self.channels)}")
+            logger.error(f"Insufficient channels: available={no_of_channels}, required={len(self.channels)}")
             raise SystemError("Not enough channels available in your YouTube Account. Create enough channels first. Then create Profiles again in the app.")
     
     async def get_active_channels(self) -> list[int]:
@@ -139,7 +139,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
 
             StreamStorm.each_channel_instances.append(SI)
             
-            logger.debug(f"[{index}] [{channel_name}] Attempting login...")
+            logger.info(f"[{index}] [{channel_name}] Attempting login...")
             logged_in: bool = await SI.login()
             
             self.run_stopper_event.set()  # Set the event to signal that stopper can check for instance errors
@@ -157,7 +157,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
                 
                 return
 
-            logger.debug(f"[{index}] [{channel_name}] Login successful")
+            logger.info(f"[{index}] [{channel_name}] Login successful")
 
             if self.subscribe[0]:
                 logger.debug(f"[{index}] [{channel_name}] Navigating to subscribe URL: {self.url}")
@@ -165,17 +165,17 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
                 await SI.go_to_page(self.url)
                 await SI.subscribe_to_channel()
                 
-                logger.debug(f"[{index}] [{channel_name}] Subscription attempt completed")
+                logger.info(f"[{index}] [{channel_name}] Subscription attempt completed")
 
             await SI.page.set_viewport_size({"width": 500, "height": 900})
-            logger.debug(f"[{index}] [{channel_name}] Navigating to chat URL: {self.chat_url}")
+            logger.info(f"[{index}] [{channel_name}] Navigating to chat URL: {self.chat_url}")
             await SI.go_to_page(self.chat_url)
             
             self.ready_to_storm_instances += 1
             logger.info(f"[{index}] [{channel_name}] : Ready To Storm")
 
             if self.subscribe[1]:
-                logger.debug(f"[{index}] [{channel_name}] Waiting {self.subscribe_and_wait_time}s after subscription")
+                logger.info(f"[{index}] [{channel_name}] Waiting {self.subscribe_and_wait_time}s after subscription")
                 await sleep(self.subscribe_and_wait_time)
                  
                 
@@ -265,7 +265,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
             async def wait_for_all_worker_to_be_ready() -> None:
                 while self.ready_to_storm_instances < self.total_instances:
                     await sleep(1)
-                logger.debug(f"All {self.total_instances} instances ready - starting storm")
+                logger.info(f"All {self.total_instances} instances ready - starting storm")
                 self.ready_event.set()  # Set the event to signal that all instances are ready
 
             create_task(wait_for_all_worker_to_be_ready())
@@ -286,7 +286,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
             self.run_stopper_event.clear()
             StreamStorm.ss_instance = None
             StreamStorm.each_channel_instances.clear()
-            logger.info("All Coroutines completed")
+            logger.debug("All Coroutines completed")
 
         create_task(start_each_worker())
     
@@ -324,7 +324,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
                 await sleep(0.2)
 
             await gather(*tasks)
-            logger.info("All Coroutines completed")
+            logger.debug("All Coroutines completed")
 
         create_task(start_each_worker())       
 

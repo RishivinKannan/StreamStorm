@@ -157,7 +157,7 @@ class UndetectedDrivers(Selenium):
             sleep(1)
 
             with suppress(Exception):
-                logger.debug(f"FInding failed to create channel error text count: {count}")
+                logger.debug(f"Finding 'failed to create channel' error text count: {count}")
                 self.find_element(By.XPATH, '//yt-formatted-string[contains(text(), "Failed to create channel.")]', just_available=True, wait_time=2)
                 return False
             

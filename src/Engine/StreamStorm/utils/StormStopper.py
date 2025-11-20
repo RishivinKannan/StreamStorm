@@ -19,7 +19,7 @@ async def background_storm_stopper() -> NoReturn:
             statuses: list[bool] = [await instance.is_instance_alive() for instance in StreamStorm.each_channel_instances.copy()]
             
             if not len(statuses):
-                logger.info("StreamStorm instance is marked dead by: Status length checker")
+                logger.debug("StreamStorm instance is marked dead by: Status length checker")
 
             if not any(statuses):
                 StreamStorm.ss_instance = None

@@ -20,6 +20,7 @@ async def common_exception_handler(request: Request, exc: Exception) -> JSONResp
     
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     errors = exc.errors()
+    
     logger.debug(f"Validation errors: {errors}")
     
     field_map: dict[str, str] = {
@@ -43,6 +44,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     }
     
     message: str = field_map[errors[0]["loc"][1]] + ": " + errors[0]["msg"][6:].capitalize()
+    logger.error(f"Validation error: {message}")
     
     if "ctx" in errors[0]:
         del errors[0]["ctx"]

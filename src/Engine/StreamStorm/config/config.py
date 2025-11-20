@@ -5,7 +5,7 @@ ROOT: Path = Path(__file__).parent.parent.parent.parent.parent.resolve()
 
 
 CONFIG: dict = {
-    "ENV": "production", # Valid values: ["development", "production", "test"]
+    "ENV": "development", # Valid values: ["development", "production", "test"]
     "VERSION": "3.5.2",
     "ROOT": ROOT,
     "OS": system(),
