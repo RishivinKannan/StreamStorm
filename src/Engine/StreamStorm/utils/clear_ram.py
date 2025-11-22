@@ -17,7 +17,7 @@ def clear_ram() -> None:
         Popen(
             [
                 rammap_path,
-                "-Ew",
+                "-Ew", # 
                 # "-Es",
                 # "-Em",
                 # "-Et",

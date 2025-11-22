@@ -1,4 +1,5 @@
-from asyncio import Task, sleep, Event, create_task, gather, TimeoutError as AsyncTimeoutError
+from asyncio import Task, sleep, Event, create_task, gather, TimeoutError as AsyncTimeoutError, Lock
+from email import message
 from random import choice
 from os import environ
 from os.path import join
@@ -21,6 +22,7 @@ from ..utils.exceptions import BrowserClosedError, ElementNotFound
 from .SeparateInstance import SeparateInstance
 from .Profiles import Profiles
 from ..utils.clear_ram import clear_ram
+from ..socketio.sio import sio
 
 logger: Logger = getLogger(f"streamstorm.{__name__}")
 
@@ -34,6 +36,8 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
     
     each_channel_instances: list[SeparateInstance] = []
     ss_instance: Optional["StreamStorm"] = None
+    message_counter_lock: Lock = Lock()
+    message_count: int = 0
 
     def __init__(
         self,
@@ -91,6 +95,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
         try:
             async with aio_open(join(self.profiles_dir, "data.json"), "r", encoding="utf-8") as file:
                 data: dict = loads(await file.read()) # We are using loads instead of load to avoid blocking the event loop
+                
         except (FileNotFoundError, PermissionError, UnicodeDecodeError, JSONDecodeError) as e:
             logger.error("Failed to read data.json - profiles not created yet")
             raise SystemError("Create profiles first.") from e
@@ -130,6 +135,8 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
                 profile_dir,
                 self.background,
             )
+            
+            await sio.emit('instance_status', {'instance': index, 'status': '1'}, room="streamstorm")  # 1 = Getting Ready
 
             SI.channel_name = channel_name
 
@@ -154,6 +161,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
                 StreamStorm.each_channel_instances.remove(SI)
                 
                 logger.error(f"[{index}] [{channel_name}] : Login failed")
+                await sio.emit('instance_status', {'instance': index, 'status': '-1'}, room="streamstorm")  # -1 = Dead
                 
                 return
 
@@ -173,6 +181,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
             
             self.ready_to_storm_instances += 1
             logger.info(f"[{index}] [{channel_name}] : Ready To Storm")
+            await sio.emit('instance_status', {'instance': index, 'status': '2'}, room="streamstorm")  # 2 = Ready
 
             if self.subscribe[1]:
                 logger.info(f"[{index}] [{channel_name}] Waiting {self.subscribe_and_wait_time}s after subscription")
@@ -181,8 +190,9 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
                 
             logger.debug(f"[{index}] [{channel_name}] Waiting for ready event...")
             await self.ready_event.wait() # Wait for the ready event to be set before starting the storming
-
+            
             logger.debug(f"[{index}] [{channel_name}] Starting storm loop with {wait_time}s initial delay")
+            await sio.emit('instance_status', {'instance': index, 'status': '3'}, room="streamstorm")  # 3 = Storming
             await sleep(wait_time)  # Wait for the initial delay before starting to storm
 
             while True:
@@ -194,11 +204,16 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
                 
                 try:
                     await SI.send_message(selected_message)
+                    
+                    async with StreamStorm.message_counter_lock:
+                        StreamStorm.message_count += 1
+                        
                     logger.debug(f"[{index}] [{channel_name}] Message sent successfully")
                     
                 except (BrowserClosedError, ElementNotFound, TargetClosedError):
                     logger.debug(f"[{index}] [{channel_name}] : ##### Browser/element error - cleaning up instance")
                     logger.error(f"[{index}] [{channel_name}] : Error in finding chat field")
+                    await sio.emit('instance_status', {'instance': index, 'status': '-1'}, room="streamstorm")  # -1 = Dead
 
                     self.assigned_profiles[profile_dir_name] = None
                     
@@ -206,6 +221,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
                         await SI.page.close()
                     except PlaywrightError as e:
                         logger.error(f"[{index}] [{channel_name}] : Error closing page: {e}")
+                        
                     
                     with suppress(ValueError):
                         StreamStorm.each_channel_instances.remove(SI)
@@ -215,6 +231,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
                     
                 except Exception as e:
                     logger.error(f"[{index}] [{channel_name}] : New Error ({type(e).__name__}): {e}")
+                    await sio.emit('instance_status', {'instance': index, 'status': '-1'}, room="streamstorm")  # -1 = Dead
                     break
                 
                 logger.debug(f"[{index}] [{channel_name}] Sleeping for {self.slow_mode}s before next message")
@@ -232,9 +249,51 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
             BrowserClosedError
         ) as e:
             logger.error(f"[{index}] [{channel_name}] : Error: {e}")
+            await sio.emit('instance_status', {'instance': index, 'status': '-1'}, room="streamstorm")  # -1 = Dead
         
     def get_start_storm_wait_time(self, index, no_of_profiles, slow_mode) -> float:
         return index * (slow_mode / no_of_profiles)
+    
+    async def messages_handler(self) -> None:
+        time_frame: int = 5 # time frame in seconds to send message count updates
+        self.previous_count: int = 0
+        self.time_elapsed_since_last_minute: int = 0 # in seconds
+        message_rate: float = 0.0
+        
+        logger.debug("Starting message handler...")
+        await self.ready_event.wait()  # Wait for the ready event to be set before starting the storming    
+        
+        async def reset_message_count() -> None:
+            while StreamStorm.ss_instance is not None:
+                await sleep(60) # asyncio.sleep
+                
+                async with StreamStorm.message_counter_lock:
+                    self.previous_count = StreamStorm.message_count
+                    
+                self.time_elapsed_since_last_minute = 0  # Reset time elapsed every minute
+                
+                logger.debug(f"Message count for the last minute reset to {self.previous_count}")
+                
+                
+        create_task(reset_message_count())
+        
+        while StreamStorm.ss_instance is not None:
+            
+            async with StreamStorm.message_counter_lock:
+                current_count: int = StreamStorm.message_count - self.previous_count            
+            
+            await sio.emit('total_messages', {'total_messages': StreamStorm.message_count}, room="streamstorm")
+            
+            self.time_elapsed_since_last_minute += time_frame
+            
+            message_rate = (current_count / self.time_elapsed_since_last_minute) * 60 if self.time_elapsed_since_last_minute > 0 else message_rate
+            
+            await sio.emit('messages_rate', {'message_rate': message_rate}, room="streamstorm")
+            await sleep(time_frame) # asyncio.sleep
+            
+        # I know the time may have a difference of 1-3 seconds but it's not a big deal.
+        # This is just an average value for UI display purpose only, not an accurate value.
+        
 
     async def start(self) -> None:  
         
@@ -261,6 +320,8 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
         
 
         async def start_each_worker() -> None:
+            
+            await sleep(2)  # Small delay to ensure everything is set up in UI before starting workers
 
             async def wait_for_all_worker_to_be_ready() -> None:
                 while self.ready_to_storm_instances < self.total_instances:

@@ -133,7 +133,7 @@ class Playwright(BrowserAutomator):
         self._attach_error_listeners()
         logger.debug(f"[{self.index}] [{self.channel_name}] Browser setup completed")
 
-
+ 
     async def go_to_page(self, url: str) -> None:
         
         try:

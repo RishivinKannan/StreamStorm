@@ -3,10 +3,16 @@ from asyncio import sleep
 from logging import getLogger, Logger
 
 from ..core.StreamStorm import StreamStorm
+from ..socketio.sio import sio
 
 logger: Logger = getLogger(f"streamstorm.{__name__}")
 
 async def background_storm_stopper() -> NoReturn:
+    """
+    This function is used to stop the storming process if all the instances are dead.
+    It runs in the background and checks the status of each instance every 5 seconds.
+    If all instances are dead, it emits that the storm is not running.
+    """
     while True:
         try:
             await sleep(5)
@@ -25,6 +31,8 @@ async def background_storm_stopper() -> NoReturn:
                 StreamStorm.ss_instance = None
                 StreamStorm.each_channel_instances.clear()
                 StreamStorm.ss_instance.run_stopper_event.clear()
+                
+                await sio.emit('storm_stopped', room="streamstorm")                
                 
         except Exception as e:
             logger.error(f"Error occurred in background_storm_stopper: {e}")

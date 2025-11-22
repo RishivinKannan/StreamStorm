@@ -18,6 +18,7 @@ from ..validation import (
     GetChannelsData
 )
 from ...utils.CustomLogger import CustomLogger
+from ...socketio.sio import sio
 
 cl: CustomLogger = CustomLogger(for_history=True)
 cl.setup_history_logger()
@@ -110,6 +111,8 @@ async def stop() -> JSONResponse:
     environ.update({"BUSY": "0"})
 
     logger.info("Storm stopped successfully")
+    await sio.emit('storm_stopped', room="streamstorm")
+    
 
     return JSONResponse(
         status_code=200,
@@ -124,6 +127,7 @@ async def stop() -> JSONResponse:
 async def pause() -> JSONResponse:
     StreamStorm.ss_instance.pause_event.clear()
     logger.info("Storm paused successfully")
+    await sio.emit('storm_paused', room="streamstorm")
 
     return JSONResponse(
         status_code=200,
@@ -138,6 +142,7 @@ async def pause() -> JSONResponse:
 async def resume() -> JSONResponse:
     StreamStorm.ss_instance.pause_event.set()
     logger.info("Storm resumed successfully")
+    await sio.emit('storm_resumed', room="streamstorm")
 
     return JSONResponse(
         status_code=200,
