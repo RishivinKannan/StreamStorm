@@ -26,7 +26,7 @@ const SystemInfo = () => {
         if (!socket || !socket.connected || !socketConnected) return;
 
         socket.on("system_info", (data) => {
-            console.log("Received system_info:", data);
+            // console.log("Received system_info:", data);
 
             // Use the data received to plot the graph
         });
@@ -43,15 +43,15 @@ const SystemInfo = () => {
         systemInfoControls.setDebugList(prev => [...prev, 0])
     }
 
-    useEffect(() => {
-        const interval = setInterval(async () => {
-            await systemInfoControls.fetchRAM(hostAddress, notifications, systemInfoControls);
-        }, 1000);
+    // useEffect(() => {
+    //     const interval = setInterval(async () => {
+    //         await systemInfoControls.fetchRAM(hostAddress, notifications, systemInfoControls);
+    //     }, 1000);
 
-        systemInfoControls.setPollingIntervals(prev => [...prev, interval]);
+    //     systemInfoControls.setPollingIntervals(prev => [...prev, interval]);
 
-        return () => clearInterval(interval);
-    }, [hostAddress]);
+    //     return () => clearInterval(interval);
+    // }, [hostAddress]);
 
     return (
         <Card
