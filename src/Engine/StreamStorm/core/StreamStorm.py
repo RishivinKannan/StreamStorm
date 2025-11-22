@@ -100,7 +100,7 @@ class StreamStorm(Profiles): # removed Selenium inheritance coz its doing nothin
         self.total_channels = no_of_channels
         self.all_channels = data.get("channels", {})
         
-        logger.error(f"Found {no_of_channels} channels in config, required: {len(self.channels)}")
+        logger.info(f"Found {no_of_channels} channels in config, required: {len(self.channels)}")
 
         if no_of_channels < len(self.channels):
             logger.error(f"Insufficient channels: available={no_of_channels}, required={len(self.channels)}")

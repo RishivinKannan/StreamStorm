@@ -85,7 +85,8 @@ async def start(data: StormData) -> JSONResponse:
         status_code=200,
         content={
             "success": True,
-            "message": "Storm started successfully"
+            "message": "Storm started successfully",
+            "channels": StreamStormObj.all_channels
         }
     )
 

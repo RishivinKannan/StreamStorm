@@ -10,6 +10,7 @@ import ErrorText from '../../../../Elements/ErrorText';
 import { useStormData } from '../../../../../context/StormDataContext';
 import { useSystemInfo } from '../../../../../context/SystemInfoContext';
 import { useCustomMUIProps } from '../../../../../context/CustomMUIPropsContext';
+import { useAppState } from '../../../../../context/AppStateContext';
 
 const RightPanel = (props) => {
 
@@ -18,11 +19,12 @@ const RightPanel = (props) => {
     const { btnProps } = useCustomMUIProps();
     const formControls = useStormData();
     const systemInfoControls = useSystemInfo();
+    const appState = useAppState();
 
 
     const handleSubmit = () => {
         formControls.setErrorText("");
-        formControls.SC.current.startStorm(formControls, systemInfoControls)
+        formControls.SC.current.startStorm(formControls, systemInfoControls, appState);
     }
 
     return (
