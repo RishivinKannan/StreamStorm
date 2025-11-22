@@ -22,20 +22,24 @@ const NewStorm = () => {
     const formControls = useStormData();
     const systemInfoControls = useSystemInfo();
 
+    useEffect(() => {
+        fetchStatus(formControls);
+    }, [])
+
     // setInterval(() => {
     //     const interval = fetchStatus(formControls);
     //     return () => clearInterval(interval);
     // }, 2000);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            fetchStatus(formControls);
-        }, 2000);
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         fetchStatus(formControls);
+    //     }, 2000);
 
-        systemInfoControls.setPollingIntervals(prev => [...prev, interval]);
+    //     systemInfoControls.setPollingIntervals(prev => [...prev, interval]);
 
-        return () => clearInterval(interval);
-    }, []);
+    //     return () => clearInterval(interval);
+    // }, []);
 
     useEffect(() => {
         if(manageProfilesOpen) {
