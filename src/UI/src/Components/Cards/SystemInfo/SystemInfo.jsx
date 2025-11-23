@@ -11,7 +11,7 @@ import { useSystemInfo } from "../../../context/SystemInfoContext";
 import { useCustomMUIProps } from "../../../context/CustomMUIPropsContext";
 import SystemInfoChart from "./SystemInfoChart";
 import { useSocket } from "../../../context/Socket";
-
+import SystemStatsCard from "./SystemStatsCard";
 
 const TIME_INTERVAL_IN_SEC = 2;
 const DATA_POINTS_LENGTH = 65 / TIME_INTERVAL_IN_SEC;
@@ -45,7 +45,6 @@ const SystemInfo = () => {
   const initialData = createInitialPoints();
   const [chartSeries, setChartSeries] = useState(initialData);
   const { socket, socketConnected } = useSocket();
-
 
   useEffect(() => {
     if (!socket || !socket.connected || !socketConnected) return;
@@ -109,7 +108,14 @@ const SystemInfo = () => {
       >
         <div className="system-info-container">
           <SystemInfoChart series={chartSeries} />
-          <Divider sx={{ marginTop: "10px" }} />
+          <Divider sx={{ marginY: "20px" }} />
+          <SystemStatsCard
+            stats={chartSeries[chartSeries.length - 1]}
+            colorScheme={colorScheme}
+            note={
+              "To operate one account you need approximately 500MB of RAM. Could not determine account capacity due to unavailable RAM information."
+            }
+          />
         </div>
       </CardContent>
     </Card>
