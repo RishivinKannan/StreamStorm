@@ -11,18 +11,17 @@ sio: AsyncServer = AsyncServer(
 
 @sio.on('connect')
 async def handle_connect(sid, environ):
-    logger.debug(f"Client connected: {sid}")    
+    logger.info(f"New Client connected to server: {sid}")    
     await sio.enter_room(sid, "streamstorm")
-    logger.info("Client connected to Server")
     
 @sio.on('disconnect')
 async def handle_disconnect(sid):
-    logger.debug(f"Client disconnected: {sid}")
+    logger.debug(f"Client disconnected from server: {sid}")
     await sio.leave_room(sid, "streamstorm")
 
 @sio.on('ping')
 async def darkglance(sid, data):
-    logger.debug(f"Client pinged: {sid}")
+    logger.info(f"Client pinged: {sid}")
     return {
         'success': True,
         'message': 'pong',

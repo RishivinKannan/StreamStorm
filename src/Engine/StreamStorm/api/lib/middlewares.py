@@ -98,6 +98,14 @@ class RequestValidationMiddleware(BaseHTTPMiddleware):
                         },
                         headers=cors_headers,
                     )
+                    
+                    # return JSONResponse(
+                    #     status_code=200,
+                    #     content={
+                    #         "success": True,
+                    #         "message": "Testing",
+                    #     },                  
+                    # )
 
         if (
             method == "GET"

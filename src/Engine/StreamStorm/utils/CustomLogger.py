@@ -32,7 +32,7 @@ class SocketIOHandler(Handler):
         time: str = datetime.fromtimestamp(record.created).strftime("%H:%M:%S")
 
         try:
-            msg = self.format(record)
+            msg: str = self.format(record)
             run_coroutine_threadsafe(self._emit_async(msg, level, time), _event_loop)
 
         except Exception:
