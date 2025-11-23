@@ -10,11 +10,6 @@ import {
 } from "recharts";
 import MUIRechartsTooltip from "./Tooltip";
 
-const TIME_INTERVAL_IN_SEC = 2;
-const DATA_POINTS_LENGTH = 65 / TIME_INTERVAL_IN_SEC;
-const START_POINT =
-  - (DATA_POINTS_LENGTH * TIME_INTERVAL_IN_SEC) + TIME_INTERVAL_IN_SEC;
-
 const MUILegend = (props) => {
   const { payload } = props;
 

@@ -1,5 +1,4 @@
-import PropTypes from "prop-types";
-import { Paper, Box, Typography, Stack, Avatar, Divider } from "@mui/material";
+import { Box, Typography, Stack, Avatar, Divider } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import MemoryIcon from "@mui/icons-material/Memory";
 import StorageIcon from "@mui/icons-material/Storage";
@@ -97,9 +96,3 @@ export default function SystemStatsCard({ stats, note, sx, colorScheme }) {
     </Stack>
   );
 }
-
-SystemStatsCard.propTypes = {
-  stats: PropTypes.array,
-  note: PropTypes.string,
-  sx: PropTypes.object,
-};
