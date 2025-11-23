@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useColorScheme } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import { CardHeader, CardContent, Divider } from "@mui/material";
-import { HardDrive, SettingsIcon } from "lucide-react";
+import { HardDrive } from "lucide-react";
 import { useLocalStorageState } from "@toolpad/core/useLocalStorageState";
 import { useNotifications } from "@toolpad/core/useNotifications";
 
@@ -12,8 +12,8 @@ import { useCustomMUIProps } from "../../../context/CustomMUIPropsContext";
 import SystemInfoChart from "./SystemInfoChart";
 import { useSocket } from "../../../context/Socket";
 import SystemStatsCard from "./SystemStatsCard";
+import { TIME_INTERVAL_IN_SEC } from "../../../lib/Constants";
 
-const TIME_INTERVAL_IN_SEC = 2;
 const DATA_POINTS_LENGTH = 65 / TIME_INTERVAL_IN_SEC;
 const START_POINT =
   -(DATA_POINTS_LENGTH * TIME_INTERVAL_IN_SEC) + TIME_INTERVAL_IN_SEC;
@@ -112,9 +112,11 @@ const SystemInfo = () => {
           <SystemStatsCard
             stats={chartSeries[chartSeries.length - 1]}
             colorScheme={colorScheme}
-            note={
-              "To operate one account you need approximately 500MB of RAM. Could not determine account capacity due to unavailable RAM information."
-            }
+            note={`To operate one account you need approximately ${systemInfoControls.RAM_PER_PROFILE}MB of RAM. ${
+              systemInfoControls.availableRAM
+                ? `Since you have ${systemInfoControls.availableRAM} MB of RAM available, you can run approximately ${Math.floor(systemInfoControls.availableRAM / systemInfoControls.RAM_PER_PROFILE)} channels.`
+                : "RAM information is currently unavailable."
+            }`}
           />
         </div>
       </CardContent>
