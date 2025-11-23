@@ -35,7 +35,7 @@ const RightPanel = (props) => {
                     <span className="switch-label">Load in background</span>
                     <Switch
                         checked={formControls.loadInBackground}
-                        disabled={formControls.stormInProgress || formControls.loading}
+                        disabled={appState.stormInProgress || formControls.loading}
                         onChange={(e) => formControls.setLoadInBackground(e.target.checked)}
                     />
                 </div>
@@ -58,7 +58,7 @@ const RightPanel = (props) => {
                     height: "40px",
                     color: "var(--light-text)",
                 }}
-                disabled={formControls.stormInProgress || formControls.loading}
+                disabled={appState.stormInProgress || formControls.loading}
                 onClick={handleSubmit}
             >
                 {formControls.loading ? "Starting Storm..." : "Start Storm"}

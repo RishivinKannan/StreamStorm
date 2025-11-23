@@ -57,7 +57,7 @@ class StormControlsClass {
                     });
                     appState.setAllChannels(data.channels);
                     this.setControlsDisabled(false);
-                    formControls.setStormInProgress(true);
+                    appState.setStormInProgress(true);
                     logEvent(analytics, "storm_started");
                 } else {
                     formControls.setErrorText(data.message || 'Request failed');

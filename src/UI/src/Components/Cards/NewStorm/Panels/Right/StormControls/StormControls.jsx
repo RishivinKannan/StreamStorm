@@ -14,6 +14,7 @@ import AddChannels from "../../../../../Dialogs/AddChannels";
 import { useStormData } from "../../../../../../context/StormDataContext";
 import { useCustomMUIProps } from "../../../../../../context/CustomMUIPropsContext";
 import { useSystemInfo } from "../../../../../../context/SystemInfoContext";
+import { useAppState } from "../../../../../../context/AppStateContext";
 
 const StormControls = () => {
 
@@ -22,6 +23,7 @@ const StormControls = () => {
     const { colorScheme } = useColorScheme();
     const dialogs = useDialogs();
     const systemInfoControls = useSystemInfo();
+    const appState = useAppState();
 
     const [pausing, setPausing] = useState(false);
     const [stopping, setStopping] = useState(false);
@@ -35,6 +37,7 @@ const StormControls = () => {
     useEffect(() => {
         formControls.SC.current = new StormControlsClass(formControls.hostAddress);
         formControls.SC.current.setPausing = setPausing;
+        formControls.SC.current.stopping = stopping;
         formControls.SC.current.setStopping = setStopping;
         formControls.SC.current.setResuming = setResuming;
         formControls.SC.current.setControlsDisabled = setControlsDisabled;
@@ -53,8 +56,8 @@ const StormControls = () => {
         });
 
         if (confirmed) {
-            formControls.SC.current.stopStorm(formControls.setStormInProgress);
-            // formControls.setStormInProgress(false);
+            formControls.SC.current.stopStorm(appState.setStormInProgress);
+            // appState.setStormInProgress(false);
         }
 
     }
@@ -125,7 +128,7 @@ const StormControls = () => {
             </div>
 
             {
-                formControls.stormInProgress &&
+                appState.stormInProgress &&
                 <div className={`storm-in-progress-container ${colorScheme}-bordered-container`}>
                     <Ping />
                     <span className={`storm-in-progress-text ${colorScheme}-text`}>A Storm is in progress...</span>
@@ -141,7 +144,7 @@ const StormControls = () => {
                         startIcon={pausing ? <RefreshCw size={18} className="spin" /> : <Pause size={18} />}
                         sx={btnProps}
                         onClick={handlePause}
-                        disabled={controlsDisabled || !formControls.stormInProgress}
+                        disabled={controlsDisabled || !appState.stormInProgress}
                     >
                         {
                             pausing ? "Pausing..." : "Pause"
@@ -154,7 +157,7 @@ const StormControls = () => {
                         startIcon={resuming ? <RefreshCw size={18} className="spin" /> : <Play size={18} />}
                         sx={btnProps}
                         onClick={handleResume}
-                        disabled={controlsDisabled || !formControls.stormInProgress}
+                        disabled={controlsDisabled || !appState.stormInProgress}
                     >
                         {
                             resuming ? "Resuming..." : "Resume"
@@ -171,7 +174,7 @@ const StormControls = () => {
                             height: "40px",
                         }}
                         onClick={handleChangeMessages}
-                        disabled={controlsDisabled || !formControls.stormInProgress}
+                        disabled={controlsDisabled || !appState.stormInProgress}
                     >
                         {
                             changeMessagesLoading ? "Processing..." : "Messages"
@@ -185,10 +188,11 @@ const StormControls = () => {
                                 startIcon={changeSlowModeLoading ? <RefreshCw size={18} className="spin" /> : <SquarePen size={18} />}
                                 sx={{
                                     ...btnProps,
+                                    // padding: "0 .5rem 0 .5rem",
                                     height: "40px",
                                 }}
                                 onClick={handleChangeSlowMode}
-                                disabled={controlsDisabled || !formControls.stormInProgress}
+                                disabled={controlsDisabled || !appState.stormInProgress}
                             >
                                 {
                                     changeSlowModeLoading ? "Processing..." : "Slow Mode"
@@ -211,7 +215,7 @@ const StormControls = () => {
                                     height: "40px",
                                 }}
                                 onClick={handleDontWait}
-                                disabled={controlsDisabled || !formControls.stormInProgress}
+                                disabled={controlsDisabled || !appState.stormInProgress}
                             >
                                 {
                                     dontWaitLoading ? "Processing..." : "Don't Wait"
@@ -230,7 +234,7 @@ const StormControls = () => {
                                     height: "40px",
                                 }}
                                 onClick={handleAddMoreChannels}
-                                disabled={controlsDisabled || !formControls.stormInProgress}
+                                disabled={controlsDisabled || !appState.stormInProgress}
                             >
                                 Channels
                             </Button>

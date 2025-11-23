@@ -9,7 +9,7 @@ import { useNotifications } from '@toolpad/core/useNotifications';
 import "./SystemInfo.css"
 import { useSystemInfo } from '../../../context/SystemInfoContext';
 import { useCustomMUIProps } from '../../../context/CustomMUIPropsContext';
-import { useSocket } from '../../../context/Socket';
+import { useSocket } from '../../../context/SocketContext';
 
 const SystemInfo = () => {
     const { btnProps, cardProps } = useCustomMUIProps();

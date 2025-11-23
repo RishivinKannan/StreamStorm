@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { createContext, useContext } from 'react';
 
 import { useLocalStorageState } from "@toolpad/core/useLocalStorageState";
@@ -14,9 +14,12 @@ const AppStateProvider = ({ children }) => {
     const [UIVersion, setUIVersion] = useLocalStorageState("VITE_APP_VERSION", "0.0.0");
     const [engineVersion, setEngineVersion] = useState('...');
     const [allChannels, setAllChannels] = useState({});
+    const [stormInProgress, setStormInProgress] = useState(true);
+    const [stormStatus, setStormStatus] = useState("Storming");
 
     const values = {
         hostAddress, logs, setLogs, UIVersion, setUIVersion, engineVersion, setEngineVersion, allChannels, setAllChannels,
+        stormInProgress, setStormInProgress, stormStatus, setStormStatus
     };
 
     return (
