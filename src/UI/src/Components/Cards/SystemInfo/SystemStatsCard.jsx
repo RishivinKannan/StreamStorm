@@ -59,6 +59,7 @@ export default function SystemStatsCard({ stats, note, sx, colorScheme }) {
               sx={{
                 fontWeight: 600,
                 fontSize: 14,
+                opacity: 0.85,
                 fontFamily:
                   "ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace",
               }}
@@ -89,7 +90,7 @@ export default function SystemStatsCard({ stats, note, sx, colorScheme }) {
           sx={{ color: "inherit", ml: "7px" }}
           fontSize="small"
         />
-        <Typography sx={{ fontSize: 12, color: "inherit" }}>
+        <Typography sx={{ fontSize: 12, color: "inherit", opacity: 0.75 }}>
           {note}
         </Typography>
       </Box>
@@ -101,28 +102,4 @@ SystemStatsCard.propTypes = {
   stats: PropTypes.array,
   note: PropTypes.string,
   sx: PropTypes.object,
-};
-
-SystemStatsCard.defaultProps = {
-  stats: [
-    {
-      label: "CPU Usage",
-      valueText: "67.3%",
-      subText: null,
-      icon: <SettingsIcon fontSize="small" />,
-    },
-    {
-      label: "RAM Usage",
-      valueText: "48.0% (7.69 GB)",
-      subText: null,
-      icon: <MemoryIcon fontSize="small" />,
-    },
-    {
-      label: "Free RAM",
-      valueText: "52.0% (8.31 GB)",
-      subText: null,
-      icon: <StorageIcon fontSize="small" />,
-    },
-  ],
-  note: "To operate one account you need approximately 500MB of RAM. Could not determine account capacity due to unavailable RAM information.",
 };
