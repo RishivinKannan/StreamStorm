@@ -10,14 +10,16 @@ import ErrorText from "../../../../Elements/ErrorText";
 import { useStormData } from "../../../../../context/StormDataContext";
 import { useCustomMUIProps } from "../../../../../context/CustomMUIPropsContext";
 import { useSystemInfo } from '../../../../../context/SystemInfoContext';
+import { useAppState } from '../../../../../context/AppStateContext';
 
-const LeftPanel = () => {
+const LeftPanelForm = () => {
 
     const { colorScheme } = useColorScheme();
     const { inputProps, btnProps } = useCustomMUIProps();
     const formControls = useStormData();
     const systemInfoControls = useSystemInfo();
     const dialogs = useDialogs();
+    const appState = useAppState();
 
     const messagesChangeHandler = (e) => {
         // sourcery skip: use-object-destructuring
@@ -70,7 +72,7 @@ const LeftPanel = () => {
 
 
     return (
-        <div className="left-panel-container">
+        <div className="left-panel-form-container">
             <TextField
                 variant="outlined"
                 sx={inputProps}
@@ -79,7 +81,7 @@ const LeftPanel = () => {
                 onChange={handleURLChange}
                 error={formControls.videoURLError}
                 helperText={formControls.videoURLHelperText}
-                disabled={formControls.stormInProgress || formControls.loading}
+                disabled={appState.stormInProgress || formControls.loading}
             />
 
             <TextField
@@ -92,7 +94,7 @@ const LeftPanel = () => {
                 onChange={messagesChangeHandler}
                 error={formControls.messagesError}
                 helperText={formControls.messagesHelperText}
-                disabled={formControls.stormInProgress || formControls.loading}
+                disabled={appState.stormInProgress || formControls.loading}
             />
 
             <div className="left-panel-switches-container">
@@ -100,7 +102,7 @@ const LeftPanel = () => {
                     <span className="switch-label">Subscribe</span>
                     <Switch
                         checked={formControls.subscribe}
-                        disabled={formControls.stormInProgress || formControls.loading}
+                        disabled={appState.stormInProgress || formControls.loading}
                         onChange={(e) => {
                             if (!e.target.checked) {
                                 formControls.setSubscribeAndWait(false);
@@ -113,7 +115,7 @@ const LeftPanel = () => {
                     <span className="switch-label">Subscribe & Wait</span>
                     <Switch
                         checked={formControls.subscribeAndWait}
-                        disabled={formControls.stormInProgress || formControls.loading}
+                        disabled={appState.stormInProgress || formControls.loading}
                         onChange={(e) => {
                             if (e.target.checked) {
                                 formControls.setSubscribe(true);
@@ -138,7 +140,7 @@ const LeftPanel = () => {
                     }}
                     error={formControls.slowModeError}
                     helperText={formControls.slowModeHelperText}
-                    disabled={formControls.stormInProgress || formControls.loading}
+                    disabled={appState.stormInProgress || formControls.loading}
                 />
 
                 {
@@ -156,7 +158,7 @@ const LeftPanel = () => {
                             }}
                             error={formControls.subscribeWaitTimeError}
                             helperText={formControls.subscribeWaitTimeHelperText}
-                            disabled={formControls.stormInProgress || formControls.loading}
+                            disabled={appState.stormInProgress || formControls.loading}
                         />
                     ) : null
 
@@ -173,13 +175,13 @@ const LeftPanel = () => {
                         defaultValue="basic"
                         name="channel-index-radio-group"
                         onChange={(e) => formControls.setChannelSelection(e.target.value)}
-                        disabled={formControls.stormInProgress || formControls.loading}
+                        disabled={appState.stormInProgress || formControls.loading}
                     >
                         <div className="channel-index-radio-container">
                             <Radio
                                 value="basic"
                                 checked={formControls.channelSelection === "basic"}
-                                disabled={formControls.stormInProgress || formControls.loading}
+                                disabled={appState.stormInProgress || formControls.loading}
                             />
                             <span className="channel-index-input-label">Basic</span>
                         </div>
@@ -187,7 +189,7 @@ const LeftPanel = () => {
                             <Radio
                                 value="intermediate"
                                 checked={formControls.channelSelection === "intermediate"}
-                                disabled={formControls.stormInProgress || formControls.loading}
+                                disabled={appState.stormInProgress || formControls.loading}
                             />
                             <span className="channel-index-input-label">Intermediate</span>
                         </div>
@@ -195,7 +197,7 @@ const LeftPanel = () => {
                             <Radio
                                 value="advanced"
                                 checked={formControls.channelSelection === "advanced"}
-                                disabled={formControls.stormInProgress || formControls.loading}
+                                disabled={appState.stormInProgress || formControls.loading}
                             />
                             <span className="channel-index-input-label">Advanced</span>
                         </div>
@@ -219,7 +221,7 @@ const LeftPanel = () => {
                                 }}
                                 error={formControls.noOfChannelsError}
                                 helperText={formControls.noOfChannelsHelperText}
-                                disabled={formControls.stormInProgress || formControls.loading}
+                                disabled={appState.stormInProgress || formControls.loading}
 
                             />
                         </div>
@@ -243,7 +245,7 @@ const LeftPanel = () => {
                                             }}
                                             error={formControls.startChannelIndexError}
                                             helperText={formControls.startChannelIndexHelperText}
-                                            disabled={formControls.stormInProgress || formControls.loading}
+                                            disabled={appState.stormInProgress || formControls.loading}
                                         />
                                         <TextField
                                             type="number"
@@ -260,7 +262,7 @@ const LeftPanel = () => {
                                             }}
                                             error={formControls.endChannelIndexError}
                                             helperText={formControls.endChannelIndexHelperText}
-                                            disabled={formControls.stormInProgress || formControls.loading}
+                                            disabled={appState.stormInProgress || formControls.loading}
                                         />
                                     </div>
                                 ) : (
@@ -270,7 +272,7 @@ const LeftPanel = () => {
                                                 variant="contained"
                                                 className="channel-index-input"
                                                 onClick={handleAdvancedChannelSelection}
-                                                disabled={formControls.stormInProgress || formControls.loading}
+                                                disabled={appState.stormInProgress || formControls.loading}
                                                 sx={{
                                                     ...btnProps,
                                                     width: "100px",
@@ -321,4 +323,4 @@ const LeftPanel = () => {
     );
 }
 
-export default LeftPanel;
+export default LeftPanelForm;

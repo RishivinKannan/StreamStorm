@@ -214,7 +214,7 @@ const CreateChannels = () => {
                                     defaultValue="basic"
                                     name="channel-index-radio-group"
                                     onChange={(e) => setLogoSelection(e.target.value)}
-                                    disabled={formControls.stormInProgress || formControls.loading}
+                                    disabled={creatingChannels}
                                 >
                                     <div className="logo-radio-container">
                                         <div className="logo-radio">

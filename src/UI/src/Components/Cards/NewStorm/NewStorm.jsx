@@ -6,36 +6,42 @@ import { Settings2 } from 'lucide-react';
 import { logEvent } from "firebase/analytics";
 
 import "./NewStorm.css";
-import LeftPanel from "./Panels/Left/LeftPanel";
+import LeftPanel from "./Panels/Left/LeftPanelForm";
+import LeftPanelDashboard from "./Panels/Left/LeftPanelDashboard";
 import RightPanel from "./Panels/Right/RightPanel";
 import ManageProfilesModal from "../../Modals/ManageProfiles/ManageProfiles";
 import fetchStatus from "../../../lib/FetchStatus";
 import { useStormData } from "../../../context/StormDataContext";
 import { analytics } from "../../../config/firebase";
 import { useCustomMUIProps } from "../../../context/CustomMUIPropsContext";
-import { useSystemInfo } from "../../../context/SystemInfoContext";
+import { useAppState } from "../../../context/AppStateContext";
+import Ping from "../../Elements/Ping/Ping";
 
 const NewStorm = () => {
     const { cardProps } = useCustomMUIProps();
     const { colorScheme } = useColorScheme();
     const [manageProfilesOpen, setManageProfilesOpen] = useState(false);
     const formControls = useStormData();
-    const systemInfoControls = useSystemInfo();
+    const appState = useAppState();
+
+    useEffect(() => {
+        fetchStatus(appState);
+    }, [])
 
     // setInterval(() => {
     //     const interval = fetchStatus(formControls);
     //     return () => clearInterval(interval);
     // }, 2000);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            fetchStatus(formControls);
-        }, 2000);
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         fetchStatus(formControls);
+    //     }, 2000);
 
-        systemInfoControls.setPollingIntervals(prev => [...prev, interval]);
+    //     systemInfoControls.setPollingIntervals(prev => [...prev, interval]);
 
-        return () => clearInterval(interval);
-    }, []);
+    //     return () => clearInterval(interval);
+    // }, []);
 
     useEffect(() => {
         if(manageProfilesOpen) {
@@ -52,15 +58,17 @@ const NewStorm = () => {
         >
             <div className="card-header-container" id="new-storm">
                 <CardHeader
-                    avatar={<Settings2 />}
-                    title="New Storm"
+                    avatar={appState.stormInProgress ? <Ping /> : <Settings2 />}
+                    title={appState.stormStatus === "Storming" ? "Storm In Progress" : appState.stormStatus === "Paused" ? "Storm Paused" : "New Storm"}
                     className={`card-header card-header-${colorScheme}`}
                     sx={{
                         padding: 0
                     }}
                 />
                 <span className={`card-header-description card-header-description-${colorScheme}`}>
-                    Set up parameters for your new storm and manage active storm.
+                    {
+                       appState.stormInProgress ? "" : "Set up parameters for your new storm and manage active storm."
+                    }
                 </span>
             </div>
             <CardContent
@@ -69,7 +77,9 @@ const NewStorm = () => {
                 }}
             >
                 <div className="new-storm-card-content">
-                    <LeftPanel />
+                    {
+                        appState.stormInProgress ? <LeftPanelDashboard /> : <LeftPanel />
+                    }                    
                     <Divider orientation="vertical" />
                     <RightPanel setManageProfilesOpen={setManageProfilesOpen} />
                 </div>

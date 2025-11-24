@@ -28,7 +28,7 @@ class StormControlsClass {
         logEvent(analytics, "channel_selection_mode", { mode: stormData.channelSelection });
     }
 
-    startStorm(formControls, systemInfoControls) {
+    startStorm(formControls, systemInfoControls, appState) {
 
         const dataValid = ValidateStormData(formControls, systemInfoControls);
 
@@ -55,8 +55,9 @@ class StormControlsClass {
                     this.notifications.show('Storm started successfully!', {
                         severity: 'success',
                     });
+                    appState.setAllChannels(data.channels);
                     this.setControlsDisabled(false);
-                    formControls.setStormInProgress(true);
+                    appState.setStormInProgress(true);
                     logEvent(analytics, "storm_started");
                 } else {
                     formControls.setErrorText(data.message || 'Request failed');

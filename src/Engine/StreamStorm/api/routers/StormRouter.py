@@ -18,6 +18,7 @@ from ..validation import (
     GetChannelsData
 )
 from ...utils.CustomLogger import CustomLogger
+from ...socketio.sio import sio
 
 cl: CustomLogger = CustomLogger(for_history=True)
 cl.setup_history_logger()
@@ -29,7 +30,7 @@ router: APIRouter = APIRouter(prefix="/storm")
 @router.post("/start")
 async def start(data: StormData) -> JSONResponse:
     if StreamStorm.ss_instance is not None:
-        logger.info("Storm request rejected - instance already running")
+        logger.error("Storm request rejected - instance already running")
         cl.log_to_history(data, "Storm request rejected - instance already running")
         
         return JSONResponse(
@@ -63,6 +64,7 @@ async def start(data: StormData) -> JSONResponse:
     try:
         await StreamStormObj.start()
         cl.log_to_history(data, "Storm started successfully")
+        logger.info("Storm started successfully")
         
     except SystemError as e:
         environ.update({"BUSY": "0", "BUSY_REASON": ""})
@@ -84,13 +86,16 @@ async def start(data: StormData) -> JSONResponse:
         status_code=200,
         content={
             "success": True,
-            "message": "Storm started successfully"
+            "message": "Storm started successfully",
+            "channels": StreamStormObj.all_channels
         }
     )
 
 
 @router.post("/stop")
 async def stop() -> JSONResponse:
+    logger.info("Stopping Storm...")
+    
     async def close_browser(instance: StreamStorm) -> None:
         try:
             if instance.page:
@@ -105,6 +110,10 @@ async def stop() -> JSONResponse:
 
     environ.update({"BUSY": "0"})
 
+    logger.info("Storm stopped successfully")
+    await sio.emit('storm_stopped', room="streamstorm")
+    
+
     return JSONResponse(
         status_code=200,
         content={
@@ -117,6 +126,8 @@ async def stop() -> JSONResponse:
 @router.post("/pause")
 async def pause() -> JSONResponse:
     StreamStorm.ss_instance.pause_event.clear()
+    logger.info("Storm paused successfully")
+    await sio.emit('storm_paused', room="streamstorm")
 
     return JSONResponse(
         status_code=200,
@@ -130,6 +141,8 @@ async def pause() -> JSONResponse:
 @router.post("/resume")
 async def resume() -> JSONResponse:
     StreamStorm.ss_instance.pause_event.set()
+    logger.info("Storm resumed successfully")
+    await sio.emit('storm_resumed', room="streamstorm")
 
     return JSONResponse(
         status_code=200,
@@ -143,6 +156,7 @@ async def resume() -> JSONResponse:
 @router.post("/change_messages")
 async def change_messages(data: ChangeMessagesData) -> JSONResponse:
     await StreamStorm.ss_instance.set_messages(data.messages)
+    logger.info("Messages changed successfully")
 
     return JSONResponse(
         status_code=200,
@@ -156,6 +170,7 @@ async def change_messages(data: ChangeMessagesData) -> JSONResponse:
 @router.post("/start_storm_dont_wait")
 async def start_storm_dont_wait() -> JSONResponse:
     StreamStorm.ss_instance.ready_event.set()
+    logger.info("Storm started without waiting")
 
     return JSONResponse(
         status_code=200,
@@ -178,6 +193,7 @@ async def change_slow_mode(data: ChangeSlowModeData) -> JSONResponse:
         )
 
     await StreamStorm.ss_instance.set_slow_mode(data.slow_mode)
+    logger.info("Slow mode changed successfully")
 
     return JSONResponse(
         status_code=200,
@@ -190,6 +206,7 @@ async def change_slow_mode(data: ChangeSlowModeData) -> JSONResponse:
 
 @router.post("/start_more_channels")
 async def start_more_channels(data: StartMoreChannelsData) -> JSONResponse:
+    logger.info("Starting more channels...")
     if not StreamStorm.ss_instance.ready_event.is_set():
         return JSONResponse(
             status_code=400,
@@ -200,6 +217,7 @@ async def start_more_channels(data: StartMoreChannelsData) -> JSONResponse:
         )
 
     await StreamStorm.ss_instance.start_more_channels(data.channels)
+    logger.info("More channels started successfully")
 
     return JSONResponse(
         status_code=200,

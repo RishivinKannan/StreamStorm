@@ -1,14 +1,46 @@
-from logging import Formatter, Logger, getLogger, DEBUG, INFO, FileHandler, StreamHandler, NullHandler, Handler  # noqa: F401
+from logging import Formatter, Logger, getLogger, DEBUG, INFO, FileHandler, NullHandler, Handler, LogRecord
 from logging.handlers import QueueHandler, QueueListener
 from platformdirs import user_data_dir
 from pathlib import Path
 from queue import Queue
 from rich.logging import RichHandler
 from atexit import register as atexit_register
+from datetime import datetime
+from asyncio import AbstractEventLoop, run_coroutine_threadsafe
 
 from .GetIstTime import get_ist_time
 from ..config import CONFIG
 from ..api.validation import StormData
+from ..socketio.sio import sio
+
+_event_loop: AbstractEventLoop | None = None
+
+def set_logging_loop(loop: AbstractEventLoop) -> None:
+    global _event_loop
+    _event_loop = loop
+
+class SocketIOHandler(Handler):
+    def emit(self, record: LogRecord) -> None:
+        if _event_loop is None or _event_loop.is_closed():
+            # No loop yet, just ignore
+            return
+        
+        level: str = record.levelname
+        if level == "DEBUG":
+            return
+        
+        time: str = datetime.fromtimestamp(record.created).strftime("%H:%M:%S")
+
+        try:
+            msg: str = self.format(record)
+            run_coroutine_threadsafe(self._emit_async(msg, level, time), _event_loop)
+
+        except Exception:
+            self.handleError(record)
+
+    async def _emit_async(self, msg: str, level: str, time: str) -> None:
+        await sio.emit("log", {"message": msg, "level": level, "time": time}, room="streamstorm")   
+        
 
 class CustomLogger:
     __slots__: tuple[str, ...] = ('logging_dir', 'logger', 'queue_handler')
@@ -23,7 +55,7 @@ class CustomLogger:
         if not for_history:
             self.queue_handler: Handler = QueueHandler(self.log_queue)
             
-            CustomLogger.listener = QueueListener(self.log_queue, self.__get_console_handler(), self.__get_file_handler())
+            CustomLogger.listener = QueueListener(self.log_queue, self.__get_console_handler(), self.__get_file_handler(), self.__get_socketio_handler())
             CustomLogger.listener.start()
         
             atexit_register(CustomLogger.listener.stop)
@@ -63,6 +95,10 @@ class CustomLogger:
         handler.setFormatter(file_formatter)
         
         return handler
+    
+    def __get_socketio_handler(self) -> SocketIOHandler:
+        
+        return SocketIOHandler()
     
     def __setup_logging(self, name: str) -> None:
         

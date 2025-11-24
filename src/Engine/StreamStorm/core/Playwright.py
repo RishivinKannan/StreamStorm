@@ -83,7 +83,7 @@ class Playwright(BrowserAutomator):
     def _attach_error_listeners(self):
         def mark_dead(marker: str):
             self.__instance_alive = False
-            logger.info(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: {marker}")
+            logger.debug(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: {marker}")
 
         try:
             self.page.on("close", lambda _: mark_dead("page.on_close"))
@@ -92,7 +92,7 @@ class Playwright(BrowserAutomator):
             self.browser.browser.on("disconnected", lambda _: mark_dead("browser.browser.on_disconnected"))
         except Exception as _:
             self.__instance_alive = False
-            logger.info(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: Failure to attach error listeners")
+            logger.debug(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: Failure to attach error listeners")
             
     async def check_language_english(self) -> bool:
         language: str = await self.page.evaluate("navigator.language")        
@@ -133,12 +133,12 @@ class Playwright(BrowserAutomator):
         self._attach_error_listeners()
         logger.debug(f"[{self.index}] [{self.channel_name}] Browser setup completed")
 
-
+ 
     async def go_to_page(self, url: str) -> None:
         
         try:
             await self.page.goto(url)
-            logger.debug(f"[{self.index}] [{self.channel_name}] Successfully navigated to: {url}")
+            logger.info(f"[{self.index}] [{self.channel_name}] Successfully navigated to: {url}")
             
         except PlaywrightTimeoutError as e:
             logger.error(f"[{self.index}] [{self.channel_name}] : Timeout error occurred while navigating to {url}: {e}")

@@ -15,7 +15,6 @@ const StormDataProvider = ({ children }) => {
     const SC = useRef(null);
 
     const [loading, setLoading] = useState(false);
-    const [stormInProgress, setStormInProgress] = useState(false);
 
     const [videoURL, setVideoURL] = useState("");
     const [videoURLError, setVideoURLError] = useState(false);
@@ -81,7 +80,7 @@ const StormDataProvider = ({ children }) => {
     }
 
     const formControls = {
-        loading, setLoading, stormInProgress, setStormInProgress, notifications,
+        loading, setLoading, notifications,
         videoURL, setVideoURL, videoURLError, setVideoURLError, videoURLHelperText, setVideoURLHelperText, chatURL, setChatURL,
         messages, setMessages, messagesString, setMessagesString, messagesError, setMessagesError, messagesHelperText, setMessagesHelperText,
         subscribe, setSubscribe, subscribeAndWait, setSubscribeAndWait,

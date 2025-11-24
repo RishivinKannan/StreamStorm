@@ -72,15 +72,15 @@ class SeparateInstance(Playwright):
         try:
             if not self.browser.browser.is_connected(): # test 1
                 self.__instance_alive = False
-                logger.info(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: browser.browser.is_connected")
+                logger.debug(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: browser.browser.is_connected")
 
         except TargetClosedError as _:
             self.__instance_alive = False
-            logger.info(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: TargetClosedError")
+            logger.debug(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: TargetClosedError")
 
         except Exception as e:
             logger.error(f"[{self.index}] [{self.channel_name}] : Error occurred while checking StreamStorm instance: {type(e).__name__}, {e}")
-            logger.info(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: Exception")
+            logger.debug(f"[{self.index}] [{self.channel_name}] : ##### StreamStorm instance marked as dead by: Exception")
             self.__instance_alive = False
         
         return self.__instance_alive

@@ -31,7 +31,7 @@ class LogRequestMiddleware(BaseHTTPMiddleware):
             except Exception:
                 body_str: str = "<unable to decode>"
 
-            logger.info(
+            logger.debug(
                 "[REQUEST RECEIVED]\n"
                 f"IP: {client_ip}\n"
                 f"URL: {url}\n"
@@ -98,6 +98,14 @@ class RequestValidationMiddleware(BaseHTTPMiddleware):
                         },
                         headers=cors_headers,
                     )
+                    
+                    # return JSONResponse(
+                    #     status_code=200,
+                    #     content={
+                    #         "success": True,
+                    #         "message": "Testing",
+                    #     },                  
+                    # )
 
         if (
             method == "GET"
