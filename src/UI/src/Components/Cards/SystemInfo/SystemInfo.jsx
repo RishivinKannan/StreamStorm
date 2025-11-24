@@ -14,7 +14,7 @@ import { useSocket } from "../../../context/Socket";
 import SystemStatsCard from "./SystemStatsCard";
 import { TIME_INTERVAL_IN_SEC } from "../../../lib/Constants";
 
-const DATA_POINTS_LENGTH = 65 / TIME_INTERVAL_IN_SEC;
+const DATA_POINTS_LENGTH = 60 / TIME_INTERVAL_IN_SEC;
 const START_POINT =
   -(DATA_POINTS_LENGTH * TIME_INTERVAL_IN_SEC) + TIME_INTERVAL_IN_SEC;
 
